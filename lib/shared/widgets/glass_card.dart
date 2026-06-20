@@ -9,9 +9,9 @@ class GlassCard extends StatelessWidget {
     this.onTap,
     this.padding,
     this.borderRadius,
-    this.blur = 20,
-    this.opacity = 0.55,
-    this.borderOpacity = 0.2,
+    this.blur = 24,
+    this.opacity = 0.6,
+    this.borderOpacity = 0.4,
     this.tintColor,
   });
 
@@ -30,10 +30,12 @@ class GlassCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final radius = borderRadius ?? AppConstants.radiusXL;
 
+    // Light: beyaz + hafif pembe tint — buzlu cam hissi
+    // Dark: koyu yarı-şeffaf
     final tint = tintColor ??
         (isDark
-            ? Colors.white.withValues(alpha: 0.06)
-            : Colors.white.withValues(alpha: opacity));
+            ? const Color(0xFF2A2030).withValues(alpha: 0.65)
+            : const Color(0xFFFFF5F8).withValues(alpha: opacity));
 
     final content = ClipRRect(
       borderRadius: BorderRadius.circular(radius),
@@ -46,9 +48,19 @@ class GlassCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(radius),
             border: Border.all(
               color: isDark
-                  ? Colors.white.withValues(alpha: 0.08)
+                  ? Colors.white.withValues(alpha: 0.1)
                   : Colors.white.withValues(alpha: borderOpacity),
+              width: isDark ? 0.5 : 1.2,
             ),
+            boxShadow: isDark
+                ? null
+                : [
+                    BoxShadow(
+                      color: const Color(0xFFD4A0B0).withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
           ),
           child: child,
         ),

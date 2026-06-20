@@ -68,11 +68,12 @@ class _GradientBackground extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              phaseColor.withValues(alpha: 0.15),
+              phaseColor.withValues(alpha: 0.3),
+              const Color(0xFF2A1525),
               const Color(0xFF1A151E),
               const Color(0xFF1A151E),
             ],
-            stops: const [0.0, 0.4, 1.0],
+            stops: const [0.0, 0.3, 0.5, 1.0],
           ),
         ),
       );
@@ -84,13 +85,13 @@ class _GradientBackground extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomCenter,
           colors: [
-            const Color(0xFFFDE8C8), // sıcak şeftali
-            const Color(0xFFF8D4D8), // yumuşak pembe
-            phaseColor.withValues(alpha: 0.15),
-            const Color(0xFFFFF8F6), // warm off-white
-            const Color(0xFFFFF8F6),
+            const Color(0xFFF5C77E), // canlı amber/turuncu
+            const Color(0xFFF2A88A), // sıcak şeftali
+            const Color(0xFFF0B0BC), // pembe geçiş
+            const Color(0xFFF5D5E0), // açık pembe
+            const Color(0xFFFFF2F0), // warm off-white
           ],
-          stops: const [0.0, 0.2, 0.35, 0.55, 1.0],
+          stops: const [0.0, 0.15, 0.3, 0.5, 0.75],
         ),
       ),
     );
