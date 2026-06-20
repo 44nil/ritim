@@ -245,11 +245,11 @@ class _TodayTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Hero kart — tam genişlik
+        // 1. Hero kart — neredeyim?
         staggered(index: 0, child: _DarkHeroCard(phase: phase)),
         const SizedBox(height: 14),
 
-        // Bento row 1: Ruh hali (büyük) + 2 küçük aksiyon
+        // 2. Hızlı aksiyonlar — kayıt yap
         staggered(index: 1, child: SizedBox(
           height: 140,
           child: Row(children: [
@@ -299,65 +299,18 @@ class _TodayTab extends StatelessWidget {
             ),
           ]),
         )),
-        const SizedBox(height: 12),
-
-        // Bento row 2: Günlük not + Bunu biliyor muydun
-        staggered(index: 2, child: SizedBox(
-          height: 120,
-          child: Row(children: [
-            Expanded(child: _BentoCard(
-              onTap: () => _QuickActions._showNote(context),
-              isDark: isDark,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 42, height: 42,
-                    decoration: BoxDecoration(
-                      color: AppColors.tertiary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.sticky_note_2_outlined, size: 22, color: AppColors.tertiary),
-                  ),
-                  const SizedBox(height: 10),
-                  Text('Günlük Not', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                  Text('Düşüncelerini yaz', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
-                ],
-              ),
-            )),
-            const SizedBox(width: 12),
-            Expanded(child: _BentoCard(
-              isDark: isDark,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.lightbulb_outline_rounded, size: 22, color: AppColors.phaseOvulation),
-                  const SizedBox(height: 8),
-                  Text(
-                    MockCycleData.didYouKnow[DateTime.now().day % MockCycleData.didYouKnow.length],
-                    style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.35),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            )),
-          ]),
-        )),
         const SizedBox(height: 14),
 
-        // Takvim — tam genişlik
-        staggered(index: 3, child: const _MonthCalendar()),
+        // 3. Takvim — ayı gör
+        staggered(index: 2, child: const _MonthCalendar()),
         const SizedBox(height: 14),
 
-        // Bedeninde ne oluyor — koyu kart tam genişlik
-        staggered(index: 4, child: _BodyInfoCard(phase: phase)),
+        // 4. Bedeninde ne oluyor — öğren
+        staggered(index: 3, child: _BodyInfoCard(phase: phase)),
         const SizedBox(height: 14),
 
-        // Bento row 3: Kendine iyi bak + Döngü istatistikleri
-        staggered(index: 5, child: SizedBox(
+        // 5. Kendine iyi bak + Döngü istatistikleri
+        staggered(index: 4, child: SizedBox(
           height: 170,
           child: Row(children: [
             // Kendine iyi bak — büyük
@@ -404,8 +357,55 @@ class _TodayTab extends StatelessWidget {
         )),
         const SizedBox(height: 14),
 
-        // Timeline
-        staggered(index: 6, child: const _CycleTimeline()),
+        // 6. Günlük not + Bunu biliyor muydun
+        staggered(index: 6, child: SizedBox(
+          height: 120,
+          child: Row(children: [
+            Expanded(child: _BentoCard(
+              onTap: () => _QuickActions._showNote(context),
+              isDark: isDark,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 42, height: 42,
+                    decoration: BoxDecoration(
+                      color: AppColors.tertiary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.sticky_note_2_outlined, size: 22, color: AppColors.tertiary),
+                  ),
+                  const SizedBox(height: 10),
+                  Text('Günlük Not', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                  Text('Düşüncelerini yaz', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+                ],
+              ),
+            )),
+            const SizedBox(width: 12),
+            Expanded(child: _BentoCard(
+              isDark: isDark,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.lightbulb_outline_rounded, size: 22, color: AppColors.phaseOvulation),
+                  const SizedBox(height: 8),
+                  Text(
+                    MockCycleData.didYouKnow[DateTime.now().day % MockCycleData.didYouKnow.length],
+                    style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.35),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            )),
+          ]),
+        )),
+        const SizedBox(height: 14),
+
+        // 7. Timeline
+        staggered(index: 7, child: const _CycleTimeline()),
         const SizedBox(height: 100),
       ],
     );
