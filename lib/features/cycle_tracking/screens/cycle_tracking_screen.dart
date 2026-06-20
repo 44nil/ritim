@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/providers/theme_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/cycle_phase_ring.dart';
@@ -100,13 +102,14 @@ class _GradientBackground extends StatelessWidget {
 
 // ─── 1. Karşılama Başlığı ──────────────────────────────────────────────────
 
-class _GreetingHeader extends StatelessWidget {
+class _GreetingHeader extends ConsumerWidget {
   const _GreetingHeader({required this.phase});
   final CyclePhaseInfo phase;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final now = DateTime.now();
     final dateStr = DateFormat('d MMMM, EEEE', 'tr_TR').format(now);
 
@@ -132,7 +135,24 @@ class _GreetingHeader extends StatelessWidget {
             ],
           ),
         ),
-        // Bildirim butonu — glass efekt
+        // Tema değiştirme butonu
+        GlassCard(
+          padding: const EdgeInsets.all(10),
+          borderRadius: AppConstants.radiusRound,
+          opacity: 0.5,
+          blur: 15,
+          onTap: () {
+            ref.read(themeModeProvider.notifier).state =
+                isDark ? ThemeMode.light : ThemeMode.dark;
+          },
+          child: Icon(
+            isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+            size: 22,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+        const SizedBox(width: 8),
+        // Bildirim butonu
         GlassCard(
           padding: const EdgeInsets.all(10),
           borderRadius: AppConstants.radiusRound,
