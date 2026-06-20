@@ -246,9 +246,13 @@ class _TodayTab extends StatelessWidget {
         const SizedBox(height: 16),
         staggered(index: 1, child: _QuickActions()),
         const SizedBox(height: 16),
-        staggered(index: 2, child: _MonthCalendar()),
-        const SizedBox(height: 16),
+        staggered(index: 2, child: const _MonthCalendar()),
+        const SizedBox(height: 20),
         staggered(index: 3, child: _InsightCard(phase: phase)),
+        const SizedBox(height: 20),
+        staggered(index: 4, child: const _CycleTimeline()),
+        const SizedBox(height: 20),
+        staggered(index: 5, child: const _CycleStats()),
         const SizedBox(height: 100),
       ],
     );
@@ -586,14 +590,16 @@ class _MonthCalendar extends StatelessWidget {
               })),
             );
           }),
-          const SizedBox(height: 10),
-          // Legend
+          const SizedBox(height: 12),
+          // Filtre pill'leri
           Row(children: [
-            _LegendDot(color: AppColors.phaseMenstruation, label: 'Adet'),
-            const SizedBox(width: 16),
-            _LegendDot(color: AppColors.phaseOvulation, label: 'Ovülasyon'),
-            const SizedBox(width: 16),
-            _LegendDot(color: const Color(0xFF2A2030), label: 'Bugün'),
+            _FilterPill(label: 'Adet', color: AppColors.phaseMenstruation, isActive: true),
+            const SizedBox(width: 6),
+            _FilterPill(label: 'Ovülasyon', color: AppColors.phaseOvulation, isActive: true),
+            const SizedBox(width: 6),
+            _FilterPill(label: 'Luteal', color: AppColors.phaseLuteal, isActive: false),
+            const SizedBox(width: 6),
+            _FilterPill(label: 'Tümü', color: Colors.grey, isActive: false),
           ]),
         ],
       ),
@@ -601,18 +607,28 @@ class _MonthCalendar extends StatelessWidget {
   }
 }
 
-class _LegendDot extends StatelessWidget {
-  const _LegendDot({required this.color, required this.label});
-  final Color color;
+class _FilterPill extends StatelessWidget {
+  const _FilterPill({required this.label, required this.color, required this.isActive});
   final String label;
+  final Color color;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-      const SizedBox(width: 4),
-      Text(label, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4))),
-    ]);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: isActive ? color.withValues(alpha: 0.15) : Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: isActive ? color.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.2)),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+        const SizedBox(width: 4),
+        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
+          color: isActive ? color : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4))),
+      ]),
+    );
   }
 }
 
@@ -821,5 +837,211 @@ class _CycleHistory extends StatelessWidget {
         ]),
       ),
     )).toList());
+  }
+}
+
+// ─── Döngü Zaman Çizelgesi ──────────────────────────────────────────────────
+
+class _CycleTimeline extends StatelessWidget {
+  const _CycleTimeline();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final events = [
+      _TimelineEvent(dateRange: '7 — 11 Haz', label: 'Adet Dönemi', subtitle: '5 gün', color: AppColors.phaseMenstruation, icon: Icons.water_drop_rounded, isPast: true),
+      _TimelineEvent(dateRange: '12 — 18 Haz', label: 'Foliküler Faz', subtitle: 'Enerji yükseliyor', color: AppColors.phaseFollicular, icon: Icons.eco_rounded, isPast: true),
+      _TimelineEvent(dateRange: '19 — 21 Haz', label: 'Ovülasyon', subtitle: 'Bugün buradasın', color: AppColors.phaseOvulation, icon: Icons.brightness_high_rounded, isPast: false),
+      _TimelineEvent(dateRange: '22 Haz — 5 Tem', label: 'Luteal Faz', subtitle: 'Dinlenme dönemi', color: AppColors.phaseLuteal, icon: Icons.nights_stay_rounded, isPast: false),
+      _TimelineEvent(dateRange: '6 Tem', label: 'Sonraki Adet', subtitle: 'Tahmini başlangıç', color: AppColors.phaseMenstruation, icon: Icons.event_rounded, isPast: false),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Zaman Çizelgesi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+        const SizedBox(height: 14),
+        ...events.asMap().entries.map((e) {
+          final event = e.value;
+          final isLast = e.key == events.length - 1;
+
+          return IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Sol: tarih
+                SizedBox(
+                  width: 58,
+                  child: Text(event.dateRange, style: TextStyle(
+                    fontSize: 10, fontWeight: FontWeight.w600,
+                    color: event.isPast
+                        ? theme.colorScheme.onSurface.withValues(alpha: 0.35)
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  )),
+                ),
+                // Orta: çizgi + nokta
+                SizedBox(
+                  width: 28,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 12, height: 12,
+                        decoration: BoxDecoration(
+                          color: event.isPast ? event.color.withValues(alpha: 0.3) : event.color,
+                          shape: BoxShape.circle,
+                          border: event.isPast ? null : Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
+                      if (!isLast) Expanded(
+                        child: Container(
+                          width: 2,
+                          color: event.color.withValues(alpha: event.isPast ? 0.15 : 0.3),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Sağ: içerik kartı
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: event.isPast
+                            ? (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.white.withValues(alpha: 0.35))
+                            : (isDark ? const Color(0xFF1A1520) : const Color(0xFF2A2030)),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30, height: 30,
+                            decoration: BoxDecoration(
+                              color: event.color.withValues(alpha: event.isPast ? 0.1 : 0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(event.icon, size: 16, color: event.isPast ? event.color.withValues(alpha: 0.5) : event.color),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(event.label, style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w700,
+                                color: event.isPast
+                                    ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
+                                    : (isDark ? Colors.white : Colors.white),
+                              )),
+                              Text(event.subtitle, style: TextStyle(
+                                fontSize: 10,
+                                color: event.isPast
+                                    ? theme.colorScheme.onSurface.withValues(alpha: 0.35)
+                                    : Colors.white.withValues(alpha: 0.5),
+                              )),
+                            ],
+                          )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class _TimelineEvent {
+  const _TimelineEvent({
+    required this.dateRange, required this.label, required this.subtitle,
+    required this.color, required this.icon, required this.isPast,
+  });
+  final String dateRange, label, subtitle;
+  final Color color;
+  final IconData icon;
+  final bool isPast;
+}
+
+// ─── Döngü İstatistikleri ───────────────────────────────────────────────────
+
+class _CycleStats extends StatelessWidget {
+  const _CycleStats();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Döngün Hakkında', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+        const SizedBox(height: 14),
+        Row(children: [
+          Expanded(child: _CycleStatCard(
+            icon: Icons.autorenew_rounded,
+            label: 'Ort. döngü süresi',
+            value: '28',
+            unit: 'gün',
+            color: AppColors.primary,
+            isDark: isDark,
+          )),
+          const SizedBox(width: 10),
+          Expanded(child: _CycleStatCard(
+            icon: Icons.water_drop_outlined,
+            label: 'Ort. adet süresi',
+            value: '5',
+            unit: 'gün',
+            color: AppColors.phaseMenstruation,
+            isDark: isDark,
+          )),
+        ]),
+      ],
+    );
+  }
+}
+
+class _CycleStatCard extends StatelessWidget {
+  const _CycleStatCard({
+    required this.icon, required this.label, required this.value,
+    required this.unit, required this.color, required this.isDark,
+  });
+  final IconData icon;
+  final String label, value, unit;
+  final Color color;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return CleanCard(
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        children: [
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 18, color: color),
+          ),
+          const SizedBox(height: 10),
+          Text(label, style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+          const SizedBox(height: 4),
+          RichText(text: TextSpan(children: [
+            TextSpan(text: value, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: color)),
+            TextSpan(text: ' $unit', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: color.withValues(alpha: 0.6))),
+          ])),
+        ],
+      ),
+    );
   }
 }
