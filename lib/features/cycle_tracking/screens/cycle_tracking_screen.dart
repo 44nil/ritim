@@ -767,7 +767,7 @@ class _QuickActions extends StatelessWidget {
           )),
           const SizedBox(height: 20),
           ArcMoodSelector(onMoodSelected: (mood) => Navigator.pop(ctx)),
-          const SizedBox(height: 8),
+          SizedBox(height: MediaQuery.of(ctx).padding.bottom + 8),
         ]),
       ),
     );
@@ -803,6 +803,7 @@ class _QuickActions extends StatelessWidget {
             onPressed: () => Navigator.pop(ctx),
             child: const Text('Kaydet'),
           )),
+          SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
         ]),
       ),
     );
@@ -846,7 +847,10 @@ class _QuickActions extends StatelessWidget {
                 final isSelected = selected.contains(e.key);
                 return FilterChip(
                   avatar: Icon(e.value.$2, size: 16),
-                  label: Text(e.value.$1),
+                  label: Text(e.value.$1, style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  )),
                   selected: isSelected,
                   onSelected: (val) => setSheetState(() {
                     if (val) {
@@ -862,6 +866,7 @@ class _QuickActions extends StatelessWidget {
                 onPressed: () => Navigator.pop(ctx),
                 child: Text(selected.isEmpty ? 'Atla' : 'Kaydet (${selected.length})'),
               )),
+              SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
             ]),
           );
         },
@@ -902,6 +907,7 @@ class _QuickActions extends StatelessWidget {
             onPressed: () => Navigator.pop(ctx),
             child: const Text('Kaydet'),
           )),
+          SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
         ]),
       ),
     );
