@@ -5,6 +5,7 @@ import '../../../core/providers/theme_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/cycle_phase_ring.dart';
+import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../data/mock_cycle_data.dart';
 
 class CycleTrackingScreen extends StatelessWidget {
@@ -18,18 +19,7 @@ class CycleTrackingScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Sakin gradient — bej/krem + hafif pembe
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: isDark
-                    ? [const Color(0xFF201820), const Color(0xFF151015)]
-                    : [const Color(0xFFF8F0EC), const Color(0xFFFAF6F4)],
-              ),
-            ),
-          ),
+          MeshGradientBg(isDark: isDark),
 
           SafeArea(
             child: SingleChildScrollView(
