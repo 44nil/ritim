@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 
 class SetupScreen extends StatefulWidget {
@@ -339,13 +338,41 @@ class _OptionCard extends StatelessWidget {
 
 // ─── Sayfa 3: Son adet tarihi ───────────────────────────────────────────────
 
-class _LastPeriodPage extends StatelessWidget {
+class _LastPeriodPage extends StatefulWidget {
   const _LastPeriodPage({required this.date, required this.onChanged});
   final DateTime date;
   final ValueChanged<DateTime> onChanged;
 
   @override
+  State<_LastPeriodPage> createState() => _LastPeriodPageState();
+}
+
+class _LastPeriodPageState extends State<_LastPeriodPage> {
+  static const _months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+
+  late int _day;
+  late int _month;
+  late int _year;
+
+  @override
+  void initState() {
+    super.initState();
+    _day = widget.date.day;
+    _month = widget.date.month;
+    _year = widget.date.year;
+  }
+
+  void _update() {
+    final maxDay = DateTime(_year, _month + 1, 0).day;
+    if (_day > maxDay) _day = maxDay;
+    widget.onChanged(DateTime(_year, _month, _day));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -363,59 +390,73 @@ class _LastPeriodPage extends StatelessWidget {
           )),
           const SizedBox(height: 12),
           Text(
-            'Tam tarihi bilmiyorsan yaklaşık bir tarih seç.',
+            'Tam tarihi bilmiyorsan yaklaşık seç.',
             style: TextStyle(fontSize: 14, color: const Color(0xFF2D2028).withValues(alpha: 0.5), height: 1.4),
           ),
-          const SizedBox(height: 32),
-          // Seçili tarih göstergesi
-          Center(
-            child: Text(
-              DateFormat('d MMMM yyyy', 'tr_TR').format(date),
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Color(0xFF2D2028)),
-            ),
-          ),
-          const SizedBox(height: 24),
-          // Tarih seçme butonu
-          Center(
-            child: GestureDetector(
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: date,
-                  firstDate: DateTime.now().subtract(const Duration(days: 90)),
-                  lastDate: DateTime.now(),
-                  locale: const Locale('tr', 'TR'),
-                  builder: (context, child) {
-                    return Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: Theme.of(context).colorScheme.copyWith(
-                          primary: AppColors.primary,
-                          onPrimary: Colors.white,
-                          surface: const Color(0xFFF5EDE8),
-                        ),
-                      ),
-                      child: child!,
-                    );
-                  },
-                );
-                if (picked != null) onChanged(picked);
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+          const Spacer(),
+          // 3 scroll picker yan yana: Gün — Ay — Yıl
+          SizedBox(
+            height: 180,
+            child: Row(
+              children: [
+                // Gün
+                Expanded(
+                  flex: 2,
+                  child: CupertinoPicker(
+                    scrollController: FixedExtentScrollController(initialItem: _day - 1),
+                    itemExtent: 50,
+                    magnification: 1.15,
+                    squeeze: 0.9,
+                    useMagnifier: true,
+                    onSelectedItemChanged: (i) { _day = i + 1; _update(); },
+                    children: List.generate(31, (i) {
+                      final val = i + 1;
+                      return Center(child: Text('$val', style: TextStyle(
+                        fontSize: val == _day ? 32 : 20, fontWeight: FontWeight.w700,
+                        color: val == _day ? const Color(0xFF2D2028) : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                      )));
+                    }),
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.calendar_month_rounded, size: 20, color: AppColors.primary),
-                    const SizedBox(width: 8),
-                    Text('Tarih Seç', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.primary)),
-                  ],
+                // Ay
+                Expanded(
+                  flex: 3,
+                  child: CupertinoPicker(
+                    scrollController: FixedExtentScrollController(initialItem: _month - 1),
+                    itemExtent: 50,
+                    magnification: 1.15,
+                    squeeze: 0.9,
+                    useMagnifier: true,
+                    onSelectedItemChanged: (i) { _month = i + 1; _update(); },
+                    children: _months.asMap().entries.map((e) {
+                      final isSelected = e.key + 1 == _month;
+                      return Center(child: Text(e.value, style: TextStyle(
+                        fontSize: isSelected ? 22 : 16, fontWeight: FontWeight.w700,
+                        color: isSelected ? const Color(0xFF2D2028) : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                      )));
+                    }).toList(),
+                  ),
                 ),
-              ),
+                // Yıl
+                Expanded(
+                  flex: 2,
+                  child: CupertinoPicker(
+                    scrollController: FixedExtentScrollController(initialItem: now.year - _year),
+                    itemExtent: 50,
+                    magnification: 1.15,
+                    squeeze: 0.9,
+                    useMagnifier: true,
+                    onSelectedItemChanged: (i) { _year = now.year - i; _update(); },
+                    children: List.generate(2, (i) {
+                      final val = now.year - i;
+                      return Center(child: Text('$val', style: TextStyle(
+                        fontSize: val == _year ? 28 : 20, fontWeight: FontWeight.w700,
+                        color: val == _year ? const Color(0xFF2D2028) : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                      )));
+                    }),
+                  ),
+                ),
+              ],
             ),
           ),
           const Spacer(),
