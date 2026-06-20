@@ -26,6 +26,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  List<Widget> _auraBlobs() {
+    final configs = [
+      [(-80.0, -80.0, 480.0, const Color(0xFFE8856E)), (150.0, 450.0, 420.0, const Color(0xFFF098B8)), (-100.0, 700.0, 400.0, const Color(0xFFE89870))],
+      [(100.0, -100.0, 450.0, const Color(0xFFF07898)), (-80.0, 400.0, 480.0, const Color(0xFFD898B0)), (120.0, 650.0, 380.0, const Color(0xFFE8A890))],
+      [(-60.0, 50.0, 500.0, const Color(0xFFD098D0)), (80.0, 350.0, 460.0, const Color(0xFFE88898)), (-40.0, 700.0, 420.0, const Color(0xFFC8A8D8))],
+    ];
+    final blobs = configs[_currentPage.clamp(0, configs.length - 1)];
+    return blobs.map((b) => AnimatedPositioned(
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOut,
+      left: b.$1,
+      top: b.$2,
+      child: Container(
+        width: b.$3,
+        height: b.$3,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: [b.$4.withValues(alpha: 0.65), b.$4.withValues(alpha: 0)],
+          ),
+        ),
+      ),
+    )).toList();
+  }
+
   void _next() {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(duration: AppConstants.animDurationNormal, curve: Curves.easeInOut);
@@ -43,15 +68,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFF5ECE8), Color(0xFFFAF6F4)],
-              ),
-            ),
-          ),
+          Container(color: const Color(0xFFF5EDE8)),
+          // Aura blob'ları — sayfa değiştikçe hareket ediyor
+          ..._auraBlobs(),
           SafeArea(
             child: Column(
               children: [

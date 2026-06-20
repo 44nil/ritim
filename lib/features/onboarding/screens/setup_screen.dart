@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 
 class SetupScreen extends StatefulWidget {
@@ -365,15 +366,56 @@ class _LastPeriodPage extends StatelessWidget {
             'Tam tarihi bilmiyorsan yaklaşık bir tarih seç.',
             style: TextStyle(fontSize: 14, color: const Color(0xFF2D2028).withValues(alpha: 0.5), height: 1.4),
           ),
-          const Spacer(),
-          SizedBox(
-            height: 200,
-            child: CupertinoDatePicker(
-              mode: CupertinoDatePickerMode.date,
-              initialDateTime: date,
-              maximumDate: DateTime.now(),
-              minimumDate: DateTime.now().subtract(const Duration(days: 90)),
-              onDateTimeChanged: onChanged,
+          const SizedBox(height: 32),
+          // Seçili tarih göstergesi
+          Center(
+            child: Text(
+              DateFormat('d MMMM yyyy', 'tr_TR').format(date),
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: Color(0xFF2D2028)),
+            ),
+          ),
+          const SizedBox(height: 24),
+          // Tarih seçme butonu
+          Center(
+            child: GestureDetector(
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: date,
+                  firstDate: DateTime.now().subtract(const Duration(days: 90)),
+                  lastDate: DateTime.now(),
+                  locale: const Locale('tr', 'TR'),
+                  builder: (context, child) {
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                        colorScheme: Theme.of(context).colorScheme.copyWith(
+                          primary: AppColors.primary,
+                          onPrimary: Colors.white,
+                          surface: const Color(0xFFF5EDE8),
+                        ),
+                      ),
+                      child: child!,
+                    );
+                  },
+                );
+                if (picked != null) onChanged(picked);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.calendar_month_rounded, size: 20, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Text('Tarih Seç', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.primary)),
+                  ],
+                ),
+              ),
             ),
           ),
           const Spacer(),
