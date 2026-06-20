@@ -258,6 +258,7 @@ class _TodayTab extends StatelessWidget {
               child: _BentoCard(
                 onTap: () => _QuickActions._showMoodSelector(context),
                 isDark: isDark,
+                shape: _CardShape.archTop,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -318,6 +319,7 @@ class _TodayTab extends StatelessWidget {
               flex: 3,
               child: _BentoCard(
                 isDark: isDark,
+                shape: _CardShape.softSquare,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -364,6 +366,7 @@ class _TodayTab extends StatelessWidget {
             Expanded(child: _BentoCard(
               onTap: () => _QuickActions._showNote(context),
               isDark: isDark,
+              shape: _CardShape.pill,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -385,6 +388,7 @@ class _TodayTab extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(child: _BentoCard(
               isDark: isDark,
+              shape: _CardShape.archBottom,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -423,10 +427,13 @@ class _DarkHeroCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1A1520) : const Color(0xFF2A2030),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(32), topRight: Radius.circular(32),
+          bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20),
+        ),
       ),
       child: Row(
         children: [
@@ -1139,18 +1146,31 @@ class _TimelineEvent {
 // ─── Bento Kart Bileşenleri ─────────────────────────────────────────────────
 
 class _BentoCard extends StatelessWidget {
-  const _BentoCard({required this.child, required this.isDark, this.onTap});
+  const _BentoCard({required this.child, required this.isDark, this.onTap, this.shape});
   final Widget child;
   final bool isDark;
   final VoidCallback? onTap;
+  final _CardShape? shape;
 
   @override
   Widget build(BuildContext context) {
+    final radius = switch (shape) {
+      _CardShape.archTop => const BorderRadius.only(
+        topLeft: Radius.circular(32), topRight: Radius.circular(32),
+        bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+      _CardShape.archBottom => const BorderRadius.only(
+        topLeft: Radius.circular(16), topRight: Radius.circular(16),
+        bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
+      _CardShape.pill => BorderRadius.circular(28),
+      _CardShape.softSquare => BorderRadius.circular(22),
+      _ => BorderRadius.circular(20),
+    };
+
     final content = Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: radius,
         border: Border.all(
           color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
         ),
@@ -1161,6 +1181,8 @@ class _BentoCard extends StatelessWidget {
     return GestureDetector(onTap: onTap, child: content);
   }
 }
+
+enum _CardShape { archTop, archBottom, pill, softSquare }
 
 class _BentoMiniAction extends StatelessWidget {
   const _BentoMiniAction({required this.icon, required this.label, required this.color, required this.isDark, required this.onTap});
@@ -1175,10 +1197,10 @@ class _BentoMiniAction extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(
             color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
           ),
@@ -1186,12 +1208,12 @@ class _BentoMiniAction extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 34, height: 34,
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
-              child: Icon(icon, size: 18, color: color),
+              width: 30, height: 30,
+              decoration: BoxDecoration(color: color.withValues(alpha: 0.12), shape: BoxShape.circle),
+              child: Icon(icon, size: 16, color: color),
             ),
-            const SizedBox(width: 10),
-            Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            const SizedBox(width: 8),
+            Expanded(child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
           ],
         ),
       ),
@@ -1208,10 +1230,10 @@ class _BentoStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(
           color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
         ),
