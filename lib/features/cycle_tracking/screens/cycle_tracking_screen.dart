@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/cycle_phase_ring.dart';
 import '../../../shared/widgets/arc_mood_selector.dart';
+import '../../../shared/widgets/floating_particles.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../data/mock_cycle_data.dart';
 
@@ -64,6 +65,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
       body: Stack(
         children: [
           MeshGradientBg(isDark: isDark),
+          const FloatingParticles(),
 
           SafeArea(
             child: SingleChildScrollView(
