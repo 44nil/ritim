@@ -6,11 +6,11 @@ class ArticlesScreen extends StatelessWidget {
   const ArticlesScreen({super.key});
 
   static const _articles = [
-    _ArticleItem(title: 'Döngünü Tanımak', subtitle: '5 dk', emoji: '📖', color: AppColors.phaseMenstruation),
-    _ArticleItem(title: 'Beslenme İpuçları', subtitle: '3 dk', emoji: '🥗', color: AppColors.phaseOvulation),
-    _ArticleItem(title: 'Ruh Halin Neden Değişiyor?', subtitle: '4 dk', emoji: '🧠', color: AppColors.secondary),
-    _ArticleItem(title: 'Egzersiz ve Döngü', subtitle: '4 dk', emoji: '🧘‍♀️', color: AppColors.phaseFollicular),
-    _ArticleItem(title: 'Uyku Kaliteni Artır', subtitle: '3 dk', emoji: '😴', color: AppColors.phaseLuteal),
+    _ArticleItem(title: 'Döngünü Tanımak', subtitle: '5 dk', icon: Icons.auto_stories_outlined, color: AppColors.phaseMenstruation),
+    _ArticleItem(title: 'Beslenme İpuçları', subtitle: '3 dk', icon: Icons.restaurant_outlined, color: AppColors.phaseOvulation),
+    _ArticleItem(title: 'Ruh Halin Neden Değişiyor?', subtitle: '4 dk', icon: Icons.psychology_outlined, color: AppColors.secondary),
+    _ArticleItem(title: 'Egzersiz ve Döngü', subtitle: '4 dk', icon: Icons.self_improvement_outlined, color: AppColors.phaseFollicular),
+    _ArticleItem(title: 'Uyku Kaliteni Artır', subtitle: '3 dk', icon: Icons.nightlight_outlined, color: AppColors.phaseLuteal),
   ];
 
   @override
@@ -55,33 +55,45 @@ class ArticlesScreen extends StatelessWidget {
                 // Öne çıkan
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF2A2030) : AppColors.primaryContainer,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
+                  child: CleanCard(
+                    onTap: () {},
+                    padding: const EdgeInsets.all(22),
                     child: Row(
                       children: [
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Öne Çıkan', style: theme.textTheme.labelSmall?.copyWith(
-                                color: AppColors.primary, fontWeight: FontWeight.w700,
-                              )),
-                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text('Öne Çıkan', style: theme.textTheme.labelSmall?.copyWith(
+                                  color: AppColors.primary, fontWeight: FontWeight.w700,
+                                )),
+                              ),
+                              const SizedBox(height: 10),
                               Text('Bedenini\nDinlemeyi Öğren', style: theme.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.w800, height: 1.15,
                               )),
                               const SizedBox(height: 8),
-                              Text('6 dk okuma →', style: theme.textTheme.labelMedium?.copyWith(
-                                color: AppColors.primary, fontWeight: FontWeight.w600,
+                              Text('6 dk okuma', style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                               )),
                             ],
                           ),
                         ),
-                        const Text('🌸', style: TextStyle(fontSize: 52)),
+                        Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Icon(Icons.spa_outlined, size: 28, color: AppColors.primary),
+                        ),
                       ],
                     ),
                   ),
@@ -106,8 +118,7 @@ class ArticlesScreen extends StatelessWidget {
                                 color: a.color.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              alignment: Alignment.center,
-                              child: Text(a.emoji, style: const TextStyle(fontSize: 22)),
+                              child: Icon(a.icon, size: 22, color: a.color),
                             ),
                             const SizedBox(width: 14),
                             Expanded(
@@ -138,7 +149,8 @@ class ArticlesScreen extends StatelessWidget {
 }
 
 class _ArticleItem {
-  const _ArticleItem({required this.title, required this.subtitle, required this.emoji, required this.color});
-  final String title, subtitle, emoji;
+  const _ArticleItem({required this.title, required this.subtitle, required this.icon, required this.color});
+  final String title, subtitle;
+  final IconData icon;
   final Color color;
 }

@@ -263,22 +263,23 @@ class _QuickActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _ActionChip(emoji: '📝', label: 'Kaydet', onTap: () {}),
+        _ActionChip(icon: Icons.edit_calendar_outlined, label: 'Kaydet', color: AppColors.primary, onTap: () {}),
         const SizedBox(width: 10),
-        _ActionChip(emoji: '😊', label: 'Ruh Hali', onTap: () {}),
+        _ActionChip(icon: Icons.mood_outlined, label: 'Ruh Hali', color: AppColors.secondary, onTap: () {}),
         const SizedBox(width: 10),
-        _ActionChip(emoji: '💊', label: 'Semptom', onTap: () {}),
+        _ActionChip(icon: Icons.healing_outlined, label: 'Semptom', color: AppColors.phaseMenstruation, onTap: () {}),
         const SizedBox(width: 10),
-        _ActionChip(emoji: '📓', label: 'Not', onTap: () {}),
+        _ActionChip(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.tertiary, onTap: () {}),
       ],
     );
   }
 }
 
 class _ActionChip extends StatelessWidget {
-  const _ActionChip({required this.emoji, required this.label, required this.onTap});
-  final String emoji;
+  const _ActionChip({required this.icon, required this.label, required this.color, required this.onTap});
+  final IconData icon;
   final String label;
+  final Color color;
   final VoidCallback onTap;
 
   @override
@@ -304,7 +305,15 @@ class _ActionChip extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Text(emoji, style: const TextStyle(fontSize: 22)),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, size: 20, color: color),
+              ),
               const SizedBox(height: 6),
               Text(
                 label,

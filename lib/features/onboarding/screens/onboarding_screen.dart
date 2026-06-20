@@ -15,9 +15,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
 
   static const _pages = [
-    _Page(emoji: '💜', title: 'Ritim\'e\nHoş Geldin', body: 'Bedenini tanımana yardımcı olmak için buradayız.'),
-    _Page(emoji: '📅', title: 'Döngünü\nTakip Et', body: 'Adet günlerini kaydet, belirtilerini not al, döngünü anla.'),
-    _Page(emoji: '🛡️', title: 'Güvenli\nAlan', body: 'Merak ettiğin soruları güvenle sor. Uzman onaylı içerikler burada.'),
+    _Page(icon: Icons.favorite_rounded, title: 'Ritim\'e\nHoş Geldin', body: 'Bedenini tanımana yardımcı olmak için buradayız.', color: AppColors.primary),
+    _Page(icon: Icons.calendar_month_rounded, title: 'Döngünü\nTakip Et', body: 'Adet günlerini kaydet, belirtilerini not al, döngünü anla.', color: AppColors.phaseFollicular),
+    _Page(icon: Icons.shield_rounded, title: 'Güvenli\nAlan', body: 'Merak ettiğin soruları güvenle sor. Uzman onaylı içerikler burada.', color: AppColors.secondary),
   ];
 
   @override
@@ -43,7 +43,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Sakin bej gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -53,7 +52,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-
           SafeArea(
             child: Column(
               children: [
@@ -61,10 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    child: TextButton(
-                      onPressed: _skip,
-                      child: const Text('Atla'),
-                    ),
+                    child: TextButton(onPressed: _skip, child: const Text('Atla')),
                   ),
                 ),
                 Expanded(
@@ -79,14 +74,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(p.emoji, style: const TextStyle(fontSize: 64)),
-                            const SizedBox(height: 32),
+                            Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color: p.color.withValues(alpha: 0.12),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(p.icon, size: 52, color: p.color),
+                            ),
+                            const SizedBox(height: 36),
                             Text(
                               p.title,
                               style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                height: 1.1,
-                                letterSpacing: -0.5,
+                                fontWeight: FontWeight.w800, height: 1.1, letterSpacing: -0.5,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -143,6 +144,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 }
 
 class _Page {
-  const _Page({required this.emoji, required this.title, required this.body});
-  final String emoji, title, body;
+  const _Page({required this.icon, required this.title, required this.body, required this.color});
+  final IconData icon;
+  final String title, body;
+  final Color color;
 }

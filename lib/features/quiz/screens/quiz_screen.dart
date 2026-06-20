@@ -55,7 +55,14 @@ class _QuizScreenState extends State<QuizScreen> {
                     padding: const EdgeInsets.all(18),
                     child: Row(
                       children: [
-                        const Text('🔥', style: TextStyle(fontSize: 28)),
+                        Container(
+                          width: 44, height: 44,
+                          decoration: BoxDecoration(
+                            color: AppColors.tertiary.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.local_fire_department_rounded, size: 24, color: AppColors.tertiary),
+                        ),
                         const SizedBox(width: 14),
                         Expanded(
                           child: Column(
@@ -153,7 +160,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
-                          const Text('💡', style: TextStyle(fontSize: 20)),
+                          Icon(Icons.lightbulb_outline_rounded, size: 20, color: AppColors.phaseOvulation),
                           const SizedBox(width: 12),
                           Expanded(child: Text(
                             'Ortalama döngü 28 gün sürer ama 21-35 gün arası tamamen normal!',

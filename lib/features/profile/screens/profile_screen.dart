@@ -50,11 +50,11 @@ class ProfileScreen extends ConsumerWidget {
 
                   Row(
                     children: [
-                      _Stat(emoji: '📅', value: '3', label: 'Ay'),
+                      _Stat(icon: Icons.calendar_month_outlined, value: '3', label: 'Ay', color: AppColors.primary),
                       const SizedBox(width: 10),
-                      _Stat(emoji: '🔥', value: '12', label: 'Seri'),
+                      _Stat(icon: Icons.local_fire_department_outlined, value: '12', label: 'Seri', color: AppColors.tertiary),
                       const SizedBox(width: 10),
-                      _Stat(emoji: '🏆', value: '240', label: 'Puan'),
+                      _Stat(icon: Icons.emoji_events_outlined, value: '240', label: 'Puan', color: AppColors.secondary),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -115,8 +115,10 @@ class ProfileScreen extends ConsumerWidget {
 }
 
 class _Stat extends StatelessWidget {
-  const _Stat({required this.emoji, required this.value, required this.label});
-  final String emoji, value, label;
+  const _Stat({required this.icon, required this.value, required this.label, required this.color});
+  final IconData icon;
+  final String value, label;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +128,7 @@ class _Stat extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 20)),
+            Icon(icon, size: 22, color: color),
             const SizedBox(height: 6),
             Text(value, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
             Text(label, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),

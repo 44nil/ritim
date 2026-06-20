@@ -7,11 +7,11 @@ class QaScreen extends StatelessWidget {
   const QaScreen({super.key});
 
   static const _questions = [
-    _FaqItem(question: 'Adet döngüsü nedir?', answer: 'Vücudunun her ay hamileliğe hazırlanma sürecidir. Ortalama 28 gün sürer ama 21-35 gün arası normaldir.', emoji: '🩸'),
-    _FaqItem(question: 'İlk adetim ne zaman olur?', answer: 'Çoğu kız ilk adetini 10-15 yaş arasında görür. Bu tamamen kişiye göre değişir.', emoji: '🌱'),
-    _FaqItem(question: 'Kramp normal mi?', answer: 'Hafif kramplar çok yaygın ve normaldir. Sıcak su torbası ve hafif egzersiz yardımcı olabilir.', emoji: '💪'),
-    _FaqItem(question: 'Ruh halim neden değişiyor?', answer: 'Döngü boyunca hormon seviyelerin değişir. Bu ruh hali değişimlerine neden olabilir — tamamen normal!', emoji: '🧠'),
-    _FaqItem(question: 'Adet döneminde spor yapabilir miyim?', answer: 'Evet! Hafif egzersiz aslında kramplara iyi gelir. Yürüyüş, yoga veya yüzme harika seçenekler.', emoji: '🏃‍♀️'),
+    _FaqItem(question: 'Adet döngüsü nedir?', answer: 'Vücudunun her ay hamileliğe hazırlanma sürecidir. Ortalama 28 gün sürer ama 21-35 gün arası normaldir.', icon: Icons.water_drop_outlined, color: AppColors.phaseMenstruation),
+    _FaqItem(question: 'İlk adetim ne zaman olur?', answer: 'Çoğu kız ilk adetini 10-15 yaş arasında görür. Bu tamamen kişiye göre değişir.', icon: Icons.eco_outlined, color: AppColors.phaseOvulation),
+    _FaqItem(question: 'Kramp normal mi?', answer: 'Hafif kramplar çok yaygın ve normaldir. Sıcak su torbası ve hafif egzersiz yardımcı olabilir.', icon: Icons.favorite_outline_rounded, color: AppColors.primary),
+    _FaqItem(question: 'Ruh halim neden değişiyor?', answer: 'Döngü boyunca hormon seviyelerin değişir. Bu ruh hali değişimlerine neden olabilir — tamamen normal!', icon: Icons.psychology_outlined, color: AppColors.secondary),
+    _FaqItem(question: 'Adet döneminde spor yapabilir miyim?', answer: 'Evet! Hafif egzersiz aslında kramplara iyi gelir. Yürüyüş, yoga veya yüzme harika seçenekler.', icon: Icons.directions_run_rounded, color: AppColors.phaseFollicular),
   ];
 
   @override
@@ -99,7 +99,15 @@ class _FaqCardState extends State<_FaqCard> {
         children: [
           Row(
             children: [
-              Text(widget.item.emoji, style: const TextStyle(fontSize: 22)),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: widget.item.color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(widget.item.icon, size: 18, color: widget.item.color),
+              ),
               const SizedBox(width: 12),
               Expanded(child: Text(widget.item.question, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600))),
               AnimatedRotation(
@@ -112,7 +120,7 @@ class _FaqCardState extends State<_FaqCard> {
           AnimatedCrossFade(
             firstChild: const SizedBox.shrink(),
             secondChild: Padding(
-              padding: const EdgeInsets.only(top: 12, left: 34),
+              padding: const EdgeInsets.only(top: 12, left: 48),
               child: Text(widget.item.answer, style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.5,
               )),
@@ -127,8 +135,8 @@ class _FaqCardState extends State<_FaqCard> {
 }
 
 class _FaqItem {
-  const _FaqItem({required this.question, required this.answer, required this.emoji});
-  final String question;
-  final String answer;
-  final String emoji;
+  const _FaqItem({required this.question, required this.answer, required this.icon, required this.color});
+  final String question, answer;
+  final IconData icon;
+  final Color color;
 }
