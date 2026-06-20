@@ -239,24 +239,179 @@ class _TodayTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Hero kart — tam genişlik
         staggered(index: 0, child: _DarkHeroCard(phase: phase)),
-        const SizedBox(height: 16),
-        staggered(index: 1, child: _QuickActions()),
-        const SizedBox(height: 16),
-        staggered(index: 2, child: const _MonthCalendar()),
-        const SizedBox(height: 20),
-        staggered(index: 3, child: _BodyInfoCard(phase: phase)),
-        const SizedBox(height: 16),
-        staggered(index: 4, child: _SelfCareCard(phase: phase)),
-        const SizedBox(height: 16),
-        staggered(index: 5, child: const _DidYouKnowCard()),
-        const SizedBox(height: 20),
+        const SizedBox(height: 14),
+
+        // Bento row 1: Ruh hali (büyük) + 2 küçük aksiyon
+        staggered(index: 1, child: SizedBox(
+          height: 110,
+          child: Row(children: [
+            // Sol: Ruh hali — büyük kart
+            Expanded(
+              flex: 3,
+              child: _BentoCard(
+                onTap: () => _QuickActions._showMoodSelector(context),
+                isDark: isDark,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondary.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text('Ruh Hali', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.secondary)),
+                      ),
+                    ]),
+                    Text('Bugün nasıl\nhissediyorsun?', style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700, height: 1.25)),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Sağ: 2 küçük kart üst üste
+            Expanded(
+              flex: 2,
+              child: Column(children: [
+                Expanded(child: _BentoMiniAction(
+                  icon: Icons.edit_calendar_outlined,
+                  label: 'Kaydet',
+                  color: AppColors.primary,
+                  isDark: isDark,
+                  onTap: () => _QuickActions._showDailyLog(context),
+                )),
+                const SizedBox(height: 10),
+                Expanded(child: _BentoMiniAction(
+                  icon: Icons.healing_outlined,
+                  label: 'Semptom',
+                  color: AppColors.phaseMenstruation,
+                  isDark: isDark,
+                  onTap: () => _QuickActions._showSymptoms(context),
+                )),
+              ]),
+            ),
+          ]),
+        )),
+        const SizedBox(height: 10),
+
+        // Bento row 2: Günlük not + Bunu biliyor muydun
+        staggered(index: 2, child: SizedBox(
+          height: 100,
+          child: Row(children: [
+            Expanded(child: _BentoCard(
+              onTap: () => _QuickActions._showNote(context),
+              isDark: isDark,
+              child: Row(children: [
+                Container(
+                  width: 36, height: 36,
+                  decoration: BoxDecoration(
+                    color: AppColors.tertiary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.sticky_note_2_outlined, size: 18, color: AppColors.tertiary),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Günlük Not', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, fontSize: 13)),
+                    Text('Düşüncelerini yaz', style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+                  ],
+                )),
+              ]),
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: _BentoCard(
+              isDark: isDark,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.lightbulb_outline_rounded, size: 18, color: AppColors.phaseOvulation),
+                  const SizedBox(height: 6),
+                  Text(
+                    MockCycleData.didYouKnow[DateTime.now().day % MockCycleData.didYouKnow.length],
+                    style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.3),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            )),
+          ]),
+        )),
+        const SizedBox(height: 14),
+
+        // Takvim — tam genişlik
+        staggered(index: 3, child: const _MonthCalendar()),
+        const SizedBox(height: 14),
+
+        // Bedeninde ne oluyor — koyu kart tam genişlik
+        staggered(index: 4, child: _BodyInfoCard(phase: phase)),
+        const SizedBox(height: 14),
+
+        // Bento row 3: Kendine iyi bak + Döngü istatistikleri
+        staggered(index: 5, child: SizedBox(
+          height: 140,
+          child: Row(children: [
+            // Kendine iyi bak — büyük
+            Expanded(
+              flex: 3,
+              child: _BentoCard(
+                isDark: isDark,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      Icon(Icons.favorite_outline_rounded, size: 14, color: phase.color),
+                      const SizedBox(width: 6),
+                      Text('Kendine İyi Bak', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: phase.color)),
+                    ]),
+                    const SizedBox(height: 8),
+                    ...phase.selfCare.take(3).map((tip) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(width: 4, height: 4, margin: const EdgeInsets.only(top: 5),
+                            decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.5), shape: BoxShape.circle)),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(tip, style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.3))),
+                        ],
+                      ),
+                    )),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Döngü bilgisi — küçük
+            Expanded(
+              flex: 2,
+              child: Column(children: [
+                Expanded(child: _BentoStatCard(value: '28', unit: 'gün', label: 'Döngü', color: AppColors.primary, isDark: isDark)),
+                const SizedBox(height: 10),
+                Expanded(child: _BentoStatCard(value: '5', unit: 'gün', label: 'Adet', color: AppColors.phaseMenstruation, isDark: isDark)),
+              ]),
+            ),
+          ]),
+        )),
+        const SizedBox(height: 14),
+
+        // Timeline
         staggered(index: 6, child: const _CycleTimeline()),
-        const SizedBox(height: 20),
-        staggered(index: 7, child: const _CycleStats()),
         const SizedBox(height: 100),
       ],
     );
@@ -671,92 +826,9 @@ class _BodyInfoCard extends StatelessWidget {
   }
 }
 
-// ─── Kendine İyi Bak ────────────────────────────────────────────────────────
 
-class _SelfCareCard extends StatelessWidget {
-  const _SelfCareCard({required this.phase});
-  final CyclePhaseInfo phase;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
-    return CleanCard(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Container(
-              width: 30, height: 30,
-              decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-              child: Icon(Icons.favorite_outline_rounded, size: 16, color: phase.color),
-            ),
-            const SizedBox(width: 10),
-            Text('${phase.label} Fazında Kendine İyi Bak', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-          ]),
-          const SizedBox(height: 14),
-          ...phase.selfCare.map((tip) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 6, height: 6,
-                  margin: const EdgeInsets.only(top: 6),
-                  decoration: BoxDecoration(color: phase.color, shape: BoxShape.circle),
-                ),
-                const SizedBox(width: 10),
-                Expanded(child: Text(tip, style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7), height: 1.4))),
-              ],
-            ),
-          )),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Bunu Biliyor muydun? ───────────────────────────────────────────────────
-
-class _DidYouKnowCard extends StatelessWidget {
-  const _DidYouKnowCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final fact = MockCycleData.didYouKnow[DateTime.now().day % MockCycleData.didYouKnow.length];
-
-    return CleanCard(
-      padding: const EdgeInsets.all(18),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 34, height: 34,
-            decoration: BoxDecoration(
-              color: AppColors.tertiary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(Icons.lightbulb_outline_rounded, size: 18, color: AppColors.tertiary),
-          ),
-          const SizedBox(width: 12),
-          Expanded(child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Bunu Biliyor muydun?', style: theme.textTheme.labelMedium?.copyWith(
-                color: AppColors.tertiary, fontWeight: FontWeight.w700)),
-              const SizedBox(height: 4),
-              Text(fact, style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.5)),
-            ],
-          )),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Haftalık Tab ───────────────────────────────────────────────────────────
 
@@ -1067,78 +1139,97 @@ class _TimelineEvent {
   final bool isPast;
 }
 
-// ─── Döngü İstatistikleri ───────────────────────────────────────────────────
 
-class _CycleStats extends StatelessWidget {
-  const _CycleStats();
+
+
+// ─── Bento Kart Bileşenleri ─────────────────────────────────────────────────
+
+class _BentoCard extends StatelessWidget {
+  const _BentoCard({required this.child, required this.isDark, this.onTap});
+  final Widget child;
+  final bool isDark;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final content = Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
+        ),
+      ),
+      child: child,
+    );
+    if (onTap == null) return content;
+    return GestureDetector(onTap: onTap, child: content);
+  }
+}
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Döngün Hakkında', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-        const SizedBox(height: 14),
-        Row(children: [
-          Expanded(child: _CycleStatCard(
-            icon: Icons.autorenew_rounded,
-            label: 'Ort. döngü süresi',
-            value: '28',
-            unit: 'gün',
-            color: AppColors.primary,
-            isDark: isDark,
-          )),
-          const SizedBox(width: 10),
-          Expanded(child: _CycleStatCard(
-            icon: Icons.water_drop_outlined,
-            label: 'Ort. adet süresi',
-            value: '5',
-            unit: 'gün',
-            color: AppColors.phaseMenstruation,
-            isDark: isDark,
-          )),
-        ]),
-      ],
+class _BentoMiniAction extends StatelessWidget {
+  const _BentoMiniAction({required this.icon, required this.label, required this.color, required this.isDark, required this.onTap});
+  final IconData icon;
+  final String label;
+  final Color color;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 28, height: 28,
+              decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
+              child: Icon(icon, size: 15, color: color),
+            ),
+            const SizedBox(width: 8),
+            Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _CycleStatCard extends StatelessWidget {
-  const _CycleStatCard({
-    required this.icon, required this.label, required this.value,
-    required this.unit, required this.color, required this.isDark,
-  });
-  final IconData icon;
-  final String label, value, unit;
+class _BentoStatCard extends StatelessWidget {
+  const _BentoStatCard({required this.value, required this.unit, required this.label, required this.color, required this.isDark});
+  final String value, unit, label;
   final Color color;
   final bool isDark;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return CleanCard(
-      padding: const EdgeInsets.all(18),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
+        ),
+      ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 36, height: 36,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 18, color: color),
-          ),
-          const SizedBox(height: 10),
-          Text(label, style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
-          const SizedBox(height: 4),
           RichText(text: TextSpan(children: [
-            TextSpan(text: value, style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: color)),
-            TextSpan(text: ' $unit', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: color.withValues(alpha: 0.6))),
+            TextSpan(text: value, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: color)),
+            TextSpan(text: ' $unit', style: TextStyle(fontSize: 10, color: color.withValues(alpha: 0.6))),
           ])),
+          Text(label, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4))),
         ],
       ),
     );
