@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/home/home_scaffold.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
+import '../../features/onboarding/screens/setup_screen.dart';
 import '../../features/cycle_tracking/screens/cycle_tracking_screen.dart';
 import '../../features/qa/screens/qa_screen.dart';
 import '../../features/articles/screens/articles_screen.dart';
@@ -32,6 +33,13 @@ class AppRouter {
         path: RoutePaths.onboarding,
         name: RouteNames.onboarding,
         builder: (context, state) => const OnboardingScreen(),
+      ),
+
+      // ─── Kurulum ────────────────────────────────────────────────────────
+      GoRoute(
+        path: '/setup',
+        name: 'setup',
+        builder: (context, state) => const SetupScreen(),
       ),
 
       // ─── Ana uygulama — StatefulShellRoute (bottom nav) ──────────────────

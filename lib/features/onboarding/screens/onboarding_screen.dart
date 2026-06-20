@@ -30,7 +30,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(duration: AppConstants.animDurationNormal, curve: Curves.easeInOut);
     } else {
-      context.go('/cycle-tracking');
+      context.go('/setup');
     }
   }
 
