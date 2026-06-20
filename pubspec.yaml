@@ -1,0 +1,37 @@
+name: ritim
+description: "Ritim - Döngü Takip ve Mental Sağlık Platformu"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Navigasyon
+  go_router: ^15.1.2
+
+  # State management — flutter_riverpod seçildi:
+  # provider'a kıyasla derleme zamanı tip güvenliği sağlar,
+  # BuildContext gerektirmez, feature-bazlı mimariye daha uygun,
+  # ve auto-dispose ile bellek yönetimi otomatiktir.
+  flutter_riverpod: ^2.6.1
+
+  # Tipografi
+  google_fonts: ^6.2.1
+
+  # Tarih/saat formatlama ve Türkçe locale desteği
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
