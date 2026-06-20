@@ -7,7 +7,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/cycle_phase_ring.dart';
 import '../../../shared/widgets/arc_mood_selector.dart';
-import '../../../shared/widgets/floating_particles.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../data/mock_cycle_data.dart';
 
@@ -73,7 +72,6 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
       body: Stack(
         children: [
           MeshGradientBg(isDark: isDark),
-          const FloatingParticles(),
 
           SafeArea(
             child: Column(
@@ -203,24 +201,37 @@ class _TodayTab extends StatelessWidget {
 
 // ─── Haftalık Tab ───────────────────────────────────────────────────────────
 
-class _WeeklyTab extends StatelessWidget {
+class _WeeklyTab extends StatefulWidget {
   const _WeeklyTab({super.key, required this.staggered});
   final Widget Function({required int index, required Widget child}) staggered;
 
+  @override
+  State<_WeeklyTab> createState() => _WeeklyTabState();
+}
+
+class _WeeklyTabState extends State<_WeeklyTab> {
   static const _days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 
-  static const _habits = [
+  // Tıklanabilir mock veri — backend gelince provider'a taşınacak
+  // TODO: Backend entegrasyonu — haftalık kayıtlar Supabase'den gelecek
+  late final List<_HabitRow> _habits = [
     _HabitRow(label: 'Döngü kaydı', icon: Icons.water_drop_outlined, color: AppColors.phaseMenstruation,
       checks: [true, true, true, false, true, true, false]),
     _HabitRow(label: 'Ruh hali', icon: Icons.mood_outlined, color: AppColors.secondary,
       checks: [true, true, false, true, true, false, false]),
-    _HabitRow(label: 'Semptom takibi', icon: Icons.healing_outlined, color: AppColors.primary,
+    _HabitRow(label: 'Semptom', icon: Icons.healing_outlined, color: AppColors.primary,
       checks: [true, false, true, true, false, true, false]),
     _HabitRow(label: 'Su içme', icon: Icons.local_drink_outlined, color: AppColors.phaseFollicular,
       checks: [true, true, true, true, true, false, false]),
     _HabitRow(label: 'Egzersiz', icon: Icons.directions_run_rounded, color: AppColors.phaseOvulation,
       checks: [false, true, false, true, false, true, false]),
   ];
+
+  void _toggle(int habitIndex, int dayIndex) {
+    setState(() {
+      _habits[habitIndex].checks[dayIndex] = !_habits[habitIndex].checks[dayIndex];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -229,22 +240,22 @@ class _WeeklyTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        staggered(
+        widget.staggered(
           index: 0,
           child: Text('Bu Hafta', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
         ),
         const SizedBox(height: 4),
-        staggered(
+        widget.staggered(
           index: 0,
           child: Text(
-            'Günlük kayıtların',
+            'Tıklayarak kayıt ekle',
             style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
           ),
         ),
         const SizedBox(height: 20),
 
         // Gün başlıkları
-        staggered(
+        widget.staggered(
           index: 1,
           child: Padding(
             padding: const EdgeInsets.only(left: 130),
@@ -261,9 +272,12 @@ class _WeeklyTab extends StatelessWidget {
         const SizedBox(height: 10),
 
         // Habit rows
-        ..._habits.asMap().entries.map((e) => staggered(
+        ..._habits.asMap().entries.map((e) => widget.staggered(
           index: e.key + 2,
-          child: _HabitTrackCard(habit: e.value),
+          child: _HabitTrackCard(
+            habit: e.value,
+            onToggle: (dayIndex) => _toggle(e.key, dayIndex),
+          ),
         )),
 
         const SizedBox(height: 100),
@@ -273,7 +287,7 @@ class _WeeklyTab extends StatelessWidget {
 }
 
 class _HabitRow {
-  const _HabitRow({required this.label, required this.icon, required this.color, required this.checks});
+  _HabitRow({required this.label, required this.icon, required this.color, required this.checks});
   final String label;
   final IconData icon;
   final Color color;
@@ -281,8 +295,9 @@ class _HabitRow {
 }
 
 class _HabitTrackCard extends StatelessWidget {
-  const _HabitTrackCard({required this.habit});
+  const _HabitTrackCard({required this.habit, required this.onToggle});
   final _HabitRow habit;
+  final ValueChanged<int> onToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -313,19 +328,26 @@ class _HabitTrackCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            ...habit.checks.map((done) => Expanded(
-              child: Center(
-                child: Container(
-                  width: 26, height: 26,
-                  decoration: BoxDecoration(
-                    color: done
-                        ? habit.color.withValues(alpha: 0.15)
-                        : (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03)),
-                    shape: BoxShape.circle,
+            ...habit.checks.asMap().entries.map((e) => Expanded(
+              child: GestureDetector(
+                onTap: () => onToggle(e.key),
+                child: Center(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 26, height: 26,
+                    decoration: BoxDecoration(
+                      color: e.value
+                          ? habit.color.withValues(alpha: 0.15)
+                          : (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03)),
+                      shape: BoxShape.circle,
+                      border: e.value ? null : Border.all(
+                        color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
+                      ),
+                    ),
+                    child: e.value
+                        ? Icon(Icons.check_rounded, size: 14, color: habit.color)
+                        : null,
                   ),
-                  child: done
-                      ? Icon(Icons.check_rounded, size: 14, color: habit.color)
-                      : null,
                 ),
               ),
             )),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
-import '../../../shared/widgets/floating_particles.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../../../shared/widgets/staggered_list.dart';
 
@@ -25,7 +24,6 @@ class ArticlesScreen extends StatelessWidget {
       body: Stack(
         children: [
           MeshGradientBg(isDark: isDark),
-          const FloatingParticles(),
           SafeArea(
             child: SingleChildScrollView(
               child: StaggeredList(
