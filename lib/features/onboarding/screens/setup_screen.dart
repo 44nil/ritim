@@ -531,11 +531,11 @@ class _SetupAura extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final configs = [
-      [_ABlob(-40, -60, 350, const Color(0xFFF0A08A)), _ABlob(200, 500, 300, const Color(0xFFF5C0D0)), _ABlob(-80, 700, 280, const Color(0xFFF0B898))],
-      [_ABlob(100, -80, 300, const Color(0xFFF5A0B8)), _ABlob(-60, 400, 350, const Color(0xFFE8C0D0)), _ABlob(150, 650, 250, const Color(0xFFF0D0B8))],
-      [_ABlob(-50, 100, 280, const Color(0xFFE0C0E0)), _ABlob(120, 450, 320, const Color(0xFFF0B0C0)), _ABlob(-40, 750, 300, const Color(0xFFD8C8E0))],
-      [_ABlob(160, -40, 300, const Color(0xFFF0B898)), _ABlob(-80, 350, 350, const Color(0xFFF5C0C8)), _ABlob(100, 700, 280, const Color(0xFFE8B8A0))],
-      [_ABlob(50, -50, 320, const Color(0xFFF5C0B8)), _ABlob(-60, 300, 280, const Color(0xFFE8B0D0)), _ABlob(130, 600, 350, const Color(0xFFF0D0C0))],
+      [_ABlob(-80, -100, 500, const Color(0xFFE8856E)), _ABlob(150, 400, 450, const Color(0xFFF098B8)), _ABlob(-120, 650, 420, const Color(0xFFE89870))],
+      [_ABlob(60, -120, 480, const Color(0xFFF07898)), _ABlob(-100, 350, 500, const Color(0xFFD898B0)), _ABlob(100, 600, 400, const Color(0xFFE8A890))],
+      [_ABlob(-90, 50, 450, const Color(0xFFD098D0)), _ABlob(80, 380, 480, const Color(0xFFE88898)), _ABlob(-60, 700, 420, const Color(0xFFC8A8D8))],
+      [_ABlob(120, -80, 470, const Color(0xFFE89870)), _ABlob(-120, 300, 500, const Color(0xFFF098A8)), _ABlob(60, 650, 430, const Color(0xFFD89870))],
+      [_ABlob(20, -90, 490, const Color(0xFFF09898)), _ABlob(-100, 250, 440, const Color(0xFFD888B8)), _ABlob(80, 550, 500, const Color(0xFFE8B098))],
     ];
 
     final blobs = configs[step.clamp(0, configs.length - 1)];
@@ -552,7 +552,7 @@ class _SetupAura extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(
-              colors: [b.color.withValues(alpha: 0.5), b.color.withValues(alpha: 0)],
+              colors: [b.color.withValues(alpha: 0.7), b.color.withValues(alpha: 0)],
             ),
           ),
         ),
