@@ -67,7 +67,11 @@ class _SetupScreenState extends State<SetupScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5EDE8),
-      body: SafeArea(
+      body: Stack(
+        children: [
+          // Aura arka plan
+          _SetupAura(step: _currentStep),
+          SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 16),
@@ -168,6 +172,8 @@ class _SetupScreenState extends State<SetupScreen> {
             ),
           ],
         ),
+      ),
+      ],
       ),
     );
   }
@@ -514,4 +520,49 @@ class _NamePage extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─── Aura Arka Plan ─────────────────────────────────────────────────────────
+
+class _SetupAura extends StatelessWidget {
+  const _SetupAura({required this.step});
+  final int step;
+
+  @override
+  Widget build(BuildContext context) {
+    final configs = [
+      [_ABlob(-40, -60, 350, const Color(0xFFF0A08A)), _ABlob(200, 500, 300, const Color(0xFFF5C0D0)), _ABlob(-80, 700, 280, const Color(0xFFF0B898))],
+      [_ABlob(100, -80, 300, const Color(0xFFF5A0B8)), _ABlob(-60, 400, 350, const Color(0xFFE8C0D0)), _ABlob(150, 650, 250, const Color(0xFFF0D0B8))],
+      [_ABlob(-50, 100, 280, const Color(0xFFE0C0E0)), _ABlob(120, 450, 320, const Color(0xFFF0B0C0)), _ABlob(-40, 750, 300, const Color(0xFFD8C8E0))],
+      [_ABlob(160, -40, 300, const Color(0xFFF0B898)), _ABlob(-80, 350, 350, const Color(0xFFF5C0C8)), _ABlob(100, 700, 280, const Color(0xFFE8B8A0))],
+      [_ABlob(50, -50, 320, const Color(0xFFF5C0B8)), _ABlob(-60, 300, 280, const Color(0xFFE8B0D0)), _ABlob(130, 600, 350, const Color(0xFFF0D0C0))],
+    ];
+
+    final blobs = configs[step.clamp(0, configs.length - 1)];
+
+    return Stack(
+      children: blobs.map((b) => AnimatedPositioned(
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOut,
+        left: b.x,
+        top: b.y,
+        child: Container(
+          width: b.size,
+          height: b.size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [b.color.withValues(alpha: 0.5), b.color.withValues(alpha: 0)],
+            ),
+          ),
+        ),
+      )).toList(),
+    );
+  }
+}
+
+class _ABlob {
+  const _ABlob(this.x, this.y, this.size, this.color);
+  final double x, y, size;
+  final Color color;
 }
