@@ -201,20 +201,15 @@ class _TodayTab extends StatelessWidget {
 
 // ─── Haftalık Tab ───────────────────────────────────────────────────────────
 
-class _WeeklyTab extends StatefulWidget {
+class _WeeklyTab extends StatelessWidget {
   const _WeeklyTab({super.key, required this.staggered});
   final Widget Function({required int index, required Widget child}) staggered;
 
-  @override
-  State<_WeeklyTab> createState() => _WeeklyTabState();
-}
-
-class _WeeklyTabState extends State<_WeeklyTab> {
   static const _days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 
-  // Tıklanabilir mock veri — backend gelince provider'a taşınacak
   // TODO: Backend entegrasyonu — haftalık kayıtlar Supabase'den gelecek
-  late final List<_HabitRow> _habits = [
+  // Bu veriler "Bugün" tab'ındaki kayıt butonlarından dolacak
+  static final _habits = [
     _HabitRow(label: 'Döngü kaydı', icon: Icons.water_drop_outlined, color: AppColors.phaseMenstruation,
       checks: [true, true, true, false, true, true, false]),
     _HabitRow(label: 'Ruh hali', icon: Icons.mood_outlined, color: AppColors.secondary,
@@ -227,12 +222,6 @@ class _WeeklyTabState extends State<_WeeklyTab> {
       checks: [false, true, false, true, false, true, false]),
   ];
 
-  void _toggle(int habitIndex, int dayIndex) {
-    setState(() {
-      _habits[habitIndex].checks[dayIndex] = !_habits[habitIndex].checks[dayIndex];
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -240,22 +229,22 @@ class _WeeklyTabState extends State<_WeeklyTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        widget.staggered(
+        staggered(
           index: 0,
           child: Text('Bu Hafta', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
         ),
         const SizedBox(height: 4),
-        widget.staggered(
+        staggered(
           index: 0,
           child: Text(
-            'Tıklayarak kayıt ekle',
+            'Bugün sekmesinden kayıt ekle, burada takip et',
             style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
           ),
         ),
         const SizedBox(height: 20),
 
         // Gün başlıkları
-        widget.staggered(
+        staggered(
           index: 1,
           child: Padding(
             padding: const EdgeInsets.only(left: 130),
@@ -271,13 +260,10 @@ class _WeeklyTabState extends State<_WeeklyTab> {
         ),
         const SizedBox(height: 10),
 
-        // Habit rows
-        ..._habits.asMap().entries.map((e) => widget.staggered(
+        // Habit rows — read-only
+        ..._habits.asMap().entries.map((e) => staggered(
           index: e.key + 2,
-          child: _HabitTrackCard(
-            habit: e.value,
-            onToggle: (dayIndex) => _toggle(e.key, dayIndex),
-          ),
+          child: _HabitTrackCard(habit: e.value),
         )),
 
         const SizedBox(height: 100),
@@ -295,9 +281,8 @@ class _HabitRow {
 }
 
 class _HabitTrackCard extends StatelessWidget {
-  const _HabitTrackCard({required this.habit, required this.onToggle});
+  const _HabitTrackCard({required this.habit});
   final _HabitRow habit;
-  final ValueChanged<int> onToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -328,26 +313,22 @@ class _HabitTrackCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            ...habit.checks.asMap().entries.map((e) => Expanded(
-              child: GestureDetector(
-                onTap: () => onToggle(e.key),
-                child: Center(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 26, height: 26,
-                    decoration: BoxDecoration(
-                      color: e.value
-                          ? habit.color.withValues(alpha: 0.15)
-                          : (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03)),
-                      shape: BoxShape.circle,
-                      border: e.value ? null : Border.all(
-                        color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
-                      ),
+            ...habit.checks.map((done) => Expanded(
+              child: Center(
+                child: Container(
+                  width: 26, height: 26,
+                  decoration: BoxDecoration(
+                    color: done
+                        ? habit.color.withValues(alpha: 0.15)
+                        : (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03)),
+                    shape: BoxShape.circle,
+                    border: done ? null : Border.all(
+                      color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
                     ),
-                    child: e.value
-                        ? Icon(Icons.check_rounded, size: 14, color: habit.color)
-                        : null,
                   ),
+                  child: done
+                      ? Icon(Icons.check_rounded, size: 14, color: habit.color)
+                      : null,
                 ),
               ),
             )),
@@ -761,13 +742,13 @@ class _QuickActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _ActionChip(icon: Icons.edit_calendar_outlined, label: 'Kaydet', color: AppColors.primary, onTap: () {}),
+        _ActionChip(icon: Icons.edit_calendar_outlined, label: 'Kaydet', color: AppColors.primary, onTap: () => _showDailyLog(context)),
         const SizedBox(width: 10),
         _ActionChip(icon: Icons.mood_outlined, label: 'Ruh Hali', color: AppColors.secondary, onTap: () => _showMoodSelector(context)),
         const SizedBox(width: 10),
-        _ActionChip(icon: Icons.healing_outlined, label: 'Semptom', color: AppColors.phaseMenstruation, onTap: () {}),
+        _ActionChip(icon: Icons.healing_outlined, label: 'Semptom', color: AppColors.phaseMenstruation, onTap: () => _showSymptoms(context)),
         const SizedBox(width: 10),
-        _ActionChip(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.tertiary, onTap: () {}),
+        _ActionChip(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.tertiary, onTap: () => _showNote(context)),
       ],
     );
   }
@@ -790,6 +771,164 @@ class _QuickActions extends StatelessWidget {
         ]),
       ),
     );
+  }
+
+  static void _showDailyLog(BuildContext context) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: theme.colorScheme.surface,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(width: 36, height: 4, decoration: BoxDecoration(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2))),
+          const SizedBox(height: 24),
+          Text('Bugünü Kaydet', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+          const SizedBox(height: 8),
+          Text('Akış yoğunluğunu seç', style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+          const SizedBox(height: 24),
+          // TODO: Backend entegrasyonu — akış kaydı Supabase'e yazılacak
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            _FlowOption(label: 'Yok', icon: Icons.remove_rounded, color: Colors.grey),
+            _FlowOption(label: 'Az', icon: Icons.water_drop_outlined, color: AppColors.phaseMenstruation.withValues(alpha: 0.5)),
+            _FlowOption(label: 'Normal', icon: Icons.water_drop_rounded, color: AppColors.phaseMenstruation.withValues(alpha: 0.75)),
+            _FlowOption(label: 'Yoğun', icon: Icons.opacity_rounded, color: AppColors.phaseMenstruation),
+          ]),
+          const SizedBox(height: 24),
+          SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Kaydet'),
+          )),
+        ]),
+      ),
+    );
+  }
+
+  static void _showSymptoms(BuildContext context) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: theme.colorScheme.surface,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) {
+          final selected = <int>{};
+          final symptoms = [
+            ('Kramp', Icons.flash_on_rounded),
+            ('Baş ağrısı', Icons.psychology_outlined),
+            ('Yorgunluk', Icons.battery_2_bar_rounded),
+            ('Şişkinlik', Icons.bubble_chart_outlined),
+            ('Akne', Icons.face_outlined),
+            ('Hassasiyet', Icons.favorite_border_rounded),
+            ('Bulantı', Icons.sick_outlined),
+            ('Uykusuzluk', Icons.nightlight_outlined),
+            ('Bel ağrısı', Icons.accessibility_new_rounded),
+            ('İştahsızlık', Icons.no_food_outlined),
+          ];
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Container(width: 36, height: 4, decoration: BoxDecoration(
+                color: theme.colorScheme.outline.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2))),
+              const SizedBox(height: 24),
+              Text('Semptomlar', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+              const SizedBox(height: 8),
+              Text('Bugün yaşadıklarını işaretle', style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+              const SizedBox(height: 20),
+              // TODO: Backend entegrasyonu — semptom kayıtları Supabase'e yazılacak
+              Wrap(spacing: 8, runSpacing: 8, children: symptoms.asMap().entries.map((e) {
+                final isSelected = selected.contains(e.key);
+                return FilterChip(
+                  avatar: Icon(e.value.$2, size: 16),
+                  label: Text(e.value.$1),
+                  selected: isSelected,
+                  onSelected: (val) => setSheetState(() {
+                    if (val) {
+                      selected.add(e.key);
+                    } else {
+                      selected.remove(e.key);
+                    }
+                  }),
+                );
+              }).toList()),
+              const SizedBox(height: 24),
+              SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(selected.isEmpty ? 'Atla' : 'Kaydet (${selected.length})'),
+              )),
+            ]),
+          );
+        },
+      ),
+    );
+  }
+
+  static void _showNote(BuildContext context) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: theme.colorScheme.surface,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.fromLTRB(24, 16, 24, MediaQuery.of(ctx).viewInsets.bottom + 32),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(width: 36, height: 4, decoration: BoxDecoration(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2))),
+          const SizedBox(height: 24),
+          Text('Günlük Not', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+          const SizedBox(height: 8),
+          Text('Bugün aklındakileri yaz', style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+          const SizedBox(height: 20),
+          // TODO: Backend entegrasyonu — not Supabase'e yazılacak
+          TextField(
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: 'Bugün nasıl hissediyorum...',
+              hintStyle: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+              filled: true,
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Kaydet'),
+          )),
+        ]),
+      ),
+    );
+  }
+}
+
+class _FlowOption extends StatelessWidget {
+  const _FlowOption({required this.label, required this.icon, required this.color});
+  final String label;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(children: [
+      Container(
+        width: 56, height: 56,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Icon(icon, size: 28, color: color),
+      ),
+      const SizedBox(height: 6),
+      Text(label, style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600)),
+    ]);
   }
 }
 
