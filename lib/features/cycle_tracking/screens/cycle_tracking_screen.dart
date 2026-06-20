@@ -10,8 +10,50 @@ import '../../../shared/widgets/arc_mood_selector.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../data/mock_cycle_data.dart';
 
-class CycleTrackingScreen extends StatelessWidget {
+class CycleTrackingScreen extends StatefulWidget {
   const CycleTrackingScreen({super.key});
+
+  @override
+  State<CycleTrackingScreen> createState() => _CycleTrackingScreenState();
+}
+
+class _CycleTrackingScreenState extends State<CycleTrackingScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  Widget _staggered({required int index, required Widget child}) {
+    final delay = (index * 0.12).clamp(0.0, 0.6);
+    final end = (delay + 0.5).clamp(0.0, 1.0);
+    final curve = CurvedAnimation(
+      parent: _animController,
+      curve: Interval(delay, end, curve: Curves.easeOutCubic),
+    );
+    return AnimatedBuilder(
+      animation: curve,
+      builder: (context, _) => Opacity(
+        opacity: curve.value,
+        child: Transform.translate(
+          offset: Offset(0, 24 * (1 - curve.value)),
+          child: child,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +72,15 @@ class CycleTrackingScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  _Header(phase: phase),
+                  _staggered(index: 0, child: _Header(phase: phase)),
                   const SizedBox(height: 28),
-                  _HeroCard(phase: phase),
+                  _staggered(index: 1, child: _HeroCard(phase: phase)),
                   const SizedBox(height: 20),
-                  _QuickActions(),
+                  _staggered(index: 2, child: _QuickActions()),
                   const SizedBox(height: 20),
-                  _WeekCalendar(),
+                  _staggered(index: 3, child: _WeekCalendar()),
                   const SizedBox(height: 20),
-                  _InsightCard(phase: phase),
+                  _staggered(index: 4, child: _InsightCard(phase: phase)),
                   const SizedBox(height: 100),
                 ],
               ),
@@ -172,7 +214,6 @@ class _HeroCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isDark
             ? Colors.white.withValues(alpha: 0.06)
@@ -184,6 +225,46 @@ class _HeroCard extends StatelessWidget {
               : Colors.white.withValues(alpha: 0.5),
         ),
       ),
+      child: Stack(
+        children: [
+          // Dekoratif blob — sağ üst köşede
+          Positioned(
+            top: -30,
+            right: -30,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    phase.color.withValues(alpha: isDark ? 0.15 : 0.2),
+                    phase.color.withValues(alpha: 0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Dekoratif blob — sol alt
+          Positioned(
+            bottom: -40,
+            left: -20,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    phase.color.withValues(alpha: isDark ? 0.1 : 0.12),
+                    phase.color.withValues(alpha: 0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -251,6 +332,9 @@ class _HeroCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
+    ],
+    ),
     ),
     ),
     );

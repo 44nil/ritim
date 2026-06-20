@@ -1,12 +1,36 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-class MeshGradientBg extends StatelessWidget {
+class MeshGradientBg extends StatefulWidget {
   const MeshGradientBg({super.key, this.isDark = false});
   final bool isDark;
 
   @override
+  State<MeshGradientBg> createState() => _MeshGradientBgState();
+}
+
+class _MeshGradientBgState extends State<MeshGradientBg>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (isDark) {
+    if (widget.isDark) {
       return Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -18,96 +42,90 @@ class MeshGradientBg extends StatelessWidget {
       );
     }
 
-    return Stack(
-      children: [
-        // Base — açık pembe
-        Container(color: const Color(0xFFFDE8E8)),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        final t = _controller.value;
+        final s1 = math.sin(t * 2 * math.pi) * 30;
+        final s2 = math.cos(t * 2 * math.pi) * 25;
+        final s3 = math.sin(t * 2 * math.pi + 1.5) * 20;
 
-        // Blob 1 — sağ üst: coral/turuncu
-        Positioned(
-          top: -80,
-          right: -60,
-          child: Container(
-            width: 350,
-            height: 350,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [Color(0xFFF0A08A), Color(0x00F0A08A)],
-                stops: [0.0, 1.0],
+        return Stack(
+          children: [
+            Container(color: const Color(0xFFFDE8E8)),
+
+            // Blob 1 — sağ üst: coral (hareket ediyor)
+            Positioned(
+              top: -80 + s1,
+              right: -60 + s2,
+              child: _Blob(
+                size: 350,
+                color: const Color(0xFFF0A08A),
               ),
             ),
-          ),
-        ),
 
-        // Blob 2 — sol orta: sıcak pembe
-        Positioned(
-          top: 200,
-          left: -100,
-          child: Container(
-            width: 450,
-            height: 450,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [Color(0xFFF5A0B8), Color(0x00F5A0B8)],
-                stops: [0.0, 1.0],
+            // Blob 2 — sol orta: pembe (hareket ediyor)
+            Positioned(
+              top: 200 + s2,
+              left: -100 + s3,
+              child: _Blob(
+                size: 450,
+                color: const Color(0xFFF5A0B8),
               ),
             ),
-          ),
-        ),
 
-        // Blob 3 — alt orta: canlı pembe/magenta
-        Positioned(
-          bottom: 100,
-          right: -50,
-          child: Container(
-            width: 400,
-            height: 400,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [Color(0xFFE880A0), Color(0x00E880A0)],
-                stops: [0.0, 1.0],
+            // Blob 3 — sağ alt: canlı pembe
+            Positioned(
+              bottom: 100 + s3,
+              right: -50 + s1,
+              child: _Blob(
+                size: 400,
+                color: const Color(0xFFE880A0),
               ),
             ),
-          ),
-        ),
 
-        // Blob 4 — sol alt: peach/salmon
-        Positioned(
-          bottom: -50,
-          left: -30,
-          child: Container(
-            width: 350,
-            height: 350,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [Color(0xFFF0B898), Color(0x00F0B898)],
-                stops: [0.0, 1.0],
+            // Blob 4 — sol alt: peach
+            Positioned(
+              bottom: -50 + s2,
+              left: -30 + s1,
+              child: _Blob(
+                size: 350,
+                color: const Color(0xFFF0B898),
               ),
             ),
-          ),
-        ),
 
-        // Blob 5 — üst orta: açık lavanta
-        Positioned(
-          top: 50,
-          left: 50,
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [Color(0xFFF8D0D8), Color(0x00F8D0D8)],
-                stops: [0.0, 1.0],
+            // Blob 5 — üst sol: lavanta
+            Positioned(
+              top: 50 + s3,
+              left: 50 + s2,
+              child: _Blob(
+                size: 300,
+                color: const Color(0xFFF8D0D8),
               ),
             ),
-          ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _Blob extends StatelessWidget {
+  const _Blob({required this.size, required this.color});
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color, color.withValues(alpha: 0)],
         ),
-      ],
+      ),
     );
   }
 }
