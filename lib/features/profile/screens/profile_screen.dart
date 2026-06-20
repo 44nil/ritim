@@ -23,81 +23,104 @@ class ProfileScreen extends ConsumerWidget {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: StaggeredList(
-                children: [
-                  const SizedBox(height: 24),
+              child: StaggeredList(children: [
+                const SizedBox(height: 20),
+
+                // Avatar + isim
+                Center(child: Column(children: [
                   Container(
-                    width: 80, height: 80,
+                    width: 76, height: 76,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.primaryContainer,
                       border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
                     ),
-                    child: const Center(child: Text('E', style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: AppColors.primary))),
+                    child: const Center(child: Text('E', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: AppColors.primary))),
                   ),
-                  const SizedBox(height: 12),
-                  Text('Ela', style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
-                  Text('14 yaşında', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 10),
+                  Text('Ela', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+                  Text('14 yaşında', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+                ])),
+                const SizedBox(height: 20),
 
-                  Row(
-                    children: [
-                      _Stat(icon: Icons.calendar_month_outlined, value: '3', label: 'Ay', color: AppColors.primary),
-                      const SizedBox(width: 10),
-                      _Stat(icon: Icons.local_fire_department_outlined, value: '12', label: 'Seri', color: AppColors.tertiary),
-                      const SizedBox(width: 10),
-                      _Stat(icon: Icons.emoji_events_outlined, value: '240', label: 'Puan', color: AppColors.secondary),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
+                // İstatistikler
+                Row(children: [
+                  _StatMini(value: '3', label: 'Ay', icon: Icons.calendar_month_outlined, color: AppColors.primary),
+                  const SizedBox(width: 8),
+                  _StatMini(value: '12', label: 'Seri', icon: Icons.local_fire_department_outlined, color: AppColors.tertiary),
+                  const SizedBox(width: 8),
+                  _StatMini(value: '240', label: 'Puan', icon: Icons.emoji_events_outlined, color: AppColors.secondary),
+                ]),
+                const SizedBox(height: 20),
 
-                  _Section(title: 'Hesap', children: [
-                    _Row(icon: Icons.person_outline_rounded, label: 'Profili Düzenle', onTap: () {}),
-                    _Row(icon: Icons.notifications_none_rounded, label: 'Bildirimler', onTap: () {}),
-                    _Row(icon: Icons.lock_outline_rounded, label: 'Gizlilik', onTap: () {}),
+                // Öğrenme İlerlemesi
+                Text('Öğrenme İlerlemen', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 12),
+                CleanCard(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(children: [
+                    _ProgressRow(label: 'Quiz', value: 7, total: 26, color: AppColors.primary),
+                    const SizedBox(height: 12),
+                    _ProgressRow(label: 'Makale', value: 4, total: 12, color: AppColors.phaseFollicular),
+                    const SizedBox(height: 12),
+                    _ProgressRow(label: 'Kayıt Günü', value: 18, total: 30, color: AppColors.phaseMenstruation),
                   ]),
-                  const SizedBox(height: 14),
+                ),
+                const SizedBox(height: 20),
 
-                  _Section(title: 'Uygulama', children: [
-                    _Row(
-                      icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                      label: 'Görünüm',
-                      trailing: Text(isDark ? 'Koyu' : 'Açık'),
-                      onTap: () {
-                        ref.read(themeModeProvider.notifier).state = isDark ? ThemeMode.light : ThemeMode.dark;
-                      },
-                    ),
-                    _Row(icon: Icons.language_rounded, label: 'Dil', trailing: const Text('Türkçe'), onTap: () {}),
-                  ]),
-                  const SizedBox(height: 14),
+                // Rozetler
+                Text('Rozetlerin', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 12),
+                Row(children: [
+                  _Badge(icon: Icons.water_drop_rounded, label: 'İlk Kayıt', earned: true, color: AppColors.phaseMenstruation),
+                  const SizedBox(width: 8),
+                  _Badge(icon: Icons.local_fire_department_rounded, label: '7 Gün Seri', earned: true, color: AppColors.tertiary),
+                  const SizedBox(width: 8),
+                  _Badge(icon: Icons.school_rounded, label: '5 Quiz', earned: true, color: AppColors.secondary),
+                  const SizedBox(width: 8),
+                  _Badge(icon: Icons.auto_stories_rounded, label: '10 Makale', earned: false, color: AppColors.phaseFollicular),
+                ]),
+                const SizedBox(height: 20),
 
-                  CleanCard(
-                    onTap: () => context.pushNamed(RouteNames.parentLogin),
-                    padding: const EdgeInsets.all(18),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 40, height: 40,
-                          decoration: BoxDecoration(color: AppColors.secondary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-                          child: const Icon(Icons.shield_outlined, color: AppColors.secondary, size: 22),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Ebeveyn Paneli', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                              Text('Ebeveyn girişi ile erişin', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
-                            ],
-                          ),
-                        ),
-                        Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
-                      ],
-                    ),
+                // Ayarlar
+                _SettingsGroup(title: 'Hesap', items: [
+                  _SettingsRow(icon: Icons.person_outline_rounded, label: 'Profili Düzenle', onTap: () {}),
+                  _SettingsRow(icon: Icons.notifications_none_rounded, label: 'Bildirimler', onTap: () {}),
+                  _SettingsRow(icon: Icons.lock_outline_rounded, label: 'Gizlilik', onTap: () {}),
+                ]),
+                const SizedBox(height: 12),
+                _SettingsGroup(title: 'Uygulama', items: [
+                  _SettingsRow(
+                    icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                    label: 'Görünüm',
+                    trailing: Text(isDark ? 'Koyu' : 'Açık'),
+                    onTap: () => ref.read(themeModeProvider.notifier).state = isDark ? ThemeMode.light : ThemeMode.dark,
                   ),
-                  const SizedBox(height: 100),
-                ],
-              ),
+                  _SettingsRow(icon: Icons.language_rounded, label: 'Dil', trailing: const Text('Türkçe'), onTap: () {}),
+                ]),
+                const SizedBox(height: 12),
+
+                // Ebeveyn paneli
+                CleanCard(
+                  onTap: () => context.pushNamed(RouteNames.parentLogin),
+                  padding: const EdgeInsets.all(16),
+                  child: Row(children: [
+                    Container(
+                      width: 36, height: 36,
+                      decoration: BoxDecoration(color: AppColors.secondary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(Icons.shield_outlined, color: AppColors.secondary, size: 18),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('Ebeveyn Paneli', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: 13)),
+                      Text('Ebeveyn girişi ile erişin', style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 11)),
+                    ])),
+                    Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+                  ]),
+                ),
+                const SizedBox(height: 100),
+              ]),
             ),
           ),
         ],
@@ -106,67 +129,114 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-class _Stat extends StatelessWidget {
-  const _Stat({required this.icon, required this.value, required this.label, required this.color});
-  final IconData icon;
+class _StatMini extends StatelessWidget {
+  const _StatMini({required this.value, required this.label, required this.icon, required this.color});
   final String value, label;
+  final IconData icon;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Expanded(
-      child: CleanCard(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          children: [
-            Icon(icon, size: 22, color: color),
-            const SizedBox(height: 6),
-            Text(value, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
-            Text(label, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
-          ],
-        ),
-      ),
-    );
+    return Expanded(child: CleanCard(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Column(children: [
+        Icon(icon, size: 20, color: color),
+        const SizedBox(height: 6),
+        Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
+        Text(label, style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+      ]),
+    ));
   }
 }
 
-class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.children});
-  final String title;
-  final List<_Row> children;
+class _ProgressRow extends StatelessWidget {
+  const _ProgressRow({required this.label, required this.value, required this.total, required this.color});
+  final String label;
+  final int value, total;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(title, style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontWeight: FontWeight.w600,
-          )),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Text(label, style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600)),
+        const Spacer(),
+        Text('$value/$total', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
+      ]),
+      const SizedBox(height: 6),
+      ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: LinearProgressIndicator(
+          value: value / total,
+          backgroundColor: color.withValues(alpha: 0.1),
+          color: color,
+          minHeight: 5,
         ),
-        CleanCard(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: children.asMap().entries.map((e) {
-              return Column(children: [
-                e.value,
-                if (e.key < children.length - 1)
-                  Divider(height: 0.5, indent: 52, color: Theme.of(e.value.onTap.hashCode > 0 ? context : context).colorScheme.outline.withValues(alpha: 0.1)),
-              ]);
-            }).toList(),
-          ),
-        ),
-      ],
-    );
+      ),
+    ]);
   }
 }
 
-class _Row extends StatelessWidget {
-  const _Row({required this.icon, required this.label, required this.onTap, this.trailing});
+class _Badge extends StatelessWidget {
+  const _Badge({required this.icon, required this.label, required this.earned, required this.color});
+  final IconData icon;
+  final String label;
+  final bool earned;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Expanded(child: CleanCard(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+      child: Opacity(
+        opacity: earned ? 1.0 : 0.3,
+        child: Column(children: [
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              color: earned ? color.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 18, color: earned ? color : Colors.grey),
+          ),
+          const SizedBox(height: 6),
+          Text(label, style: theme.textTheme.labelSmall?.copyWith(fontSize: 9, fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+        ]),
+      ),
+    ));
+  }
+}
+
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.title, required this.items});
+  final String title;
+  final List<_SettingsRow> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(padding: const EdgeInsets.only(left: 4, bottom: 8),
+        child: Text(title, style: theme.textTheme.labelLarge?.copyWith(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontWeight: FontWeight.w600))),
+      CleanCard(
+        padding: EdgeInsets.zero,
+        child: Column(children: items.asMap().entries.map((e) => Column(children: [
+          e.value,
+          if (e.key < items.length - 1)
+            Divider(height: 0.5, indent: 52, color: theme.colorScheme.outline.withValues(alpha: 0.1)),
+        ])).toList()),
+      ),
+    ]);
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({required this.icon, required this.label, required this.onTap, this.trailing});
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -175,21 +245,18 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            Icon(icon, size: 22, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
-            const SizedBox(width: 14),
-            Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
-            if (trailing != null) DefaultTextStyle(style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)), child: trailing!),
-            const SizedBox(width: 4),
-            Icon(Icons.chevron_right_rounded, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
-          ],
-        ),
-      ),
-    );
+    return InkWell(onTap: onTap, child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      child: Row(children: [
+        Icon(icon, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
+        const SizedBox(width: 14),
+        Expanded(child: Text(label, style: theme.textTheme.bodyMedium?.copyWith(fontSize: 14))),
+        if (trailing != null) DefaultTextStyle(
+          style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
+          child: trailing!),
+        const SizedBox(width: 4),
+        Icon(Icons.chevron_right_rounded, size: 18, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+      ]),
+    ));
   }
 }
