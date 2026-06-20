@@ -248,11 +248,15 @@ class _TodayTab extends StatelessWidget {
         const SizedBox(height: 16),
         staggered(index: 2, child: const _MonthCalendar()),
         const SizedBox(height: 20),
-        staggered(index: 3, child: _InsightCard(phase: phase)),
+        staggered(index: 3, child: _BodyInfoCard(phase: phase)),
+        const SizedBox(height: 16),
+        staggered(index: 4, child: _SelfCareCard(phase: phase)),
+        const SizedBox(height: 16),
+        staggered(index: 5, child: const _DidYouKnowCard()),
         const SizedBox(height: 20),
-        staggered(index: 4, child: const _CycleTimeline()),
+        staggered(index: 6, child: const _CycleTimeline()),
         const SizedBox(height: 20),
-        staggered(index: 5, child: const _CycleStats()),
+        staggered(index: 7, child: const _CycleStats()),
         const SizedBox(height: 100),
       ],
     );
@@ -632,29 +636,124 @@ class _FilterPill extends StatelessWidget {
   }
 }
 
-// ─── Insight Card ───────────────────────────────────────────────────────────
+// ─── Bedeninde Ne Oluyor? ────────────────────────────────────────────────────
 
-class _InsightCard extends StatelessWidget {
-  const _InsightCard({required this.phase});
+class _BodyInfoCard extends StatelessWidget {
+  const _BodyInfoCard({required this.phase});
   final CyclePhaseInfo phase;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1A1520) : const Color(0xFF2A2030),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.auto_awesome_rounded, size: 16, color: phase.color),
+            const SizedBox(width: 8),
+            Text('Bedeninde Ne Oluyor?', style: TextStyle(
+              fontSize: 13, fontWeight: FontWeight.w700, color: phase.color)),
+          ]),
+          const SizedBox(height: 12),
+          Text(phase.bodyInfo, style: TextStyle(
+            fontSize: 13, color: Colors.white.withValues(alpha: 0.8), height: 1.6)),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Kendine İyi Bak ────────────────────────────────────────────────────────
+
+class _SelfCareCard extends StatelessWidget {
+  const _SelfCareCard({required this.phase});
+  final CyclePhaseInfo phase;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return CleanCard(
       padding: const EdgeInsets.all(18),
-      child: Row(children: [
-        Container(width: 40, height: 40,
-          decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(11)),
-          child: Icon(Icons.lightbulb_outline_rounded, color: phase.color, size: 20)),
-        const SizedBox(width: 14),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('${phase.label} Fazı', style: theme.textTheme.labelMedium?.copyWith(color: phase.color, fontWeight: FontWeight.w700)),
-          const SizedBox(height: 2),
-          Text(phase.tip, style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.5), height: 1.4)),
-        ])),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Container(
+              width: 30, height: 30,
+              decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+              child: Icon(Icons.favorite_outline_rounded, size: 16, color: phase.color),
+            ),
+            const SizedBox(width: 10),
+            Text('${phase.label} Fazında Kendine İyi Bak', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+          ]),
+          const SizedBox(height: 14),
+          ...phase.selfCare.map((tip) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 6, height: 6,
+                  margin: const EdgeInsets.only(top: 6),
+                  decoration: BoxDecoration(color: phase.color, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Text(tip, style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7), height: 1.4))),
+              ],
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Bunu Biliyor muydun? ───────────────────────────────────────────────────
+
+class _DidYouKnowCard extends StatelessWidget {
+  const _DidYouKnowCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final fact = MockCycleData.didYouKnow[DateTime.now().day % MockCycleData.didYouKnow.length];
+
+    return CleanCard(
+      padding: const EdgeInsets.all(18),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 34, height: 34,
+            decoration: BoxDecoration(
+              color: AppColors.tertiary.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.lightbulb_outline_rounded, size: 18, color: AppColors.tertiary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Bunu Biliyor muydun?', style: theme.textTheme.labelMedium?.copyWith(
+                color: AppColors.tertiary, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 4),
+              Text(fact, style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.5)),
+            ],
+          )),
+        ],
+      ),
     );
   }
 }
@@ -851,11 +950,11 @@ class _CycleTimeline extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     final events = [
-      _TimelineEvent(dateRange: '7 — 11 Haz', label: 'Adet Dönemi', subtitle: '5 gün', color: AppColors.phaseMenstruation, icon: Icons.water_drop_rounded, isPast: true),
-      _TimelineEvent(dateRange: '12 — 18 Haz', label: 'Foliküler Faz', subtitle: 'Enerji yükseliyor', color: AppColors.phaseFollicular, icon: Icons.eco_rounded, isPast: true),
-      _TimelineEvent(dateRange: '19 — 21 Haz', label: 'Ovülasyon', subtitle: 'Bugün buradasın', color: AppColors.phaseOvulation, icon: Icons.brightness_high_rounded, isPast: false),
-      _TimelineEvent(dateRange: '22 Haz — 5 Tem', label: 'Luteal Faz', subtitle: 'Dinlenme dönemi', color: AppColors.phaseLuteal, icon: Icons.nights_stay_rounded, isPast: false),
-      _TimelineEvent(dateRange: '6 Tem', label: 'Sonraki Adet', subtitle: 'Tahmini başlangıç', color: AppColors.phaseMenstruation, icon: Icons.event_rounded, isPast: false),
+      _TimelineEvent(dateRange: '7 — 11 Haz', label: 'Adet Dönemi', subtitle: 'Rahim iç tabakası döküldü', color: AppColors.phaseMenstruation, icon: Icons.water_drop_rounded, isPast: true),
+      _TimelineEvent(dateRange: '12 — 18 Haz', label: 'Foliküler Faz', subtitle: 'Yeni yumurta hazırlandı', color: AppColors.phaseFollicular, icon: Icons.eco_rounded, isPast: true),
+      _TimelineEvent(dateRange: '19 — 21 Haz', label: 'Ovülasyon', subtitle: 'Yumurta serbest bırakıldı', color: AppColors.phaseOvulation, icon: Icons.brightness_high_rounded, isPast: false),
+      _TimelineEvent(dateRange: '22 Haz — 5 Tem', label: 'Luteal Faz', subtitle: 'Vücut dinlenmeye geçiyor', color: AppColors.phaseLuteal, icon: Icons.nights_stay_rounded, isPast: false),
+      _TimelineEvent(dateRange: '6 Tem', label: 'Sonraki Adet', subtitle: 'Döngü yeniden başlıyor', color: AppColors.phaseMenstruation, icon: Icons.event_rounded, isPast: false),
     ];
 
     return Column(

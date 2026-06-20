@@ -11,6 +11,8 @@ class CyclePhaseInfo {
     required this.icon,
     required this.tip,
     required this.dayRange,
+    required this.bodyInfo,
+    required this.selfCare,
   });
 
   final CyclePhase phase;
@@ -19,6 +21,8 @@ class CyclePhaseInfo {
   final IconData icon;
   final String tip;
   final (int start, int end) dayRange;
+  final String bodyInfo;
+  final List<String> selfCare;
 }
 
 class MockCycleData {
@@ -47,6 +51,8 @@ class MockCycleData {
       icon: Icons.water_drop_rounded,
       tip: 'Kendine nazik ol, bol su iç ve dinlenmeye vakit ayır.',
       dayRange: (1, 5),
+      bodyInfo: 'Rahim iç tabakası dökülüyor ve kanama oluyor. Bu tamamen doğal bir süreç — vücudun kendini yeniliyor. Hafif kramplar, yorgunluk veya ruh hali değişimleri yaşayabilirsin.',
+      selfCare: ['Sıcak su torbası krampları rahatlatır', 'Bol su iç', 'Hafif yürüyüş iyi gelir', 'Uyku düzenine dikkat et'],
     ),
     CyclePhaseInfo(
       phase: CyclePhase.follicular,
@@ -55,6 +61,8 @@ class MockCycleData {
       icon: Icons.eco_rounded,
       tip: 'Enerjin yükseliyor! Yeni şeyler denemek için harika bir dönem.',
       dayRange: (6, 13),
+      bodyInfo: 'Vücudun yeni bir yumurta hazırlamaya başlıyor. Östrojen hormonu yükseliyor — bu sayede enerjin artıyor, kendini daha iyi hissedebilirsin.',
+      selfCare: ['Yeni aktiviteler dene', 'Sosyalleşmek için iyi bir dönem', 'Enerjini değerlendir', 'Yaratıcı projeler başlat'],
     ),
     CyclePhaseInfo(
       phase: CyclePhase.ovulation,
@@ -63,6 +71,8 @@ class MockCycleData {
       icon: Icons.brightness_high_rounded,
       tip: 'Enerjin en yüksek seviyede. Sosyal aktiviteler için ideal bir dönem.',
       dayRange: (14, 16),
+      bodyInfo: 'Yumurtalıktan bir yumurta serbest bırakılıyor. Bu dönemde enerjin ve özgüvenin en yüksek seviyede olabilir. Vücut ısın hafifçe artabilir.',
+      selfCare: ['En enerjik dönemin', 'Spor için ideal', 'Özgüvenin yüksek', 'Sosyal aktiviteler planla'],
     ),
     CyclePhaseInfo(
       phase: CyclePhase.luteal,
@@ -71,6 +81,8 @@ class MockCycleData {
       icon: Icons.nights_stay_rounded,
       tip: 'Enerjin azalabilir, bu tamamen normal. Rahatlatıcı aktiviteler dene.',
       dayRange: (17, 28),
+      bodyInfo: 'Progesteron hormonu yükseliyor. Vücudun bir sonraki adete hazırlanıyor. Bu dönemde şişkinlik, hassasiyet veya ruh hali değişimleri yaşamak normal.',
+      selfCare: ['Kendine vakit ayır', 'Rahatlatıcı müzik dinle', 'Sıcak içecekler iç', 'Fazla zorlama, dinlen'],
     ),
   ];
 
@@ -86,7 +98,6 @@ class MockCycleData {
 
   static double get cycleProgress => currentCycleDay / cycleLengthDays;
 
-  // Son 7 günün faz bilgisi
   static List<DayInfo> get last7Days {
     return List.generate(7, (i) {
       final dayOffset = 6 - i;
@@ -112,14 +123,14 @@ class MockCycleData {
     });
   }
 
-  // Mock ruh hali verileri
-  static const moods = [
-    ('Mutlu', '😊'),
-    ('Sakin', '😌'),
-    ('Enerjik', '⚡'),
-    ('Yorgun', '😴'),
-    ('Hassas', '🥺'),
-    ('Sinirli', '😤'),
+  static const didYouKnow = [
+    'Ortalama bir kadın hayatında yaklaşık 450 kez adet görür.',
+    'Döngü uzunluğu 21-35 gün arasında değişebilir ve hepsi normaldir.',
+    'Egzersiz yapmak adet kramplarını azaltmaya yardımcı olabilir.',
+    'İlk adet genellikle 10-15 yaş arasında başlar.',
+    'Stres döngü düzenini etkileyebilir.',
+    'Adet sırasında vücut ısısı hafifçe düşer, ovülasyonda yükselir.',
+    'Yeterli uyku hormonal dengeyi korumaya yardımcı olur.',
   ];
 }
 
