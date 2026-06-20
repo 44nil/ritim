@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/bento_card.dart';
+import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/cycle_phase_ring.dart';
 import '../data/mock_cycle_data.dart';
 
@@ -12,29 +12,85 @@ class CycleTrackingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final phase = MockCycleData.currentPhase;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppConstants.paddingM,
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          // Gradient arka plan
+          _GradientBackground(isDark: isDark, phaseColor: phase.color),
+
+          // İçerik
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppConstants.paddingM,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: AppConstants.paddingM),
+                  _GreetingHeader(phase: phase),
+                  const SizedBox(height: AppConstants.paddingL),
+                  _MainCycleCard(phase: phase),
+                  const SizedBox(height: AppConstants.paddingM),
+                  const _QuickActionsGrid(),
+                  const SizedBox(height: AppConstants.paddingM),
+                  const _WeekStrip(),
+                  const SizedBox(height: AppConstants.paddingM),
+                  _PhaseInfoCard(phase: phase),
+                  const SizedBox(height: 100),
+                ],
+              ),
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: AppConstants.paddingM),
-              _GreetingHeader(phase: phase),
-              const SizedBox(height: AppConstants.paddingL),
-              _MainCycleCard(phase: phase),
-              const SizedBox(height: AppConstants.paddingM),
-              const _QuickActionsGrid(),
-              const SizedBox(height: AppConstants.paddingM),
-              const _WeekStrip(),
-              const SizedBox(height: AppConstants.paddingM),
-              _PhaseInfoCard(phase: phase),
-              const SizedBox(height: AppConstants.paddingXL),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Gradient Arka Plan ─────────────────────────────────────────────────────
+
+class _GradientBackground extends StatelessWidget {
+  const _GradientBackground({required this.isDark, required this.phaseColor});
+  final bool isDark;
+  final Color phaseColor;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isDark) {
+      return Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              phaseColor.withValues(alpha: 0.15),
+              const Color(0xFF1A151E),
+              const Color(0xFF1A151E),
             ],
+            stops: const [0.0, 0.4, 1.0],
           ),
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomCenter,
+          colors: [
+            const Color(0xFFFDE8C8), // sıcak şeftali
+            const Color(0xFFF8D4D8), // yumuşak pembe
+            phaseColor.withValues(alpha: 0.15),
+            const Color(0xFFFFF8F6), // warm off-white
+            const Color(0xFFFFF8F6),
+          ],
+          stops: const [0.0, 0.2, 0.35, 0.55, 1.0],
         ),
       ),
     );
@@ -60,29 +116,34 @@ class _GreetingHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Merhaba, ${MockCycleData.userName} 👋',
-                style: theme.textTheme.headlineMedium,
+                'Merhaba, ${MockCycleData.userName}',
+                style: theme.textTheme.displaySmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 2),
               Text(
                 dateStr,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],
           ),
         ),
-        // Bildirim butonu
-        IconButton(
-          onPressed: () {
+        // Bildirim butonu — glass efekt
+        GlassCard(
+          padding: const EdgeInsets.all(10),
+          borderRadius: AppConstants.radiusRound,
+          opacity: 0.5,
+          blur: 15,
+          onTap: () {
             // TODO: Backend entegrasyonu — bildirimler
           },
-          icon: const Icon(Icons.notifications_outlined),
-          style: IconButton.styleFrom(
-            backgroundColor:
-                Theme.of(context).colorScheme.surfaceContainerHighest,
-            fixedSize: const Size(44, 44),
+          child: Icon(
+            Icons.notifications_outlined,
+            size: 22,
+            color: theme.colorScheme.onSurface,
           ),
         ),
       ],
@@ -99,29 +160,13 @@ class _MainCycleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    return BentoCard(
+    return GlassCard(
       padding: const EdgeInsets.all(AppConstants.paddingL),
-      gradient: LinearGradient(
-        colors: isDark
-            ? [
-                phase.color.withValues(alpha: 0.15),
-                phase.color.withValues(alpha: 0.05),
-              ]
-            : [
-                phase.color.withValues(alpha: 0.08),
-                phase.color.withValues(alpha: 0.03),
-              ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      border: Border.all(
-        color: phase.color.withValues(alpha: isDark ? 0.2 : 0.15),
-      ),
+      opacity: 0.6,
+      blur: 25,
       child: Row(
         children: [
-          // Sol: metin bilgileri
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,12 +200,13 @@ class _MainCycleCard extends StatelessWidget {
                 const SizedBox(height: 14),
 
                 Text(
-                  'Döngünün ${MockCycleData.currentCycleDay}. günü',
+                  'Döngünün\n${MockCycleData.currentCycleDay}. günü',
                   style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w700,
+                    height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
 
                 Text(
                   'Sonraki adet: ~${MockCycleData.daysUntilNextPeriod} gün',
@@ -172,15 +218,14 @@ class _MainCycleCard extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
 
-          // Sağ: halka grafik
           CyclePhaseRing(
             progress: MockCycleData.cycleProgress,
             phaseColor: phase.color,
             currentDay: MockCycleData.currentCycleDay,
-            size: 100,
-            strokeWidth: 7,
+            size: 110,
+            strokeWidth: 8,
           ),
         ],
       ),
@@ -188,7 +233,7 @@ class _MainCycleCard extends StatelessWidget {
   }
 }
 
-// ─── 3. Hızlı Aksiyonlar (2x2 Bento Grid) ──────────────────────────────────
+// ─── 3. Hızlı Aksiyonlar (2x2 Glass Grid) ──────────────────────────────────
 
 class _QuickActionsGrid extends StatelessWidget {
   const _QuickActionsGrid();
@@ -204,7 +249,12 @@ class _QuickActionsGrid extends StatelessWidget {
                 icon: Icons.edit_calendar_rounded,
                 label: 'Bugünü\nKaydet',
                 color: AppColors.primary,
-                onTap: () => _showRecordSheet(context),
+                onTap: () => _showPlaceholderSheet(
+                  context,
+                  title: 'Bugünü Kaydet',
+                  icon: Icons.edit_calendar_rounded,
+                  description: 'Akışını, semptomlarını ve ruh halini kaydet.',
+                ),
               ),
             ),
             const SizedBox(width: AppConstants.paddingS),
@@ -235,21 +285,18 @@ class _QuickActionsGrid extends StatelessWidget {
                 icon: Icons.sticky_note_2_outlined,
                 label: 'Günlük\nNotum',
                 color: AppColors.tertiary,
-                onTap: () => _showNoteSheet(context),
+                onTap: () => _showPlaceholderSheet(
+                  context,
+                  title: 'Günlük Notum',
+                  icon: Icons.sticky_note_2_outlined,
+                  description:
+                      'Bugün kendini nasıl hissediyorsun? Düşüncelerini yaz.',
+                ),
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-
-  void _showRecordSheet(BuildContext context) {
-    _showPlaceholderSheet(
-      context,
-      title: 'Bugünü Kaydet',
-      icon: Icons.edit_calendar_rounded,
-      description: 'Akışını, semptomlarını ve ruh halini kaydet.',
     );
   }
 
@@ -310,10 +357,7 @@ class _QuickActionsGrid extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        mood.$1,
-                        style: theme.textTheme.labelSmall,
-                      ),
+                      Text(mood.$1, style: theme.textTheme.labelSmall),
                     ],
                   ),
                 );
@@ -372,7 +416,8 @@ class _QuickActionsGrid extends StatelessWidget {
                 Text(
                   'Birden fazla seçebilirsin',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    color:
+                        theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
                 const SizedBox(height: AppConstants.paddingM),
@@ -393,7 +438,6 @@ class _QuickActionsGrid extends StatelessWidget {
                             selected.remove(e.key);
                           }
                         });
-                        // TODO: Backend entegrasyonu — semptom kaydet
                       },
                     );
                   }).toList(),
@@ -412,15 +456,6 @@ class _QuickActionsGrid extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  void _showNoteSheet(BuildContext context) {
-    _showPlaceholderSheet(
-      context,
-      title: 'Günlük Notum',
-      icon: Icons.sticky_note_2_outlined,
-      description: 'Bugün kendini nasıl hissediyorsun? Düşüncelerini yaz.',
     );
   }
 
@@ -460,16 +495,19 @@ class _QuickActionsGrid extends StatelessWidget {
             Text(
               description,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                color:
+                    theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppConstants.paddingM),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(AppConstants.radiusRound),
+                borderRadius:
+                    BorderRadius.circular(AppConstants.radiusRound),
               ),
               child: Text(
                 'Yakında',
@@ -503,17 +541,12 @@ class _QuickActionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    return BentoCard(
+    return GlassCard(
       onTap: onTap,
       padding: const EdgeInsets.all(AppConstants.paddingM),
-      color: isDark
-          ? color.withValues(alpha: 0.08)
-          : color.withValues(alpha: 0.05),
-      border: Border.all(
-        color: color.withValues(alpha: isDark ? 0.15 : 0.1),
-      ),
+      opacity: 0.45,
+      blur: 20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -552,11 +585,13 @@ class _WeekStrip extends StatelessWidget {
     final theme = Theme.of(context);
     final days = MockCycleData.last7Days;
 
-    return BentoCard(
+    return GlassCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppConstants.paddingM,
         vertical: AppConstants.paddingM,
       ),
+      opacity: 0.45,
+      blur: 20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -569,7 +604,6 @@ class _WeekStrip extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              // TODO: Tam takvime navigasyon
               GestureDetector(
                 onTap: () {},
                 child: Text(
@@ -664,16 +698,12 @@ class _PhaseInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    return BentoCard(
+    return GlassCard(
       padding: const EdgeInsets.all(AppConstants.paddingM),
-      color: isDark
-          ? phase.color.withValues(alpha: 0.06)
-          : phase.color.withValues(alpha: 0.04),
-      border: Border.all(
-        color: phase.color.withValues(alpha: isDark ? 0.12 : 0.08),
-      ),
+      opacity: 0.4,
+      blur: 20,
+      tintColor: phase.color.withValues(alpha: 0.08),
       child: Row(
         children: [
           Container(
@@ -705,7 +735,8 @@ class _PhaseInfoCard extends StatelessWidget {
                 Text(
                   phase.tip,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    color: theme.colorScheme.onSurface
+                        .withValues(alpha: 0.7),
                     height: 1.4,
                   ),
                 ),

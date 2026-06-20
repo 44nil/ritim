@@ -1,9 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/router/route_names.dart';
 
-/// Ana scaffold — bottom navigation bar ve 5 sekmeyi barındırır.
-/// go_router'ın ShellRoute'u ile entegre çalışır.
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({super.key, required this.navigationShell});
 
@@ -45,7 +45,6 @@ class HomeScaffold extends StatelessWidget {
   void _onTabTap(int index) {
     navigationShell.goBranch(
       index,
-      // Sekmeye tekrar tıklanınca kökü göster
       initialLocation: index == navigationShell.currentIndex,
     );
   }
@@ -54,30 +53,73 @@ class HomeScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final currentIndex = navigationShell.currentIndex;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      extendBody: true,
       body: navigationShell,
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: 0.2),
-              width: 0.5,
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppConstants.radiusXL),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+            child: Container(
+              height: 68,
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.7)
+                    : const Color(0xFF2D2028).withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(AppConstants.radiusXL),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.08),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: _tabs.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final tab = entry.value;
+                  final isActive = i == currentIndex;
+
+                  return GestureDetector(
+                    onTap: () => _onTabTap(i),
+                    behavior: HitTestBehavior.opaque,
+                    child: SizedBox(
+                      width: 60,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            isActive ? tab.activeIcon : tab.icon,
+                            size: 22,
+                            color: isActive
+                                ? Colors.white
+                                : Colors.white.withValues(alpha: 0.4),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            tab.label,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 9,
+                              fontWeight:
+                                  isActive ? FontWeight.w600 : FontWeight.w400,
+                              color: isActive
+                                  ? Colors.white
+                                  : Colors.white.withValues(alpha: 0.4),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: _onTabTap,
-          items: _tabs
-              .map(
-                (tab) => BottomNavigationBarItem(
-                  icon: Icon(tab.icon),
-                  activeIcon: Icon(tab.activeIcon),
-                  label: tab.label,
-                ),
-              )
-              .toList(),
         ),
       ),
     );
