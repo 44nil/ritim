@@ -1,156 +1,273 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/providers/theme_provider.dart';
 import '../../../core/router/route_names.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/glass_card.dart';
 
-/// Profil ekranı — kullanıcı ayarları ve ebeveyn paneline erişim.
-/// TODO: Backend entegrasyonu — kullanıcı profili ve tercihler API'den gelecek.
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Avatar ve isim bölümü
-            Container(
-              padding: const EdgeInsets.all(AppConstants.paddingXL),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 44,
-                    backgroundColor: theme.colorScheme.primaryContainer,
-                    child: Icon(
-                      Icons.person_rounded,
-                      size: 44,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // TODO: Backend entegrasyonu — kullanıcı adı
-                  Text('Kullanıcı Adı', style: theme.textTheme.headlineMedium),
-                  Text(
-                    '14 yaşında',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const Divider(),
-
-            // Ayarlar listesi
-            _SettingsSection(
-              title: 'Hesap',
-              items: [
-                _SettingsItem(
-                  icon: Icons.person_outline_rounded,
-                  label: 'Profili Düzenle',
-                  onTap: () {/* TODO */},
-                ),
-                _SettingsItem(
-                  icon: Icons.notifications_outlined,
-                  label: 'Bildirim Ayarları',
-                  onTap: () {/* TODO */},
-                ),
-                _SettingsItem(
-                  icon: Icons.lock_outline_rounded,
-                  label: 'Gizlilik',
-                  onTap: () {/* TODO */},
-                ),
-              ],
-            ),
-
-            _SettingsSection(
-              title: 'Uygulama',
-              items: [
-                _SettingsItem(
-                  icon: Icons.dark_mode_outlined,
-                  label: 'Görünüm',
-                  trailing: const Text('Sistem'),
-                  onTap: () {/* TODO */},
-                ),
-                _SettingsItem(
-                  icon: Icons.language_rounded,
-                  label: 'Dil',
-                  trailing: const Text('Türkçe'),
-                  onTap: () {/* TODO */},
-                ),
-              ],
-            ),
-
-            // Ebeveyn paneli erişimi — ayrı akış
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppConstants.paddingM,
-                vertical: AppConstants.paddingS,
-              ),
-              child: OutlinedButton.icon(
-                onPressed: () => context.pushNamed(RouteNames.parentLogin),
-                icon: const Icon(Icons.shield_outlined),
-                label: const Text('Ebeveyn Paneline Geç'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: theme.colorScheme.secondary,
-                  side: BorderSide(color: theme.colorScheme.secondary),
-                  minimumSize: const Size.fromHeight(52),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: AppConstants.paddingXL),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingsSection extends StatelessWidget {
-  const _SettingsSection({required this.title, required this.items});
-  final String title;
-  final List<_SettingsItem> items;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppConstants.paddingM,
-        vertical: AppConstants.paddingS,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      extendBodyBehindAppBar: true,
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 4,
-              vertical: AppConstants.paddingS,
-            ),
-            child: Text(
-              title,
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                fontWeight: FontWeight.w600,
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: isDark
+                    ? [AppColors.primary.withValues(alpha: 0.15), const Color(0xFF1A151E)]
+                    : [const Color(0xFFFAE8F2), const Color(0xFFFFF8F6)],
+                stops: const [0.0, 0.45],
               ),
             ),
           ),
-          Card(child: Column(children: items)),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: AppConstants.paddingM),
+              child: Column(
+                children: [
+                  const SizedBox(height: AppConstants.paddingL),
+
+                  // Avatar
+                  Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primary.withValues(alpha: 0.3),
+                          AppColors.secondary.withValues(alpha: 0.3),
+                        ],
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text('E', style: TextStyle(fontSize: 36, fontWeight: FontWeight.w700)),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text('Ela', style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  )),
+                  Text(
+                    '14 yaşında',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  const SizedBox(height: AppConstants.paddingL),
+
+                  // İstatistik kartları
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _StatCard(
+                          emoji: '📅',
+                          value: '3',
+                          label: 'Ay takip',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _StatCard(
+                          emoji: '🔥',
+                          value: '12',
+                          label: 'Gün seri',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _StatCard(
+                          emoji: '🏆',
+                          value: '240',
+                          label: 'Quiz puan',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppConstants.paddingL),
+
+                  // Ayarlar
+                  _SettingsGroup(
+                    title: 'Hesap',
+                    items: [
+                      _SettingsRow(
+                        icon: Icons.person_outline_rounded,
+                        label: 'Profili Düzenle',
+                        onTap: () {},
+                      ),
+                      _SettingsRow(
+                        icon: Icons.notifications_outlined,
+                        label: 'Bildirimler',
+                        onTap: () {},
+                      ),
+                      _SettingsRow(
+                        icon: Icons.lock_outline_rounded,
+                        label: 'Gizlilik',
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppConstants.paddingM),
+
+                  _SettingsGroup(
+                    title: 'Uygulama',
+                    items: [
+                      _SettingsRow(
+                        icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                        label: 'Görünüm',
+                        trailing: Text(isDark ? 'Koyu' : 'Açık'),
+                        onTap: () {
+                          ref.read(themeModeProvider.notifier).state =
+                              isDark ? ThemeMode.light : ThemeMode.dark;
+                        },
+                      ),
+                      _SettingsRow(
+                        icon: Icons.language_rounded,
+                        label: 'Dil',
+                        trailing: const Text('Türkçe'),
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppConstants.paddingM),
+
+                  // Ebeveyn paneli
+                  GlassCard(
+                    onTap: () => context.pushNamed(RouteNames.parentLogin),
+                    padding: const EdgeInsets.all(AppConstants.paddingM),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.secondary.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(AppConstants.radiusM),
+                          ),
+                          child: const Icon(Icons.shield_outlined,
+                              color: AppColors.secondary, size: 22),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Ebeveyn Paneli',
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                'Ebeveyn girişi ile erişin',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 100),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _SettingsItem extends StatelessWidget {
-  const _SettingsItem({
+class _StatCard extends StatelessWidget {
+  const _StatCard({required this.emoji, required this.value, required this.label});
+  final String emoji;
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return GlassCard(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+      child: Column(
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 20)),
+          const SizedBox(height: 6),
+          Text(value, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+          Text(label, style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.title, required this.items});
+  final String title;
+  final List<_SettingsRow> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            title,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        GlassCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: items.asMap().entries.map((e) {
+              final isLast = e.key == items.length - 1;
+              return Column(
+                children: [
+                  e.value,
+                  if (!isLast)
+                    Divider(
+                      height: 0.5,
+                      indent: 52,
+                      color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                    ),
+                ],
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
     required this.icon,
     required this.label,
     required this.onTap,
@@ -165,16 +282,30 @@ class _SettingsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return ListTile(
-      leading: Icon(icon, color: theme.colorScheme.onSurface.withValues(alpha: 0.7)),
-      title: Text(label, style: theme.textTheme.bodyMedium),
-      trailing: trailing ??
-          Icon(
-            Icons.chevron_right_rounded,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-          ),
+    return InkWell(
       onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(label, style: theme.textTheme.bodyMedium),
+            ),
+            if (trailing != null)
+              DefaultTextStyle(
+                style: theme.textTheme.bodySmall!.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                ),
+                child: trailing!,
+              ),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right_rounded, size: 20,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
+          ],
+        ),
+      ),
     );
   }
 }

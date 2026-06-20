@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
-
+import '../../../core/theme/app_colors.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -16,25 +16,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   static const _pages = [
     _OnboardingPage(
-      icon: Icons.favorite_rounded,
-      title: 'Merhaba!',
-      subtitle: 'Ritim\'e hoş geldin',
-      body: 'Bedenini tanımana yardımcı olmak için buradayız. '
-          'Döngünü takip et, sorularını sor, kendini keşfet.',
+      emoji: '💜',
+      title: 'Ritim\'e\nHoş Geldin',
+      body: 'Bedenini tanımana yardımcı olmak için buradayız.',
+      gradient: [Color(0xFFFADDB0), Color(0xFFF5CABB)],
     ),
     _OnboardingPage(
-      icon: Icons.calendar_month_rounded,
-      title: 'Döngünü Takip Et',
-      subtitle: 'Her ay ne yaşandığını anla',
-      body: 'Adet günlerini kaydet, belirtileri not al. '
-          'Ritim, döngünün hangi aşamasında olduğunu sana söyler.',
+      emoji: '📅',
+      title: 'Döngünü\nTakip Et',
+      body: 'Adet günlerini kaydet, belirtilerini not al, döngünü anla.',
+      gradient: [Color(0xFFF5CABB), Color(0xFFF0C0C8)],
     ),
     _OnboardingPage(
-      icon: Icons.shield_rounded,
-      title: 'Güvenli Alan',
-      subtitle: 'Merak etmek cesaret ister',
-      body: 'Sormaktan çekindiğin soruları güvenle sorabilirsin. '
-          'Uzman onaylı, yaşına uygun içerikler burada.',
+      emoji: '🛡️',
+      title: 'Güvenli\nAlan',
+      body: 'Merak ettiğin soruları güvenle sor. Uzman onaylı içerikler burada.',
+      gradient: [Color(0xFFF0C0C8), Color(0xFFE0C0D8)],
     ),
   ];
 
@@ -45,7 +42,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
-    if (_currentPage < AppConstants.onboardingPageCount - 1) {
+    if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(
         duration: AppConstants.animDurationNormal,
         curve: Curves.easeInOut,
@@ -62,77 +59,103 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isLastPage = _currentPage == AppConstants.onboardingPageCount - 1;
+    final isLastPage = _currentPage == _pages.length - 1;
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Atla butonu
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppConstants.paddingM,
-                  vertical: AppConstants.paddingS,
-                ),
-                child: TextButton(
-                  onPressed: _finishOnboarding,
-                  child: const Text('Atla'),
-                ),
+      body: Stack(
+        children: [
+          // Animated gradient arka plan
+          AnimatedContainer(
+            duration: AppConstants.animDurationSlow,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  _pages[_currentPage].gradient[0],
+                  _pages[_currentPage].gradient[1],
+                  const Color(0xFFFFF8F5),
+                ],
+                stops: const [0.0, 0.35, 0.7],
               ),
             ),
+          ),
 
-            // Sayfalar
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _pages.length,
-                onPageChanged: (index) => setState(() => _currentPage = index),
-                itemBuilder: (context, index) => _PageContent(page: _pages[index]),
-              ),
-            ),
+          SafeArea(
+            child: Column(
+              children: [
+                // Atla butonu
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppConstants.paddingM,
+                      vertical: AppConstants.paddingS,
+                    ),
+                    child: TextButton(
+                      onPressed: _finishOnboarding,
+                      child: const Text('Atla'),
+                    ),
+                  ),
+                ),
 
-            // İndikatör + buton
-            Padding(
-              padding: const EdgeInsets.all(AppConstants.paddingL),
-              child: Column(
-                children: [
-                  // Nokta indikatörler
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _pages.length,
-                      (i) => AnimatedContainer(
-                        duration: AppConstants.animDurationFast,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: i == _currentPage ? 24 : 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: i == _currentPage
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.primary.withValues(alpha: 0.25),
-                          borderRadius: BorderRadius.circular(4),
+                // Sayfalar
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: _pages.length,
+                    onPageChanged: (i) => setState(() => _currentPage = i),
+                    itemBuilder: (_, i) => _PageContent(page: _pages[i]),
+                  ),
+                ),
+
+                // İndikatör + buton
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppConstants.paddingL,
+                    0,
+                    AppConstants.paddingL,
+                    AppConstants.paddingL,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          _pages.length,
+                          (i) => AnimatedContainer(
+                            duration: AppConstants.animDurationFast,
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: i == _currentPage ? 28 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: i == _currentPage
+                                  ? AppColors.primary
+                                  : AppColors.primary.withValues(alpha: 0.25),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 54,
+                        child: ElevatedButton(
+                          onPressed: _nextPage,
+                          child: Text(
+                            isLastPage ? 'Başlayalım' : 'İleri',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-
-                  // İleri / Başla butonu
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _nextPage,
-                      child: Text(isLastPage ? 'Başlayalım' : 'İleri'),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -151,42 +174,21 @@ class _PageContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // İllüstrasyon alanı — gerçek asset buraya gelecek
-          Container(
-            width: 160,
-            height: 160,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              page.icon,
-              size: 72,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 40),
-
-          Text(
-            page.subtitle,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.colorScheme.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-
+          Text(page.emoji, style: const TextStyle(fontSize: 72)),
+          const SizedBox(height: 32),
           Text(
             page.title,
-            style: theme.textTheme.displaySmall,
+            style: theme.textTheme.displayMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              height: 1.15,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-
           Text(
             page.body,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
             textAlign: TextAlign.center,
           ),
@@ -198,14 +200,14 @@ class _PageContent extends StatelessWidget {
 
 class _OnboardingPage {
   const _OnboardingPage({
-    required this.icon,
+    required this.emoji,
     required this.title,
-    required this.subtitle,
     required this.body,
+    required this.gradient,
   });
 
-  final IconData icon;
+  final String emoji;
   final String title;
-  final String subtitle;
   final String body;
+  final List<Color> gradient;
 }
