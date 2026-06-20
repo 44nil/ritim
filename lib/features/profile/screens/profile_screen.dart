@@ -5,6 +5,7 @@ import '../../../core/providers/theme_provider.dart';
 import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
+import '../../../shared/widgets/mesh_gradient_bg.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -17,17 +18,7 @@ class ProfileScreen extends ConsumerWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: isDark
-                    ? [const Color(0xFF201820), const Color(0xFF151015)]
-                    : [const Color(0xFFF5ECF0), const Color(0xFFFAF6F4)],
-              ),
-            ),
-          ),
+          MeshGradientBg(isDark: isDark),
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),

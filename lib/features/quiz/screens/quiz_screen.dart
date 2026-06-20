@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
+import '../../../shared/widgets/mesh_gradient_bg.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -23,17 +24,7 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: isDark
-                    ? [const Color(0xFF201818), const Color(0xFF151015)]
-                    : [const Color(0xFFF5EBE0), const Color(0xFFFAF6F4)],
-              ),
-            ),
-          ),
+          MeshGradientBg(isDark: isDark),
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
+import '../../../shared/widgets/mesh_gradient_bg.dart';
 
 class ArticlesScreen extends StatelessWidget {
   const ArticlesScreen({super.key});
@@ -21,17 +22,7 @@ class ArticlesScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: isDark
-                    ? [const Color(0xFF181820), const Color(0xFF151015)]
-                    : [const Color(0xFFEEF2F5), const Color(0xFFFAF6F4)],
-              ),
-            ),
-          ),
+          MeshGradientBg(isDark: isDark),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
