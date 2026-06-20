@@ -85,11 +85,11 @@ class _GradientBackground extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomCenter,
           colors: [
-            const Color(0xFFF5C77E), // canlı amber/turuncu
-            const Color(0xFFF2A88A), // sıcak şeftali
-            const Color(0xFFF0B0BC), // pembe geçiş
-            const Color(0xFFF5D5E0), // açık pembe
-            const Color(0xFFFFF2F0), // warm off-white
+            const Color(0xFFFAD4A0), // yumuşak altın-şeftali
+            const Color(0xFFF8C9B8), // sıcak peach
+            const Color(0xFFF5C4D0), // soft pembe
+            const Color(0xFFFAE0E8), // açık rose
+            const Color(0xFFFFF6F4), // warm cream
           ],
           stops: const [0.0, 0.15, 0.3, 0.5, 0.75],
         ),
