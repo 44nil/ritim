@@ -3,6 +3,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
+import '../../../shared/widgets/staggered_list.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -28,8 +29,7 @@ class _QuizScreenState extends State<QuizScreen> {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: StaggeredList(
                 children: [
                   const SizedBox(height: 16),
                   Text('Quiz', style: theme.textTheme.displaySmall?.copyWith(

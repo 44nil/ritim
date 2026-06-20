@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
+import '../../../shared/widgets/staggered_list.dart';
 
 class ArticlesScreen extends StatelessWidget {
   const ArticlesScreen({super.key});
@@ -24,9 +25,9 @@ class ArticlesScreen extends StatelessWidget {
         children: [
           MeshGradientBg(isDark: isDark),
           SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            child: SingleChildScrollView(
+              child: StaggeredList(
+                children: [
                 const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -34,7 +35,6 @@ class ArticlesScreen extends StatelessWidget {
                     fontWeight: FontWeight.w800, height: 1.1, letterSpacing: -0.5,
                   )),
                 ),
-                const SizedBox(height: 4),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text('Sana özel içerikler', style: theme.textTheme.bodyMedium?.copyWith(
@@ -91,46 +91,41 @@ class ArticlesScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _articles.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (_, i) {
-                      final a = _articles[i];
-                      return CleanCard(
-                        onTap: () {},
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 44, height: 44,
-                              decoration: BoxDecoration(
-                                color: a.color.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(a.icon, size: 22, color: a.color),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(a.title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                                  Text('${a.subtitle} okuma', style: theme.textTheme.labelSmall?.copyWith(
-                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                                  )),
-                                ],
-                              ),
-                            ),
-                            Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
-                          ],
+                ..._articles.map((a) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: CleanCard(
+                    onTap: () {},
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44, height: 44,
+                          decoration: BoxDecoration(
+                            color: a.color.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(a.icon, size: 22, color: a.color),
                         ),
-                      );
-                    },
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(a.title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                              Text('${a.subtitle} okuma', style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                              )),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+                      ],
+                    ),
                   ),
-                ),
+                )),
+                const SizedBox(height: 100),
               ],
+            ),
             ),
           ),
         ],

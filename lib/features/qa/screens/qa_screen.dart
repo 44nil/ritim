@@ -3,6 +3,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
+import '../../../shared/widgets/staggered_list.dart';
 
 class QaScreen extends StatelessWidget {
   const QaScreen({super.key});
@@ -25,33 +26,30 @@ class QaScreen extends StatelessWidget {
         children: [
           MeshGradientBg(isDark: isDark),
           SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Soru &\nCevap', style: theme.textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.w800, height: 1.1, letterSpacing: -0.5,
-                  )),
-                ),
-                const SizedBox(height: 4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Merak ettiğin her şey', style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  )),
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: ListView.separated(
+            child: SingleChildScrollView(
+              child: StaggeredList(
+                children: [
+                  const SizedBox(height: 16),
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _questions.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (context, i) => _FaqCard(item: _questions[i]),
+                    child: Text('Soru &\nCevap', style: theme.textTheme.displaySmall?.copyWith(
+                      fontWeight: FontWeight.w800, height: 1.1, letterSpacing: -0.5,
+                    )),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Merak ettiğin her şey', style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    )),
+                  ),
+                  const SizedBox(height: 20),
+                  ..._questions.map((q) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: _FaqCard(item: q),
+                  )),
+                  const SizedBox(height: 100),
+                ],
+              ),
             ),
           ),
         ],
@@ -91,8 +89,7 @@ class _FaqCardState extends State<_FaqCard> {
           Row(
             children: [
               Container(
-                width: 36,
-                height: 36,
+                width: 36, height: 36,
                 decoration: BoxDecoration(
                   color: widget.item.color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),

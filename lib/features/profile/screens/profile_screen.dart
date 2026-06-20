@@ -6,6 +6,7 @@ import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
+import '../../../shared/widgets/staggered_list.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -22,7 +23,7 @@ class ProfileScreen extends ConsumerWidget {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
+              child: StaggeredList(
                 children: [
                   const SizedBox(height: 24),
                   Container(
