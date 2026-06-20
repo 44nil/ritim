@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/clean_card.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -16,7 +15,6 @@ class ProfileScreen extends ConsumerWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           Container(
@@ -25,163 +23,83 @@ class ProfileScreen extends ConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: isDark
-                    ? [AppColors.primary.withValues(alpha: 0.15), const Color(0xFF1A151E)]
-                    : [const Color(0xFFFAE8F2), const Color(0xFFFFF8F6)],
-                stops: const [0.0, 0.45],
+                    ? [const Color(0xFF201820), const Color(0xFF151015)]
+                    : [const Color(0xFFF5ECF0), const Color(0xFFFAF6F4)],
               ),
             ),
           ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: AppConstants.paddingM),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  const SizedBox(height: AppConstants.paddingL),
-
-                  // Avatar
+                  const SizedBox(height: 24),
                   Container(
-                    width: 88,
-                    height: 88,
+                    width: 80, height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withValues(alpha: 0.3),
-                          AppColors.secondary.withValues(alpha: 0.3),
-                        ],
-                      ),
+                      color: AppColors.primaryContainer,
+                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
                     ),
-                    child: const Center(
-                      child: Text('E', style: TextStyle(fontSize: 36, fontWeight: FontWeight.w700)),
-                    ),
+                    child: const Center(child: Text('E', style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: AppColors.primary))),
                   ),
                   const SizedBox(height: 12),
-                  Text('Ela', style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  )),
-                  Text(
-                    '14 yaşında',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  const SizedBox(height: AppConstants.paddingL),
+                  Text('Ela', style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  Text('14 yaşında', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+                  const SizedBox(height: 24),
 
-                  // İstatistik kartları
                   Row(
                     children: [
-                      Expanded(
-                        child: _StatCard(
-                          emoji: '📅',
-                          value: '3',
-                          label: 'Ay takip',
-                        ),
-                      ),
+                      _Stat(emoji: '📅', value: '3', label: 'Ay'),
                       const SizedBox(width: 10),
-                      Expanded(
-                        child: _StatCard(
-                          emoji: '🔥',
-                          value: '12',
-                          label: 'Gün seri',
-                        ),
-                      ),
+                      _Stat(emoji: '🔥', value: '12', label: 'Seri'),
                       const SizedBox(width: 10),
-                      Expanded(
-                        child: _StatCard(
-                          emoji: '🏆',
-                          value: '240',
-                          label: 'Quiz puan',
-                        ),
-                      ),
+                      _Stat(emoji: '🏆', value: '240', label: 'Puan'),
                     ],
                   ),
-                  const SizedBox(height: AppConstants.paddingL),
+                  const SizedBox(height: 24),
 
-                  // Ayarlar
-                  _SettingsGroup(
-                    title: 'Hesap',
-                    items: [
-                      _SettingsRow(
-                        icon: Icons.person_outline_rounded,
-                        label: 'Profili Düzenle',
-                        onTap: () {},
-                      ),
-                      _SettingsRow(
-                        icon: Icons.notifications_outlined,
-                        label: 'Bildirimler',
-                        onTap: () {},
-                      ),
-                      _SettingsRow(
-                        icon: Icons.lock_outline_rounded,
-                        label: 'Gizlilik',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppConstants.paddingM),
+                  _Section(title: 'Hesap', children: [
+                    _Row(icon: Icons.person_outline_rounded, label: 'Profili Düzenle', onTap: () {}),
+                    _Row(icon: Icons.notifications_none_rounded, label: 'Bildirimler', onTap: () {}),
+                    _Row(icon: Icons.lock_outline_rounded, label: 'Gizlilik', onTap: () {}),
+                  ]),
+                  const SizedBox(height: 14),
 
-                  _SettingsGroup(
-                    title: 'Uygulama',
-                    items: [
-                      _SettingsRow(
-                        icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                        label: 'Görünüm',
-                        trailing: Text(isDark ? 'Koyu' : 'Açık'),
-                        onTap: () {
-                          ref.read(themeModeProvider.notifier).state =
-                              isDark ? ThemeMode.light : ThemeMode.dark;
-                        },
-                      ),
-                      _SettingsRow(
-                        icon: Icons.language_rounded,
-                        label: 'Dil',
-                        trailing: const Text('Türkçe'),
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppConstants.paddingM),
+                  _Section(title: 'Uygulama', children: [
+                    _Row(
+                      icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                      label: 'Görünüm',
+                      trailing: Text(isDark ? 'Koyu' : 'Açık'),
+                      onTap: () {
+                        ref.read(themeModeProvider.notifier).state = isDark ? ThemeMode.light : ThemeMode.dark;
+                      },
+                    ),
+                    _Row(icon: Icons.language_rounded, label: 'Dil', trailing: const Text('Türkçe'), onTap: () {}),
+                  ]),
+                  const SizedBox(height: 14),
 
-                  // Ebeveyn paneli
-                  GlassCard(
+                  CleanCard(
                     onTap: () => context.pushNamed(RouteNames.parentLogin),
-                    padding: const EdgeInsets.all(AppConstants.paddingM),
+                    padding: const EdgeInsets.all(18),
                     child: Row(
                       children: [
                         Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: AppColors.secondary.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(AppConstants.radiusM),
-                          ),
-                          child: const Icon(Icons.shield_outlined,
-                              color: AppColors.secondary, size: 22),
+                          width: 40, height: 40,
+                          decoration: BoxDecoration(color: AppColors.secondary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+                          child: const Icon(Icons.shield_outlined, color: AppColors.secondary, size: 22),
                         ),
                         const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Ebeveyn Paneli',
-                                style: theme.textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                'Ebeveyn girişi ile erişin',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                                ),
-                              ),
+                              Text('Ebeveyn Paneli', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                              Text('Ebeveyn girişi ile erişin', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
                             ],
                           ),
                         ),
-                        Icon(
-                          Icons.chevron_right_rounded,
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                        ),
+                        Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
                       ],
                     ),
                   ),
@@ -196,35 +114,33 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-class _StatCard extends StatelessWidget {
-  const _StatCard({required this.emoji, required this.value, required this.label});
-  final String emoji;
-  final String value;
-  final String label;
+class _Stat extends StatelessWidget {
+  const _Stat({required this.emoji, required this.value, required this.label});
+  final String emoji, value, label;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GlassCard(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-      child: Column(
-        children: [
-          Text(emoji, style: const TextStyle(fontSize: 20)),
-          const SizedBox(height: 6),
-          Text(value, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
-          Text(label, style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-          )),
-        ],
+    return Expanded(
+      child: CleanCard(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 6),
+            Text(value, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+            Text(label, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _SettingsGroup extends StatelessWidget {
-  const _SettingsGroup({required this.title, required this.items});
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.children});
   final String title;
-  final List<_SettingsRow> items;
+  final List<_Row> children;
 
   @override
   Widget build(BuildContext context) {
@@ -234,30 +150,19 @@ class _SettingsGroup extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(
-            title,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          child: Text(title, style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontWeight: FontWeight.w600,
+          )),
         ),
-        GlassCard(
+        CleanCard(
           padding: EdgeInsets.zero,
           child: Column(
-            children: items.asMap().entries.map((e) {
-              final isLast = e.key == items.length - 1;
-              return Column(
-                children: [
-                  e.value,
-                  if (!isLast)
-                    Divider(
-                      height: 0.5,
-                      indent: 52,
-                      color: theme.colorScheme.outline.withValues(alpha: 0.15),
-                    ),
-                ],
-              );
+            children: children.asMap().entries.map((e) {
+              return Column(children: [
+                e.value,
+                if (e.key < children.length - 1)
+                  Divider(height: 0.5, indent: 52, color: Theme.of(e.value.onTap.hashCode > 0 ? context : context).colorScheme.outline.withValues(alpha: 0.1)),
+              ]);
             }).toList(),
           ),
         ),
@@ -266,14 +171,8 @@ class _SettingsGroup extends StatelessWidget {
   }
 }
 
-class _SettingsRow extends StatelessWidget {
-  const _SettingsRow({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.trailing,
-  });
-
+class _Row extends StatelessWidget {
+  const _Row({required this.icon, required this.label, required this.onTap, this.trailing});
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -288,21 +187,12 @@ class _SettingsRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Icon(icon, size: 22, color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
+            Icon(icon, size: 22, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
             const SizedBox(width: 14),
-            Expanded(
-              child: Text(label, style: theme.textTheme.bodyMedium),
-            ),
-            if (trailing != null)
-              DefaultTextStyle(
-                style: theme.textTheme.bodySmall!.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                ),
-                child: trailing!,
-              ),
+            Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
+            if (trailing != null) DefaultTextStyle(style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)), child: trailing!),
             const SizedBox(width: 4),
-            Icon(Icons.chevron_right_rounded, size: 20,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
+            Icon(Icons.chevron_right_rounded, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
           ],
         ),
       ),
