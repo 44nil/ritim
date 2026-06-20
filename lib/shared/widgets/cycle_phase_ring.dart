@@ -67,7 +67,7 @@ class _CyclePhaseRingState extends State<CyclePhaseRing>
     return AnimatedBuilder(
       animation: Listenable.merge([_fillAnimation, _pulseController]),
       builder: (context, child) {
-        final pulseScale = 1.0 + _pulseController.value * 0.04;
+        final pulseScale = 1.0 + _pulseController.value * 0.06;
         final currentProgress = widget.progress * _fillAnimation.value;
 
         return Transform.scale(
@@ -87,10 +87,10 @@ class _CyclePhaseRingState extends State<CyclePhaseRing>
                     boxShadow: [
                       BoxShadow(
                         color: widget.phaseColor.withValues(
-                          alpha: 0.12 * _pulseController.value,
+                          alpha: 0.25 * _pulseController.value,
                         ),
-                        blurRadius: 20,
-                        spreadRadius: 4,
+                        blurRadius: 28,
+                        spreadRadius: 6,
                       ),
                     ],
                   ),
