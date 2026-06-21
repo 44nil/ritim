@@ -326,11 +326,7 @@ class _TodayTab extends StatelessWidget {
         ])),
         const SizedBox(height: 14),
 
-        // 4. Takvim
-        staggered(index: 3, child: const _MonthCalendar()),
-        const SizedBox(height: 14),
-
-        // 5. Yaşam Rehberi — faz bazlı öneriler
+        // 4. Yaşam Rehberi — faz bazlı öneriler
         staggered(index: 4, child: Text('Yaşam Rehberi', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800))),
         const SizedBox(height: 4),
         staggered(index: 4, child: Text('${phase.label} fazına özel öneriler',
@@ -840,6 +836,8 @@ class _WeeklyTab extends StatelessWidget {
         )),
         const SizedBox(height: 8),
         ..._habits.asMap().entries.map((e) => staggered(index: e.key + 2, child: _HabitTrackCard(habit: e.value))),
+        const SizedBox(height: 20),
+        staggered(index: 8, child: const _MonthCalendar()),
         const SizedBox(height: 100),
       ],
     );
