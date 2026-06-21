@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
-import '../../../shared/widgets/cycle_phase_ring.dart';
 import '../../../shared/widgets/arc_mood_selector.dart';
+import '../../../shared/widgets/cycle_wheel.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../../../shared/widgets/mood_face.dart';
 import '../data/mock_cycle_data.dart';
@@ -247,11 +247,69 @@ class _TodayTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 1. Hero kart — neredeyim?
-        staggered(index: 0, child: _DarkHeroCard(phase: phase)),
+        // 1. Dairesel döngü çarkı
+        staggered(index: 0, child: Center(
+          child: CycleWheel(
+            data: CycleWheelData(
+              currentDay: MockCycleData.currentCycleDay,
+              cycleLength: MockCycleData.cycleLengthDays,
+              periodDays: MockCycleData.periodLengthDays,
+              ovulationDays: const [14, 15, 16],
+              phases: [
+                CycleWheelPhase(label: 'Adet', startDay: 1, endDay: 5, color: AppColors.phaseMenstruation),
+                CycleWheelPhase(label: 'Foliküler', startDay: 6, endDay: 13, color: AppColors.phaseFollicular),
+                CycleWheelPhase(label: 'Ovülasyon', startDay: 14, endDay: 16, color: AppColors.phaseOvulation),
+                CycleWheelPhase(label: 'Luteal', startDay: 17, endDay: 28, color: AppColors.phaseLuteal),
+              ],
+            ),
+            onAddTap: () => _QuickActions._showDailyLog(context),
+          ),
+        )),
+        const SizedBox(height: 8),
+
+        // 2. Tahmin bilgileri
+        staggered(index: 1, child: Center(
+          child: Column(children: [
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              Container(width: 8, height: 8, decoration: BoxDecoration(color: AppColors.phaseMenstruation, shape: BoxShape.circle)),
+              const SizedBox(width: 6),
+              Text('Sonraki adet: ~${MockCycleData.daysUntilNextPeriod} gün',
+                style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+            ]),
+            const SizedBox(height: 4),
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              Container(width: 8, height: 8, decoration: BoxDecoration(color: AppColors.phaseOvulation, shape: BoxShape.circle)),
+              const SizedBox(width: 6),
+              Text('${phase.label} fazındasın',
+                style: TextStyle(fontSize: 13, color: phase.color, fontWeight: FontWeight.w600)),
+            ]),
+          ]),
+        )),
+        const SizedBox(height: 16),
+
+        // 3. Günlük tahmin metni
+        staggered(index: 2, child: _BentoCard(
+          isDark: isDark,
+          shape: _CardShape.pill,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 32, height: 32,
+                decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
+                child: Icon(Icons.auto_awesome_rounded, size: 16, color: phase.color),
+              ),
+              const SizedBox(width: 12),
+              Expanded(child: Text(
+                phase.tip,
+                style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurface.withValues(alpha: 0.7), height: 1.4),
+              )),
+            ],
+          ),
+        )),
         const SizedBox(height: 14),
 
-        // 2. Hızlı aksiyonlar — 4 kart (ruh hali arc selector açar)
+        // 4. Hızlı aksiyonlar
         staggered(index: 1, child: Row(children: [
           Expanded(child: _BentoMiniAction(icon: Icons.mood_outlined, label: 'Ruh Hali', color: AppColors.primary, isDark: isDark,
             onTap: () => _QuickActions._showMoodSelector(context))),
@@ -377,81 +435,6 @@ class _TodayTab extends StatelessWidget {
         staggered(index: 8, child: const _CycleTimeline()),
         const SizedBox(height: 100),
       ],
-    );
-  }
-}
-
-// ─── Koyu Hero Kart ─────────────────────────────────────────────────────────
-
-class _DarkHeroCard extends StatelessWidget {
-  const _DarkHeroCard({required this.phase});
-  final CyclePhaseInfo phase;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(32), topRight: Radius.circular(32),
-          bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Faz pill
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: phase.color.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(phase.icon, size: 12, color: phase.color),
-                    const SizedBox(width: 5),
-                    Text('${phase.label} Fazı', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: phase.color)),
-                  ]),
-                ),
-                const SizedBox(height: 16),
-
-                // Büyük gün sayısı
-                RichText(
-                  text: TextSpan(children: [
-                    TextSpan(
-                      text: '${MockCycleData.currentCycleDay}',
-                      style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800, color: Colors.white, height: 1),
-                    ),
-                    TextSpan(
-                      text: '. gün',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white.withValues(alpha: 0.6)),
-                    ),
-                  ]),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Sonraki adet ~${MockCycleData.daysUntilNextPeriod} gün',
-                  style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.4)),
-                ),
-              ],
-            ),
-          ),
-
-          CyclePhaseRing(
-            progress: MockCycleData.cycleProgress,
-            phaseColor: phase.color,
-            currentDay: MockCycleData.currentCycleDay,
-            size: 90,
-            strokeWidth: 6,
-          ),
-        ],
-      ),
     );
   }
 }
