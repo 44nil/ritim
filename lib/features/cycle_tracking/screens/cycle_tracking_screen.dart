@@ -797,7 +797,7 @@ class _BodyInfoCard extends StatelessWidget {
             Icon(Icons.auto_awesome_rounded, size: 16, color: phase.color),
             const SizedBox(width: 8),
             Text('Bedeninde Ne Oluyor?', style: TextStyle(
-              fontSize: 13, fontWeight: FontWeight.w700, color: phase.color)),
+              fontSize: 15, fontWeight: FontWeight.w700, color: phase.color)),
           ]),
           const SizedBox(height: 12),
           Text(phase.bodyInfo, style: TextStyle(
@@ -1264,7 +1264,7 @@ class _FullCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF241E22) : Colors.white,
         borderRadius: BorderRadius.circular(24),

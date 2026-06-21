@@ -75,7 +75,7 @@ class ArticlesScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
-                    padding: const EdgeInsets.all(22),
+                    padding: const EdgeInsets.all(26),
                     decoration: BoxDecoration(
                       color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
                       borderRadius: BorderRadius.circular(22),

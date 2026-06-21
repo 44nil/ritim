@@ -26,7 +26,7 @@ class CleanCard extends StatelessWidget {
     final bg = color ?? (isDark ? const Color(0xFF241E22) : Colors.white);
 
     final content = Container(
-      padding: padding ?? const EdgeInsets.all(AppConstants.paddingM),
+      padding: padding ?? const EdgeInsets.all(22),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(radius),
