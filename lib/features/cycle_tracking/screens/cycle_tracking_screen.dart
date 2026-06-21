@@ -265,27 +265,27 @@ class _TodayTab extends StatelessWidget {
             onAddTap: () => _QuickActions._showDailyLog(context),
           ),
         )),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
 
         // 2. Tahmin bilgileri
         staggered(index: 1, child: Center(
           child: Column(children: [
             Row(mainAxisSize: MainAxisSize.min, children: [
               Container(width: 8, height: 8, decoration: BoxDecoration(color: AppColors.phaseMenstruation, shape: BoxShape.circle)),
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               Text('Sonraki adet: ~${MockCycleData.daysUntilNextPeriod} gün',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface.withValues(alpha: 0.7))),
             ]),
-            const SizedBox(height: 6),
+            const SizedBox(height: 10),
             Row(mainAxisSize: MainAxisSize.min, children: [
               Container(width: 8, height: 8, decoration: BoxDecoration(color: AppColors.phaseOvulation, shape: BoxShape.circle)),
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               Text('${phase.label} fazındasın',
                 style: TextStyle(fontSize: 14, color: phase.color, fontWeight: FontWeight.w700)),
             ]),
           ]),
         )),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
 
         // 3. Günlük tahmin metni
         staggered(index: 2, child: _BentoCard(
