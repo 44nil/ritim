@@ -466,7 +466,6 @@ class _TodayTab extends StatelessWidget {
         const SizedBox(height: 18),
 
         // 8. Timeline
-        staggered(index: 8, child: const _CycleTimeline()),
         const SizedBox(height: 100),
       ],
     );
@@ -1000,133 +999,7 @@ class _CycleHistory extends StatelessWidget {
   }
 }
 
-// ─── Döngü Zaman Çizelgesi ──────────────────────────────────────────────────
 
-class _CycleTimeline extends StatelessWidget {
-  const _CycleTimeline();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final events = [
-      _TimelineEvent(dateRange: '7 — 11 Haz', label: 'Adet Dönemi', subtitle: 'Rahim iç tabakası döküldü', color: AppColors.phaseMenstruation, icon: Icons.water_drop_rounded, isPast: true),
-      _TimelineEvent(dateRange: '12 — 18 Haz', label: 'Foliküler Faz', subtitle: 'Yeni yumurta hazırlandı', color: AppColors.phaseFollicular, icon: Icons.eco_rounded, isPast: true),
-      _TimelineEvent(dateRange: '19 — 21 Haz', label: 'Ovülasyon', subtitle: 'Yumurta serbest bırakıldı', color: AppColors.phaseOvulation, icon: Icons.brightness_high_rounded, isPast: false),
-      _TimelineEvent(dateRange: '22 Haz — 5 Tem', label: 'Luteal Faz', subtitle: 'Vücut dinlenmeye geçiyor', color: AppColors.phaseLuteal, icon: Icons.nights_stay_rounded, isPast: false),
-      _TimelineEvent(dateRange: '6 Tem', label: 'Sonraki Adet', subtitle: 'Döngü yeniden başlıyor', color: AppColors.phaseMenstruation, icon: Icons.event_rounded, isPast: false),
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Zaman Çizelgesi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-        const SizedBox(height: 18),
-        ...events.asMap().entries.map((e) {
-          final event = e.value;
-          final isLast = e.key == events.length - 1;
-
-          return IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Sol: tarih
-                SizedBox(
-                  width: 58,
-                  child: Text(event.dateRange, style: TextStyle(
-                    fontSize: 10, fontWeight: FontWeight.w600,
-                    color: event.isPast
-                        ? theme.colorScheme.onSurface.withValues(alpha: 0.35)
-                        : theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  )),
-                ),
-                // Orta: çizgi + nokta
-                SizedBox(
-                  width: 28,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 12, height: 12,
-                        decoration: BoxDecoration(
-                          color: event.isPast ? event.color.withValues(alpha: 0.3) : event.color,
-                          shape: BoxShape.circle,
-                          border: event.isPast ? null : Border.all(color: Colors.white, width: 2),
-                        ),
-                      ),
-                      if (!isLast) Expanded(
-                        child: Container(
-                          width: 2,
-                          color: event.color.withValues(alpha: event.isPast ? 0.15 : 0.3),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Sağ: içerik kartı
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: event.isPast
-                            ? (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.white.withValues(alpha: 0.35))
-                            : (isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 30, height: 30,
-                            decoration: BoxDecoration(
-                              color: event.color.withValues(alpha: event.isPast ? 0.1 : 0.2),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(event.icon, size: 16, color: event.isPast ? event.color.withValues(alpha: 0.5) : event.color),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(event.label, style: TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.w700,
-                                color: event.isPast
-                                    ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
-                                    : (isDark ? Colors.white : Colors.white),
-                              )),
-                              Text(event.subtitle, style: TextStyle(
-                                fontSize: 10,
-                                color: event.isPast
-                                    ? theme.colorScheme.onSurface.withValues(alpha: 0.35)
-                                    : Colors.white.withValues(alpha: 0.5),
-                              )),
-                            ],
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
-      ],
-    );
-  }
-}
-
-class _TimelineEvent {
-  const _TimelineEvent({
-    required this.dateRange, required this.label, required this.subtitle,
-    required this.color, required this.icon, required this.isPast,
-  });
-  final String dateRange, label, subtitle;
-  final Color color;
-  final IconData icon;
-  final bool isPast;
-}
 
 
 
