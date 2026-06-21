@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/bubble_categories.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../../../shared/widgets/staggered_list.dart';
@@ -49,7 +50,27 @@ class ArticlesScreen extends StatelessWidget {
                   child: Text('Bedenini tanı, kendini keşfet', style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+
+                // Bubble kategoriler
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: BubbleCategories(
+                    height: 240,
+                    categories: [
+                      BubbleCategory(label: 'Döngü', color: AppColors.phaseMenstruation, size: 100, offset: const Offset(70, 60)),
+                      BubbleCategory(label: 'Duygular', color: AppColors.phaseLuteal, size: 110, offset: const Offset(190, 45)),
+                      BubbleCategory(label: 'Beslenme', color: AppColors.phaseOvulation, size: 80, offset: const Offset(290, 90)),
+                      BubbleCategory(label: 'Sağlık', color: AppColors.primary, size: 90, offset: const Offset(100, 160)),
+                      BubbleCategory(label: 'Egzersiz', color: AppColors.phaseFollicular, size: 75, offset: const Offset(220, 170)),
+                      BubbleCategory(label: 'Beden', color: AppColors.secondary, size: 65, offset: const Offset(310, 180)),
+                    ],
+                    onTap: (category) {
+                      // TODO: Kategoriye göre filtreleme
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
 
                 // Bugünün Okuması — koyu hero kart
                 Padding(
