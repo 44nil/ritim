@@ -56,14 +56,14 @@ class ArticlesScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: BubbleCategories(
-                    height: 240,
+                    height: 300,
                     categories: [
-                      BubbleCategory(label: 'Döngü', color: AppColors.phaseMenstruation, size: 100, offset: const Offset(70, 60)),
-                      BubbleCategory(label: 'Duygular', color: AppColors.phaseLuteal, size: 110, offset: const Offset(190, 45)),
-                      BubbleCategory(label: 'Beslenme', color: AppColors.phaseOvulation, size: 80, offset: const Offset(290, 90)),
-                      BubbleCategory(label: 'Sağlık', color: AppColors.primary, size: 90, offset: const Offset(100, 160)),
-                      BubbleCategory(label: 'Egzersiz', color: AppColors.phaseFollicular, size: 75, offset: const Offset(220, 170)),
-                      BubbleCategory(label: 'Beden', color: AppColors.secondary, size: 65, offset: const Offset(310, 180)),
+                      BubbleCategory(label: 'Döngü', color: AppColors.phaseMenstruation, size: 120, offset: const Offset(80, 70)),
+                      BubbleCategory(label: 'Duygular', color: AppColors.phaseLuteal, size: 130, offset: const Offset(210, 50)),
+                      BubbleCategory(label: 'Beslenme', color: AppColors.phaseOvulation, size: 100, offset: const Offset(310, 110)),
+                      BubbleCategory(label: 'Sağlık', color: AppColors.primary, size: 110, offset: const Offset(110, 195)),
+                      BubbleCategory(label: 'Egzersiz', color: AppColors.phaseFollicular, size: 95, offset: const Offset(245, 210)),
+                      BubbleCategory(label: 'Beden', color: AppColors.secondary, size: 80, offset: const Offset(340, 230)),
                     ],
                     onTap: (category) {
                       // TODO: Kategoriye göre filtreleme
