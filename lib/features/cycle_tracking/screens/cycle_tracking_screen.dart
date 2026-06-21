@@ -243,7 +243,7 @@ class _TodayTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 1. Dairesel döngü çarkı
+        // 1. Döngü çarkı
         staggered(index: 0, child: Center(
           child: CycleWheel(
             data: CycleWheelData(
@@ -270,91 +270,134 @@ class _TodayTab extends StatelessWidget {
               Container(width: 8, height: 8, decoration: BoxDecoration(color: AppColors.phaseMenstruation, shape: BoxShape.circle)),
               const SizedBox(width: 8),
               Text('Sonraki adet: ~${MockCycleData.daysUntilNextPeriod} gün',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface.withValues(alpha: 0.7))),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface.withValues(alpha: 0.7))),
             ]),
             const SizedBox(height: 10),
             Row(mainAxisSize: MainAxisSize.min, children: [
-              Container(width: 8, height: 8, decoration: BoxDecoration(color: AppColors.phaseOvulation, shape: BoxShape.circle)),
+              Container(width: 8, height: 8, decoration: BoxDecoration(color: phase.color, shape: BoxShape.circle)),
               const SizedBox(width: 8),
               Text('${phase.label} fazındasın',
-                style: TextStyle(fontSize: 14, color: phase.color, fontWeight: FontWeight.w700)),
+                style: TextStyle(fontSize: 15, color: phase.color, fontWeight: FontWeight.w700)),
             ]),
           ]),
         )),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
 
-        // 3. Günlük tahmin metni
-        staggered(index: 2, child: _BentoCard(
+        // 3. Bugün nasıl hissediyorsun — mood chip'leri
+        staggered(index: 2, child: _FullCard(
           isDark: isDark,
-          shape: _CardShape.pill,
-          child: Row(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 32, height: 32,
-                decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
-                child: Icon(Icons.auto_awesome_rounded, size: 16, color: phase.color),
+              Text('Bugün nasıl hissediyorsun?', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  _MoodChip(label: 'Mutlu', color: const Color(0xFFF0A060), onTap: () {}),
+                  _MoodChip(label: 'Sakin', color: const Color(0xFF90C090), onTap: () {}),
+                  _MoodChip(label: 'Yorgun', color: const Color(0xFFA0A8D0), onTap: () {}),
+                  _MoodChip(label: 'Hassas', color: const Color(0xFFD898B0), onTap: () {}),
+                  _MoodChip(label: 'Sinirli', color: const Color(0xFFE87860), onTap: () {}),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(child: Text(
-                phase.tip,
-                style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurface.withValues(alpha: 0.7), height: 1.4),
+            ],
+          ),
+        )),
+        const SizedBox(height: 16),
+
+        // 4. Günlük ipucu — büyük kart
+        staggered(index: 3, child: _FullCard(
+          isDark: isDark,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+                  child: Icon(Icons.auto_awesome_rounded, size: 20, color: phase.color),
+                ),
+                const SizedBox(width: 14),
+                Text('${phase.label} Fazı', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: phase.color)),
+              ]),
+              const SizedBox(height: 16),
+              Text(phase.tip, style: TextStyle(fontSize: 15, color: theme.colorScheme.onSurface.withValues(alpha: 0.7), height: 1.5)),
+            ],
+          ),
+        )),
+        const SizedBox(height: 16),
+
+        // 5. Hızlı aksiyonlar — yatay scroll chip'ler
+        staggered(index: 4, child: Row(children: [
+          _ActionPill(icon: Icons.edit_calendar_outlined, label: 'Kaydet', isDark: isDark, onTap: () => _QuickActions._showDailyLog(context)),
+          const SizedBox(width: 10),
+          _ActionPill(icon: Icons.healing_outlined, label: 'Semptom', isDark: isDark, onTap: () => _QuickActions._showSymptoms(context)),
+          const SizedBox(width: 10),
+          _ActionPill(icon: Icons.sticky_note_2_outlined, label: 'Not', isDark: isDark,
+            onTap: () => _QuickActions._showNote(context)),
+        ])),
+        const SizedBox(height: 18),
+
+        // 6. Beslenme — büyük kart
+        staggered(index: 5, child: _FullCard(
+          isDark: isDark,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Container(width: 40, height: 40,
+                  decoration: BoxDecoration(color: AppColors.phaseOvulation.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+                  child: const Icon(Icons.restaurant_outlined, size: 20, color: AppColors.phaseOvulation)),
+                const SizedBox(width: 14),
+                Text('Beslenme', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.phaseOvulation)),
+              ]),
+              const SizedBox(height: 16),
+              ...MockWellnessData.current.nutrition.take(3).map((item) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Container(width: 6, height: 6, margin: const EdgeInsets.only(top: 7),
+                    decoration: BoxDecoration(color: AppColors.phaseOvulation.withValues(alpha: 0.4), shape: BoxShape.circle)),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(item, style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.4))),
+                ]),
               )),
             ],
           ),
         )),
-        const SizedBox(height: 18),
+        const SizedBox(height: 16),
 
-        // 4. Hızlı aksiyonlar
-        staggered(index: 1, child: Row(children: [
-          Expanded(child: _BentoMiniAction(icon: Icons.mood_outlined, label: 'Ruh Hali', color: AppColors.primary, isDark: isDark,
-            onTap: () => _QuickActions._showMoodSelector(context))),
-          const SizedBox(width: 10),
-          Expanded(child: _BentoMiniAction(icon: Icons.edit_calendar_outlined, label: 'Kaydet', color: AppColors.tertiary, isDark: isDark,
-            onTap: () => _QuickActions._showDailyLog(context))),
-          const SizedBox(width: 10),
-          Expanded(child: _BentoMiniAction(icon: Icons.healing_outlined, label: 'Semptom', color: AppColors.phaseMenstruation, isDark: isDark,
-            onTap: () => _QuickActions._showSymptoms(context))),
-          const SizedBox(width: 10),
-          Expanded(child: _BentoMiniAction(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.phaseFollicular, isDark: isDark,
-            onTap: () => _QuickActions._showNote(context))),
-        ])),
-        const SizedBox(height: 18),
-
-        // 4. Yaşam Rehberi — faz bazlı öneriler
-        staggered(index: 4, child: Text('Yaşam Rehberi', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800))),
-        const SizedBox(height: 4),
-        staggered(index: 4, child: Text('${phase.label} fazına özel öneriler',
-          style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurface.withValues(alpha: 0.4)))),
-        const SizedBox(height: 18),
-
-        // Beslenme + Egzersiz yan yana
-        staggered(index: 5, child: SizedBox(
-          height: 200,
-          child: Row(children: [
-            Expanded(child: _WellnessCard(
-              icon: Icons.restaurant_outlined,
-              title: 'Beslenme',
-              color: AppColors.phaseOvulation,
-              items: MockWellnessData.current.nutrition.take(3).toList(),
-              isDark: isDark,
-            )),
-            const SizedBox(width: 10),
-            Expanded(child: _WellnessCard(
-              icon: Icons.self_improvement_outlined,
-              title: 'Hareket',
-              color: AppColors.phaseLuteal,
-              items: MockWellnessData.current.exercises.take(3).toList(),
-              isDark: isDark,
-            )),
-          ]),
+        // 7. Hareket — büyük kart
+        staggered(index: 6, child: _FullCard(
+          isDark: isDark,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Container(width: 40, height: 40,
+                  decoration: BoxDecoration(color: AppColors.phaseLuteal.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+                  child: const Icon(Icons.self_improvement_outlined, size: 20, color: AppColors.phaseLuteal)),
+                const SizedBox(width: 14),
+                Text('Hareket', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.phaseLuteal)),
+              ]),
+              const SizedBox(height: 16),
+              ...MockWellnessData.current.exercises.take(3).map((item) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Container(width: 6, height: 6, margin: const EdgeInsets.only(top: 7),
+                    decoration: BoxDecoration(color: AppColors.phaseLuteal.withValues(alpha: 0.4), shape: BoxShape.circle)),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(item, style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.4))),
+                ]),
+              )),
+            ],
+          ),
         )),
-        const SizedBox(height: 10),
+        const SizedBox(height: 16),
 
-        // Su + Uyku yan yana
-        staggered(index: 6, child: SizedBox(
-          height: 150,
-          child: Row(children: [
+        // 8. Su + Uyku yan yana (bu ikisi küçük kalabilir)
+        staggered(index: 7, child: Row(children: [
             Expanded(child: _WaterCard(
               goal: MockWellnessData.current.waterGoal,
               drunk: MockWellnessData.waterDrunk,
@@ -366,27 +409,7 @@ class _TodayTab extends StatelessWidget {
               tip: MockWellnessData.current.sleepTip,
               isDark: isDark,
             )),
-          ]),
-        )),
-        const SizedBox(height: 18),
-
-        // Kaçınılması gerekenler
-        staggered(index: 7, child: _BentoCard(
-          isDark: isDark,
-          shape: _CardShape.pill,
-          child: Row(children: [
-            Container(width: 32, height: 32,
-              decoration: BoxDecoration(color: AppColors.phaseMenstruation.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
-              child: const Icon(Icons.block_rounded, size: 16, color: AppColors.phaseMenstruation)),
-            const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Kaçınman gerekenler', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.phaseMenstruation)),
-              const SizedBox(height: 2),
-              Text(MockWellnessData.current.avoid.join(' • '),
-                style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurface.withValues(alpha: 0.5), height: 1.3)),
-            ])),
-          ]),
-        )),
+          ])),
         const SizedBox(height: 18),
 
         // Bedeninde ne oluyor
@@ -1149,42 +1172,6 @@ class _BentoCard extends StatelessWidget {
 
 enum _CardShape { archTop, archBottom, pill, softSquare }
 
-class _BentoMiniAction extends StatelessWidget {
-  const _BentoMiniAction({required this.icon, required this.label, required this.color, required this.isDark, required this.onTap});
-  final IconData icon;
-  final String label;
-  final Color color;
-  final bool isDark;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF241E22) : Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(
-            color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 36, height: 36,
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.12), shape: BoxShape.circle),
-              child: Icon(icon, size: 16, color: color),
-            ),
-            const SizedBox(width: 8),
-            Expanded(child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─── Mood Takvimi (Genel tab için) ──────────────────────────────────────────
 
@@ -1315,46 +1302,6 @@ class _MoodSummaryCard extends StatelessWidget {
 
 // ─── Wellness Kartları ──────────────────────────────────────────────────────
 
-class _WellnessCard extends StatelessWidget {
-  const _WellnessCard({required this.icon, required this.title, required this.color, required this.items, required this.isDark});
-  final IconData icon;
-  final String title;
-  final Color color;
-  final List<String> items;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return _BentoCard(
-      isDark: isDark,
-      shape: _CardShape.softSquare,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Container(width: 28, height: 28,
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, size: 15, color: color)),
-            const SizedBox(width: 8),
-            Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color)),
-          ]),
-          const SizedBox(height: 10),
-          ...items.map((item) => Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(width: 4, height: 4, margin: const EdgeInsets.only(top: 6),
-                decoration: BoxDecoration(color: color.withValues(alpha: 0.4), shape: BoxShape.circle)),
-              const SizedBox(width: 8),
-              Expanded(child: Text(item, style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.3),
-                maxLines: 2, overflow: TextOverflow.ellipsis)),
-            ]),
-          )),
-        ],
-      ),
-    );
-  }
-}
 
 class _WaterCard extends StatelessWidget {
   const _WaterCard({required this.goal, required this.drunk, required this.isDark});
@@ -1428,6 +1375,80 @@ class _SleepCard extends StatelessWidget {
           Text(tip, style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.4), height: 1.3),
             maxLines: 2, overflow: TextOverflow.ellipsis),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Büyük Tam Genişlik Kart ────────────────────────────────────────────────
+
+class _FullCard extends StatelessWidget {
+  const _FullCard({required this.child, required this.isDark});
+  final Widget child;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF241E22) : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04)),
+      ),
+      child: child,
+    );
+  }
+}
+
+class _MoodChip extends StatelessWidget {
+  const _MoodChip({required this.label, required this.color, required this.onTap});
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color)),
+      ),
+    );
+  }
+}
+
+class _ActionPill extends StatelessWidget {
+  const _ActionPill({required this.icon, required this.label, required this.isDark, required this.onTap});
+  final IconData icon;
+  final String label;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF241E22) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04)),
+          ),
+          child: Column(children: [
+            Icon(icon, size: 22, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
+            const SizedBox(height: 6),
+            Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
+          ]),
+        ),
       ),
     );
   }
