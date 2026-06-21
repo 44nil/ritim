@@ -6,7 +6,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/arc_mood_selector.dart';
 import '../../../shared/widgets/cycle_wheel.dart';
-import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../../../shared/widgets/mood_face.dart';
 import '../data/mock_cycle_data.dart';
 import '../data/mock_mood_data.dart';
@@ -71,10 +70,8 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          MeshGradientBg(isDark: isDark),
-          SafeArea(
+      backgroundColor: isDark ? const Color(0xFF1A1518) : const Color(0xFFF8F3F0),
+      body: SafeArea(
             child: Column(
               children: [
                 Padding(
@@ -105,8 +102,6 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
               ],
             ),
           ),
-        ],
-      ),
     );
   }
 }
@@ -125,7 +120,7 @@ class _TabBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.45),
+        color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -615,7 +610,7 @@ class _ActionChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.45),
+            color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Column(children: [
@@ -1139,10 +1134,10 @@ class _BentoCard extends StatelessWidget {
     final content = Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
+        color: isDark ? const Color(0xFF241E22) : Colors.white,
         borderRadius: radius,
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
         ),
       ),
       child: child,
@@ -1169,7 +1164,7 @@ class _BentoMiniAction extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: isDark ? Colors.white.withValues(alpha: 0.07) : Colors.white.withValues(alpha: 0.55),
+          color: isDark ? const Color(0xFF241E22) : Colors.white,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
             color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),

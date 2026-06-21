@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/bubble_categories.dart';
 import '../../../shared/widgets/clean_card.dart';
-import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../../../shared/widgets/staggered_list.dart';
 
 class ArticlesScreen extends StatelessWidget {
@@ -35,7 +34,7 @@ class ArticlesScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          MeshGradientBg(isDark: isDark),
+          Container(color: isDark ? const Color(0xFF1A1518) : const Color(0xFFF8F3F0)),
           SafeArea(
             child: SingleChildScrollView(
               child: StaggeredList(children: [

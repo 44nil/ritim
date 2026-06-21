@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/clean_card.dart';
-import '../../../shared/widgets/mesh_gradient_bg.dart';
 
 class QaScreen extends StatefulWidget {
   const QaScreen({super.key});
@@ -95,7 +94,7 @@ class _QaScreenState extends State<QaScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          MeshGradientBg(isDark: isDark),
+          Container(color: isDark ? const Color(0xFF1A1518) : const Color(0xFFF8F3F0)),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

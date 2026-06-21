@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 
@@ -24,29 +23,20 @@ class CleanCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final radius = borderRadius ?? AppConstants.radiusL;
 
-    final bg = color ??
-        (isDark
-            ? Colors.white.withValues(alpha: 0.07)
-            : Colors.white.withValues(alpha: 0.55));
+    final bg = color ?? (isDark ? const Color(0xFF241E22) : Colors.white);
 
-    final content = ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          padding: padding ?? const EdgeInsets.all(AppConstants.paddingM),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(radius),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.white.withValues(alpha: 0.5),
-            ),
-          ),
-          child: child,
+    final content = Container(
+      padding: padding ?? const EdgeInsets.all(AppConstants.paddingM),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(radius),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.06)
+              : Colors.black.withValues(alpha: 0.04),
         ),
       ),
+      child: child,
     );
 
     if (onTap == null) return content;
