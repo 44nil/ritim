@@ -845,7 +845,7 @@ class _WeeklyTab extends StatelessWidget {
           style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)))),
         const SizedBox(height: 18),
         staggered(index: 1, child: Padding(
-          padding: const EdgeInsets.only(left: 100),
+          padding: const EdgeInsets.only(left: 115),
           child: Row(children: _days.map((d) => Expanded(
             child: Text(d, textAlign: TextAlign.center, style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.35), fontWeight: FontWeight.w600, fontSize: 10)),
@@ -877,23 +877,23 @@ class _HabitTrackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 10),
       child: CleanCard(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(children: [
-          Container(width: 28, height: 28,
-            decoration: BoxDecoration(color: habit.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(7)),
-            child: Icon(habit.icon, size: 14, color: habit.color)),
-          const SizedBox(width: 8),
-          SizedBox(width: 50, child: Text(habit.label,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis)),
+          Container(width: 36, height: 36,
+            decoration: BoxDecoration(color: habit.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
+            child: Icon(habit.icon, size: 18, color: habit.color)),
+          const SizedBox(width: 10),
+          SizedBox(width: 55, child: Text(habit.label,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis)),
           ...habit.checks.map((done) => Expanded(child: Center(child: Container(
-            width: 24, height: 24,
+            width: 28, height: 28,
             decoration: BoxDecoration(
               color: done ? habit.color.withValues(alpha: 0.15) : (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03)),
               shape: BoxShape.circle,
               border: done ? null : Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.06))),
-            child: done ? Icon(Icons.check_rounded, size: 12, color: habit.color) : null,
+            child: done ? Icon(Icons.check_rounded, size: 15, color: habit.color) : null,
           )))),
         ]),
       ),
@@ -950,15 +950,15 @@ class _StatBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return CleanCard(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
-        const SizedBox(height: 6),
+        Text(label, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+        const SizedBox(height: 8),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Text(value, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: color)),
-          const SizedBox(width: 3),
-          Padding(padding: const EdgeInsets.only(bottom: 4),
-            child: Text(unit, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color.withValues(alpha: 0.6)))),
+          Text(value, style: TextStyle(fontSize: 32, fontWeight: FontWeight.w800, color: color)),
+          const SizedBox(width: 4),
+          Padding(padding: const EdgeInsets.only(bottom: 5),
+            child: Text(unit, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color.withValues(alpha: 0.6)))),
         ]),
       ]),
     );
@@ -977,14 +977,14 @@ class _CycleHistory extends StatelessWidget {
       ('Mart', '28 Mar — 25 Nis', '29 gün', AppColors.phaseLuteal),
     ];
     return Column(children: cycles.map((c) => Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 10),
       child: CleanCard(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         child: Row(children: [
-          Container(width: 34, height: 34,
-            decoration: BoxDecoration(color: c.$4.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(9)),
-            child: Icon(Icons.calendar_month_outlined, size: 16, color: c.$4)),
-          const SizedBox(width: 12),
+          Container(width: 42, height: 42,
+            decoration: BoxDecoration(color: c.$4.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+            child: Icon(Icons.calendar_month_outlined, size: 20, color: c.$4)),
+          const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(c.$1, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
             Text(c.$2, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
