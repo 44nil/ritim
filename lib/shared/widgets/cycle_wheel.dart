@@ -30,7 +30,7 @@ class CycleWheel extends StatelessWidget {
     super.key,
     required this.data,
     required this.onAddTap,
-    this.size = 280,
+    this.size = 320,
   });
 
   final CycleWheelData data;
@@ -40,16 +40,17 @@ class CycleWheel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final effectiveSize = size > 0 ? size : 320.0;
 
     return SizedBox(
-      width: size,
-      height: size,
+      width: effectiveSize,
+      height: effectiveSize,
       child: Stack(
         alignment: Alignment.center,
         children: [
           // Çark
           CustomPaint(
-            size: Size(size, size),
+            size: Size(effectiveSize, effectiveSize),
             painter: _WheelPainter(
               data: data,
               isDark: theme.brightness == Brightness.dark,
@@ -63,7 +64,7 @@ class CycleWheel extends StatelessWidget {
               Text(
                 '${data.currentDay}',
                 style: TextStyle(
-                  fontSize: 36,
+                  fontSize: 48,
                   fontWeight: FontWeight.w800,
                   color: theme.colorScheme.onSurface,
                 ),
@@ -71,16 +72,17 @@ class CycleWheel extends StatelessWidget {
               Text(
                 '/ ${data.cycleLength} gün',
                 style: TextStyle(
-                  fontSize: 13,
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               GestureDetector(
                 onTap: onAddTap,
                 child: Container(
-                  width: 44,
-                  height: 44,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
@@ -106,8 +108,8 @@ class _WheelPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final outerRadius = size.width / 2 - 4;
-    final dotRadius = size.width * 0.028;
-    final currentDotRadius = size.width * 0.045;
+    final dotRadius = size.width * 0.032;
+    final currentDotRadius = size.width * 0.05;
 
     // Her gün için açı hesapla (12 o'clock = 0, saat yönünde)
     for (int day = 1; day <= data.cycleLength; day++) {
@@ -176,10 +178,10 @@ class _WheelPainter extends CustomPainter {
         text: TextSpan(
           text: phase.label.toUpperCase(),
           style: TextStyle(
-            fontSize: size.width * 0.028,
+            fontSize: size.width * 0.032,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1,
-            color: phase.color.withValues(alpha: 0.5),
+            letterSpacing: 1.2,
+            color: phase.color.withValues(alpha: 0.6),
           ),
         ),
         textDirection: TextDirection.ltr,
