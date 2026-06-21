@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/mood_face.dart';
 
 class MoodType {
-  const MoodType({required this.label, required this.icon, required this.color});
+  const MoodType({required this.label, required this.face, required this.color});
   final String label;
-  final IconData icon;
+  final MoodFaceType face;
   final Color color;
 }
 
@@ -11,15 +12,14 @@ class MockMoodData {
   MockMoodData._();
 
   static const moods = [
-    MoodType(label: 'Mutlu', icon: Icons.sentiment_very_satisfied_rounded, color: Color(0xFFF0A060)),
-    MoodType(label: 'Sakin', icon: Icons.sentiment_satisfied_rounded, color: Color(0xFF90C090)),
-    MoodType(label: 'Yorgun', icon: Icons.sentiment_neutral_rounded, color: Color(0xFFA0A8D0)),
-    MoodType(label: 'Hassas', icon: Icons.sentiment_dissatisfied_rounded, color: Color(0xFFD898B0)),
-    MoodType(label: 'Sinirli', icon: Icons.sentiment_very_dissatisfied_rounded, color: Color(0xFFE87860)),
-    MoodType(label: 'Üzgün', icon: Icons.mood_bad_rounded, color: Color(0xFF9888C0)),
+    MoodType(label: 'Mutlu', face: MoodFaceType.happy, color: Color(0xFFF0A060)),
+    MoodType(label: 'Sakin', face: MoodFaceType.calm, color: Color(0xFF90C090)),
+    MoodType(label: 'Yorgun', face: MoodFaceType.tired, color: Color(0xFFA0A8D0)),
+    MoodType(label: 'Hassas', face: MoodFaceType.sensitive, color: Color(0xFFD898B0)),
+    MoodType(label: 'Sinirli', face: MoodFaceType.angry, color: Color(0xFFE87860)),
+    MoodType(label: 'Üzgün', face: MoodFaceType.sad, color: Color(0xFF9888C0)),
   ];
 
-  // Mock: bu ayki günlük mood kayıtları (gün → mood index)
   static final Map<int, int> monthlyMoods = {
     1: 0, 2: 0, 3: 1, 4: 1, 5: 3,
     6: 4, 7: 3, 8: 2, 9: 1, 10: 0,
@@ -33,7 +33,6 @@ class MockMoodData {
     return moods[index];
   }
 
-  // Aylık özet: en çok hangi mood?
   static MoodType get monthlySummary {
     final counts = <int, int>{};
     for (final index in monthlyMoods.values) {

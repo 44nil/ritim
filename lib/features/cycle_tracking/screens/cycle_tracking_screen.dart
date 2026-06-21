@@ -7,6 +7,7 @@ import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/cycle_phase_ring.dart';
 import '../../../shared/widgets/arc_mood_selector.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
+import '../../../shared/widgets/mood_face.dart';
 import '../data/mock_cycle_data.dart';
 import '../data/mock_mood_data.dart';
 
@@ -1255,14 +1256,7 @@ class _MoodRow extends StatelessWidget {
               },
               child: Column(
                 children: [
-                  Container(
-                    width: 44, height: 44,
-                    decoration: BoxDecoration(
-                      color: mood.color.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(mood.icon, size: 26, color: mood.color),
-                  ),
+                  MoodFace(type: mood.face, color: mood.color, size: 44),
                   const SizedBox(height: 4),
                   Text(mood.label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
@@ -1334,7 +1328,7 @@ class _MoodCalendar extends StatelessWidget {
                   ),
                   child: Center(
                     child: mood != null
-                        ? Icon(mood.icon, size: 18, color: mood.color)
+                        ? MoodFace(type: mood.face, color: mood.color, size: 30)
                         : Text('$dayNum', style: TextStyle(fontSize: 10,
                             color: theme.colorScheme.onSurface.withValues(alpha: 0.25))),
                   ),
@@ -1395,7 +1389,7 @@ class _MoodSummaryCard extends StatelessWidget {
               color: summary.color.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(summary.icon, size: 34, color: summary.color),
+            child: MoodFace(type: summary.face, color: summary.color, size: 50),
           ),
         ],
       ),
