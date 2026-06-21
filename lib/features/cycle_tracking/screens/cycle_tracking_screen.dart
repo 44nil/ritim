@@ -429,7 +429,7 @@ class _DarkHeroCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A1520) : const Color(0xFF2A2030),
+        color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(32), topRight: Radius.circular(32),
           bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20),
@@ -721,7 +721,7 @@ class _MonthCalendar extends StatelessWidget {
                 Color bg;
                 Color textColor;
                 if (isToday) {
-                  bg = const Color(0xFF2A2030);
+                  bg = AppColors.darkCard;
                   textColor = Colors.white;
                 } else if (isPeriod) {
                   bg = AppColors.phaseMenstruation.withValues(alpha: 0.2);
@@ -806,7 +806,7 @@ class _BodyInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A1520) : const Color(0xFF2A2030),
+        color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -1084,7 +1084,7 @@ class _CycleTimeline extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: event.isPast
                             ? (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.white.withValues(alpha: 0.35))
-                            : (isDark ? const Color(0xFF1A1520) : const Color(0xFF2A2030)),
+                            : (isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Row(

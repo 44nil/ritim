@@ -158,8 +158,8 @@ class _SetupScreenState extends State<SetupScreen> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: _canProceed
-                            ? const Color(0xFF2D2028)
-                            : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                            ? AppColors.darkCard
+                            : AppColors.darkCard.withValues(alpha: 0.2),
                       ),
                       child: Icon(
                         _currentStep == _totalSteps - 1 ? Icons.check_rounded : Icons.arrow_forward_rounded,
@@ -224,8 +224,8 @@ class _AgePage extends StatelessWidget {
                         fontSize: val == age ? 48 : 28,
                         fontWeight: FontWeight.w800,
                         color: val == age
-                            ? const Color(0xFF2D2028)
-                            : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                            ? AppColors.darkCard
+                            : AppColors.darkCard.withValues(alpha: 0.2),
                       ),
                     ),
                   );
@@ -267,7 +267,7 @@ class _PeriodStartedPage extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'Endişelenme, henüz olmadıysa da tamamen normal.',
-            style: TextStyle(fontSize: 14, color: const Color(0xFF2D2028).withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
           ),
           const SizedBox(height: 40),
           _OptionCard(
@@ -313,7 +313,7 @@ class _OptionCard extends StatelessWidget {
           children: [
             Expanded(child: Text(label, style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w600,
-              color: const Color(0xFF2D2028),
+              color: AppColors.darkCard,
             ))),
             Container(
               width: 24, height: 24,
@@ -321,7 +321,7 @@ class _OptionCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isSelected ? AppColors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                  color: isSelected ? AppColors.primary : AppColors.darkCard.withValues(alpha: 0.2),
                   width: 2,
                 ),
               ),
@@ -391,7 +391,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
           const SizedBox(height: 12),
           Text(
             'Tam tarihi bilmiyorsan yaklaşık seç.',
-            style: TextStyle(fontSize: 14, color: const Color(0xFF2D2028).withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
           ),
           const Spacer(),
           // 3 scroll picker yan yana: Gün — Ay — Yıl
@@ -413,7 +413,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
                       final val = i + 1;
                       return Center(child: Text('$val', style: TextStyle(
                         fontSize: val == _day ? 32 : 20, fontWeight: FontWeight.w700,
-                        color: val == _day ? const Color(0xFF2D2028) : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                        color: val == _day ? AppColors.darkCard : AppColors.darkCard.withValues(alpha: 0.2),
                       )));
                     }),
                   ),
@@ -432,7 +432,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
                       final isSelected = e.key + 1 == _month;
                       return Center(child: Text(e.value, style: TextStyle(
                         fontSize: isSelected ? 22 : 16, fontWeight: FontWeight.w700,
-                        color: isSelected ? const Color(0xFF2D2028) : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                        color: isSelected ? AppColors.darkCard : AppColors.darkCard.withValues(alpha: 0.2),
                       )));
                     }).toList(),
                   ),
@@ -451,7 +451,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
                       final val = now.year - i;
                       return Center(child: Text('$val', style: TextStyle(
                         fontSize: val == _year ? 28 : 20, fontWeight: FontWeight.w700,
-                        color: val == _year ? const Color(0xFF2D2028) : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                        color: val == _year ? AppColors.darkCard : AppColors.darkCard.withValues(alpha: 0.2),
                       )));
                     }),
                   ),
@@ -493,7 +493,7 @@ class _CycleLengthPage extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'Bilmiyorsan 28 gün varsayılan — sonra güncelleyebilirsin.',
-            style: TextStyle(fontSize: 14, color: const Color(0xFF2D2028).withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
           ),
           const Spacer(),
           Center(
@@ -519,8 +519,8 @@ class _CycleLengthPage extends StatelessWidget {
                             fontSize: val == length ? 48 : 28,
                             fontWeight: FontWeight.w800,
                             color: val == length
-                                ? const Color(0xFF2D2028)
-                                : const Color(0xFF2D2028).withValues(alpha: 0.2),
+                                ? AppColors.darkCard
+                                : AppColors.darkCard.withValues(alpha: 0.2),
                           ),
                         ),
                         if (val == length)
@@ -528,7 +528,7 @@ class _CycleLengthPage extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 8, left: 4),
                             child: Text('gün', style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500,
-                              color: const Color(0xFF2D2028).withValues(alpha: 0.4),
+                              color: AppColors.darkCard.withValues(alpha: 0.4),
                             )),
                           ),
                       ],
@@ -572,7 +572,7 @@ class _NamePage extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'Takma ad da olur, gerçek ismin de — seni temsil eden ne varsa.',
-            style: TextStyle(fontSize: 14, color: const Color(0xFF2D2028).withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
           ),
           const SizedBox(height: 40),
           TextField(
@@ -586,7 +586,7 @@ class _NamePage extends StatelessWidget {
               hintText: 'Adın...',
               hintStyle: TextStyle(
                 fontSize: 28, fontWeight: FontWeight.w700,
-                color: const Color(0xFF2D2028).withValues(alpha: 0.15),
+                color: AppColors.darkCard.withValues(alpha: 0.15),
               ),
               border: InputBorder.none,
               enabledBorder: UnderlineInputBorder(

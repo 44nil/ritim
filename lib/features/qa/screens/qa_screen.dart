@@ -140,7 +140,7 @@ class _QaScreenState extends State<QaScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                             decoration: BoxDecoration(
                               color: isActive
-                                  ? (isDark ? Colors.white.withValues(alpha: 0.12) : const Color(0xFF2A2030))
+                                  ? (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.darkCard)
                                   : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.5)),
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -176,7 +176,7 @@ class _QaScreenState extends State<QaScreen> {
         onPressed: () => _showAskSheet(context),
         icon: const Icon(Icons.edit_outlined, size: 20),
         label: const Text('Anonim Sor'),
-        backgroundColor: const Color(0xFF2A2030),
+        backgroundColor: AppColors.darkCard,
         foregroundColor: Colors.white,
       ),
     );
@@ -230,7 +230,7 @@ class _QaScreenState extends State<QaScreen> {
           const SizedBox(height: 20),
           SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
             onPressed: () => Navigator.pop(ctx),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2A2030), foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.darkCard, foregroundColor: Colors.white),
             child: const Text('Gönder'),
           )),
           SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
@@ -341,7 +341,7 @@ class _QuestionCardState extends State<_QuestionCard> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1A1520) : const Color(0xFF2A2030),
+                    color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Column(

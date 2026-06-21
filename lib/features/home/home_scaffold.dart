@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/router/route_names.dart';
+import '../../core/theme/app_colors.dart';
 
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({super.key, required this.navigationShell});
@@ -32,7 +33,7 @@ class HomeScaffold extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         height: 64,
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1A1520) : const Color(0xFF2D2028),
+          color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
           borderRadius: BorderRadius.circular(AppConstants.radiusXL),
         ),
         child: Row(
