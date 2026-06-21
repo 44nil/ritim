@@ -8,6 +8,7 @@ import '../../../shared/widgets/cycle_phase_ring.dart';
 import '../../../shared/widgets/arc_mood_selector.dart';
 import '../../../shared/widgets/mesh_gradient_bg.dart';
 import '../data/mock_cycle_data.dart';
+import '../data/mock_mood_data.dart';
 
 class CycleTrackingScreen extends StatefulWidget {
   const CycleTrackingScreen({super.key});
@@ -249,69 +250,33 @@ class _TodayTab extends StatelessWidget {
         staggered(index: 0, child: _DarkHeroCard(phase: phase)),
         const SizedBox(height: 14),
 
-        // 2. Hızlı aksiyonlar — kayıt yap
-        staggered(index: 1, child: SizedBox(
-          height: 140,
-          child: Row(children: [
-            Expanded(
-              flex: 3,
-              child: _BentoCard(
-                onTap: () => _QuickActions._showMoodSelector(context),
-                isDark: isDark,
-                shape: _CardShape.archTop,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text('Ruh Hali', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.secondary)),
-                    ),
-                    Text('Bugün nasıl\nhissediyorsun?', style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700, height: 1.3)),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 2,
-              child: Column(children: [
-                Expanded(child: _BentoMiniAction(
-                  icon: Icons.edit_calendar_outlined,
-                  label: 'Kaydet',
-                  color: AppColors.primary,
-                  isDark: isDark,
-                  onTap: () => _QuickActions._showDailyLog(context),
-                )),
-                const SizedBox(height: 12),
-                Expanded(child: _BentoMiniAction(
-                  icon: Icons.healing_outlined,
-                  label: 'Semptom',
-                  color: AppColors.phaseMenstruation,
-                  isDark: isDark,
-                  onTap: () => _QuickActions._showSymptoms(context),
-                )),
-              ]),
-            ),
-          ]),
-        )),
+        // 2. Mood satırı — nasıl hissediyorsun?
+        staggered(index: 1, child: _MoodRow(isDark: isDark)),
+        const SizedBox(height: 12),
+
+        // 3. Hızlı aksiyonlar — 3 mini kart
+        staggered(index: 2, child: Row(children: [
+          Expanded(child: _BentoMiniAction(icon: Icons.edit_calendar_outlined, label: 'Kaydet', color: AppColors.primary, isDark: isDark,
+            onTap: () => _QuickActions._showDailyLog(context))),
+          const SizedBox(width: 10),
+          Expanded(child: _BentoMiniAction(icon: Icons.healing_outlined, label: 'Semptom', color: AppColors.phaseMenstruation, isDark: isDark,
+            onTap: () => _QuickActions._showSymptoms(context))),
+          const SizedBox(width: 10),
+          Expanded(child: _BentoMiniAction(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.tertiary, isDark: isDark,
+            onTap: () => _QuickActions._showNote(context))),
+        ])),
         const SizedBox(height: 14),
 
-        // 3. Takvim — ayı gör
-        staggered(index: 2, child: const _MonthCalendar()),
+        // 4. Takvim
+        staggered(index: 3, child: const _MonthCalendar()),
         const SizedBox(height: 14),
 
-        // 4. Bedeninde ne oluyor — öğren
-        staggered(index: 3, child: _BodyInfoCard(phase: phase)),
+        // 5. Bedeninde ne oluyor
+        staggered(index: 4, child: _BodyInfoCard(phase: phase)),
         const SizedBox(height: 14),
 
-        // 5. Kendine iyi bak + Döngü istatistikleri
-        staggered(index: 4, child: SizedBox(
+        // 6. Kendine iyi bak + Döngü istatistikleri
+        staggered(index: 5, child: SizedBox(
           height: 170,
           child: Row(children: [
             // Kendine iyi bak — büyük
@@ -359,8 +324,8 @@ class _TodayTab extends StatelessWidget {
         )),
         const SizedBox(height: 14),
 
-        // 6. Günlük not + Bunu biliyor muydun
-        staggered(index: 6, child: SizedBox(
+        // 7. Bunu biliyor muydun
+        staggered(index: 7, child: SizedBox(
           height: 120,
           child: Row(children: [
             Expanded(child: _BentoCard(
@@ -408,8 +373,8 @@ class _TodayTab extends StatelessWidget {
         )),
         const SizedBox(height: 14),
 
-        // 7. Timeline
-        staggered(index: 7, child: const _CycleTimeline()),
+        // 8. Timeline
+        staggered(index: 8, child: const _CycleTimeline()),
         const SizedBox(height: 100),
       ],
     );
@@ -945,9 +910,13 @@ class _OverallTab extends StatelessWidget {
           Expanded(child: _StatBox(value: '3', label: 'Takip süresi', unit: 'ay', color: AppColors.secondary)),
         ])),
         const SizedBox(height: 20),
-        staggered(index: 3, child: Text('Döngü Geçmişi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
+        staggered(index: 3, child: _MoodSummaryCard(isDark: theme.brightness == Brightness.dark)),
+        const SizedBox(height: 14),
+        staggered(index: 4, child: const _MoodCalendar()),
+        const SizedBox(height: 20),
+        staggered(index: 5, child: Text('Döngü Geçmişi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
         const SizedBox(height: 12),
-        staggered(index: 4, child: const _CycleHistory()),
+        staggered(index: 6, child: const _CycleHistory()),
         const SizedBox(height: 100),
       ],
     );
@@ -1246,6 +1215,188 @@ class _BentoStatCard extends StatelessWidget {
             TextSpan(text: ' $unit', style: TextStyle(fontSize: 12, color: color.withValues(alpha: 0.6))),
           ])),
           Text(label, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4))),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Mood Satırı ────────────────────────────────────────────────────────────
+
+class _MoodRow extends StatelessWidget {
+  const _MoodRow({required this.isDark});
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return _BentoCard(
+      isDark: isDark,
+      shape: _CardShape.archTop,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Bugün nasıl hissediyorsun?', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+          const SizedBox(height: 14),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: MockMoodData.moods.map((mood) => GestureDetector(
+              onTap: () {
+                // TODO: Backend entegrasyonu — mood kaydet
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${mood.label} olarak kaydedildi'),
+                    duration: const Duration(seconds: 1),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                );
+              },
+              child: Column(
+                children: [
+                  Container(
+                    width: 44, height: 44,
+                    decoration: BoxDecoration(
+                      color: mood.color.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(mood.icon, size: 26, color: mood.color),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(mood.label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+                ],
+              ),
+            )).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Mood Takvimi (Genel tab için) ──────────────────────────────────────────
+
+class _MoodCalendar extends StatelessWidget {
+  const _MoodCalendar();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final now = DateTime.now();
+    final monthName = DateFormat('MMMM', 'tr_TR').format(now);
+    final firstDay = DateTime(now.year, now.month, 1);
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final startWeekday = (firstDay.weekday - 1) % 7;
+
+    return CleanCard(
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Text('Mood Takvimi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+            const Spacer(),
+            Text(monthName[0].toUpperCase() + monthName.substring(1),
+              style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+          ]),
+          const SizedBox(height: 14),
+          // Gün başlıkları
+          Row(children: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((d) => Expanded(
+            child: Text(d, textAlign: TextAlign.center, style: TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface.withValues(alpha: 0.3))),
+          )).toList()),
+          const SizedBox(height: 8),
+          // Takvim grid — mood yüzleriyle
+          ...List.generate(5, (week) => Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(children: List.generate(7, (dow) {
+              final dayNum = week * 7 + dow - startWeekday + 1;
+              if (dayNum < 1 || dayNum > daysInMonth) {
+                return const Expanded(child: SizedBox(height: 36));
+              }
+
+              final mood = MockMoodData.getMoodForDay(dayNum);
+              final isToday = dayNum == now.day;
+
+              return Expanded(
+                child: Container(
+                  height: 36,
+                  margin: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: mood != null
+                        ? mood.color.withValues(alpha: isToday ? 0.35 : 0.15)
+                        : (isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03)),
+                    borderRadius: BorderRadius.circular(10),
+                    border: isToday ? Border.all(color: AppColors.darkCard, width: 2) : null,
+                  ),
+                  child: Center(
+                    child: mood != null
+                        ? Icon(mood.icon, size: 18, color: mood.color)
+                        : Text('$dayNum', style: TextStyle(fontSize: 10,
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.25))),
+                  ),
+                ),
+              );
+            })),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Aylık Mood Özeti ───────────────────────────────────────────────────────
+
+class _MoodSummaryCard extends StatelessWidget {
+  const _MoodSummaryCard({required this.isDark});
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final summary = MockMoodData.monthlySummary;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            summary.color.withValues(alpha: 0.3),
+            AppColors.primary.withValues(alpha: 0.2),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Bu Ay', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+                const SizedBox(height: 6),
+                Text(summary.label, style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800, color: summary.color)),
+                const SizedBox(height: 4),
+                Text('${MockMoodData.loggedDays}/${MockMoodData.totalDays} gün kayıt yaptın',
+                  style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+              ],
+            ),
+          ),
+          Container(
+            width: 60, height: 60,
+            decoration: BoxDecoration(
+              color: summary.color.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(summary.icon, size: 34, color: summary.color),
+          ),
         ],
       ),
     );
