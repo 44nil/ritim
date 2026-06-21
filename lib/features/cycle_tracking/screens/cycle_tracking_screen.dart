@@ -82,7 +82,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                       _Header(phase: phase),
                       const SizedBox(height: 18),
                       _TabBar(selectedIndex: _tabIndex, onTap: _switchTab, isDark: isDark),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 18),
                     ],
                   ),
                 ),
@@ -261,7 +261,7 @@ class _TodayTab extends StatelessWidget {
             onAddTap: () => _QuickActions._showDailyLog(context),
           ),
         )),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
 
         // 2. Tahmin bilgileri
         staggered(index: 1, child: Center(
@@ -303,7 +303,7 @@ class _TodayTab extends StatelessWidget {
             ],
           ),
         )),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
 
         // 4. Hızlı aksiyonlar
         staggered(index: 1, child: Row(children: [
@@ -319,18 +319,18 @@ class _TodayTab extends StatelessWidget {
           Expanded(child: _BentoMiniAction(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.phaseFollicular, isDark: isDark,
             onTap: () => _QuickActions._showNote(context))),
         ])),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
 
         // 4. Yaşam Rehberi — faz bazlı öneriler
         staggered(index: 4, child: Text('Yaşam Rehberi', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800))),
         const SizedBox(height: 4),
         staggered(index: 4, child: Text('${phase.label} fazına özel öneriler',
           style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurface.withValues(alpha: 0.4)))),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
 
         // Beslenme + Egzersiz yan yana
         staggered(index: 5, child: SizedBox(
-          height: 180,
+          height: 200,
           child: Row(children: [
             Expanded(child: _WellnessCard(
               icon: Icons.restaurant_outlined,
@@ -353,7 +353,7 @@ class _TodayTab extends StatelessWidget {
 
         // Su + Uyku yan yana
         staggered(index: 6, child: SizedBox(
-          height: 130,
+          height: 150,
           child: Row(children: [
             Expanded(child: _WaterCard(
               goal: MockWellnessData.current.waterGoal,
@@ -368,7 +368,7 @@ class _TodayTab extends StatelessWidget {
             )),
           ]),
         )),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
 
         // Kaçınılması gerekenler
         staggered(index: 7, child: _BentoCard(
@@ -387,15 +387,15 @@ class _TodayTab extends StatelessWidget {
             ])),
           ]),
         )),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
 
         // Bedeninde ne oluyor
         staggered(index: 8, child: _BodyInfoCard(phase: phase)),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
 
         // 7. Bunu biliyor muydun
         staggered(index: 7, child: SizedBox(
-          height: 120,
+          height: 140,
           child: Row(children: [
             Expanded(child: _BentoCard(
               onTap: () => _QuickActions._showNote(context),
@@ -440,7 +440,7 @@ class _TodayTab extends StatelessWidget {
             )),
           ]),
         )),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
 
         // 8. Timeline
         staggered(index: 8, child: const _CycleTimeline()),
@@ -656,7 +656,7 @@ class _MonthCalendar extends StatelessWidget {
             const SizedBox(width: 8),
             Icon(Icons.chevron_right_rounded, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
           ]),
-          const SizedBox(height: 14),
+          const SizedBox(height: 18),
           // Gün başlıkları
           Row(children: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((d) => Expanded(
             child: Text(d, textAlign: TextAlign.center, style: theme.textTheme.labelSmall?.copyWith(
@@ -907,7 +907,7 @@ class _OverallTab extends StatelessWidget {
         ])),
         const SizedBox(height: 20),
         staggered(index: 3, child: _MoodSummaryCard(isDark: theme.brightness == Brightness.dark)),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
         staggered(index: 4, child: const _MoodCalendar()),
         const SizedBox(height: 20),
         staggered(index: 5, child: Text('Döngü Geçmişi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
@@ -999,7 +999,7 @@ class _CycleTimeline extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Zaman Çizelgesi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
         ...events.asMap().entries.map((e) {
           final event = e.value;
           final isLast = e.key == events.length - 1;
@@ -1132,7 +1132,7 @@ class _BentoCard extends StatelessWidget {
     };
 
     final content = Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF241E22) : Colors.white,
         borderRadius: radius,
@@ -1162,18 +1162,18 @@ class _BentoMiniAction extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF241E22) : Colors.white,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.4),
+            color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
           ),
         ),
         child: Row(
           children: [
             Container(
-              width: 30, height: 30,
+              width: 36, height: 36,
               decoration: BoxDecoration(color: color.withValues(alpha: 0.12), shape: BoxShape.circle),
               child: Icon(icon, size: 16, color: color),
             ),
@@ -1212,7 +1212,7 @@ class _MoodCalendar extends StatelessWidget {
             Text(monthName[0].toUpperCase() + monthName.substring(1),
               style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
           ]),
-          const SizedBox(height: 14),
+          const SizedBox(height: 18),
           // Gün başlıkları
           Row(children: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((d) => Expanded(
             child: Text(d, textAlign: TextAlign.center, style: TextStyle(
