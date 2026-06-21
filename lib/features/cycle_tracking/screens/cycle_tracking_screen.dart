@@ -251,19 +251,18 @@ class _TodayTab extends StatelessWidget {
         staggered(index: 0, child: _DarkHeroCard(phase: phase)),
         const SizedBox(height: 14),
 
-        // 2. Mood satırı — nasıl hissediyorsun?
-        staggered(index: 1, child: _MoodRow(isDark: isDark)),
-        const SizedBox(height: 12),
-
-        // 3. Hızlı aksiyonlar — 3 mini kart
-        staggered(index: 2, child: Row(children: [
-          Expanded(child: _BentoMiniAction(icon: Icons.edit_calendar_outlined, label: 'Kaydet', color: AppColors.primary, isDark: isDark,
+        // 2. Hızlı aksiyonlar — 4 kart (ruh hali arc selector açar)
+        staggered(index: 1, child: Row(children: [
+          Expanded(child: _BentoMiniAction(icon: Icons.mood_outlined, label: 'Ruh Hali', color: AppColors.primary, isDark: isDark,
+            onTap: () => _QuickActions._showMoodSelector(context))),
+          const SizedBox(width: 10),
+          Expanded(child: _BentoMiniAction(icon: Icons.edit_calendar_outlined, label: 'Kaydet', color: AppColors.tertiary, isDark: isDark,
             onTap: () => _QuickActions._showDailyLog(context))),
           const SizedBox(width: 10),
           Expanded(child: _BentoMiniAction(icon: Icons.healing_outlined, label: 'Semptom', color: AppColors.phaseMenstruation, isDark: isDark,
             onTap: () => _QuickActions._showSymptoms(context))),
           const SizedBox(width: 10),
-          Expanded(child: _BentoMiniAction(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.tertiary, isDark: isDark,
+          Expanded(child: _BentoMiniAction(icon: Icons.sticky_note_2_outlined, label: 'Not', color: AppColors.phaseFollicular, isDark: isDark,
             onTap: () => _QuickActions._showNote(context))),
         ])),
         const SizedBox(height: 14),
@@ -1216,54 +1215,6 @@ class _BentoStatCard extends StatelessWidget {
             TextSpan(text: ' $unit', style: TextStyle(fontSize: 12, color: color.withValues(alpha: 0.6))),
           ])),
           Text(label, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4))),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Mood Satırı ────────────────────────────────────────────────────────────
-
-class _MoodRow extends StatelessWidget {
-  const _MoodRow({required this.isDark});
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return _BentoCard(
-      isDark: isDark,
-      shape: _CardShape.archTop,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Bugün nasıl hissediyorsun?', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 14),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: MockMoodData.moods.map((mood) => GestureDetector(
-              onTap: () {
-                // TODO: Backend entegrasyonu — mood kaydet
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${mood.label} olarak kaydedildi'),
-                    duration: const Duration(seconds: 1),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                );
-              },
-              child: Column(
-                children: [
-                  MoodFace(type: mood.face, color: mood.color, size: 44),
-                  const SizedBox(height: 4),
-                  Text(mood.label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
-                ],
-              ),
-            )).toList(),
-          ),
         ],
       ),
     );
