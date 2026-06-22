@@ -290,6 +290,7 @@ class _TodayTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF2A1E30) : const Color(0xFFEDE8F8),
             borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,6 +320,7 @@ class _TodayTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkCard : const Color(0xFFE8F5E8),
             borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,6 +334,7 @@ class _TodayTab extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFC8E8C8),
                   borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
                 ),
                 child: Text('${phase.label} · ${MockCycleData.currentCycleDay}. gün', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF2D6A2D))),
               ),
@@ -358,6 +361,7 @@ class _TodayTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF2A2218) : const Color(0xFFFFF3E0),
             borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,6 +395,7 @@ class _TodayTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E1E2A) : const Color(0xFFE8E8F8),
             borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -810,6 +815,7 @@ class _BodyInfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
