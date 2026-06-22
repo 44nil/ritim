@@ -283,17 +283,22 @@ class _TodayTab extends StatelessWidget {
         )),
         const SizedBox(height: 24),
 
-        // 3. Bugün nasıl hissediyorsun — mood chip'leri
-        staggered(index: 2, child: _FullCard(
-          isDark: isDark,
+        // 3. Bugün nasıl hissediyorsun — renkli kart
+        staggered(index: 2, child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF2A1E30) : const Color(0xFFEDE8F8),
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Bugün nasıl hissediyorsun?', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-              const SizedBox(height: 16),
+              Text('Bugün nasıl hissediyorsun?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface)),
+              const SizedBox(height: 14),
               Wrap(
-                spacing: 10,
-                runSpacing: 10,
+                spacing: 8,
+                runSpacing: 8,
                 children: [
                   _MoodChip(label: 'Mutlu', color: const Color(0xFFF0A060), onTap: () {}),
                   _MoodChip(label: 'Sakin', color: const Color(0xFF90C090), onTap: () {}),
@@ -307,23 +312,29 @@ class _TodayTab extends StatelessWidget {
         )),
         const SizedBox(height: 16),
 
-        // 4. Günlük ipucu — büyük kart
-        staggered(index: 3, child: _FullCard(
-          isDark: isDark,
+        // 4. Günlük ipucu — renkli kart
+        staggered(index: 3, child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCard : const Color(0xFFE8F5E8),
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                Container(
-                  width: 40, height: 40,
-                  decoration: BoxDecoration(color: phase.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-                  child: Icon(Icons.auto_awesome_rounded, size: 20, color: phase.color),
+              Text('${phase.label} Fazı', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.5) : const Color(0xFF2D6A2D))),
+              const SizedBox(height: 6),
+              Text(phase.tip, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: isDark ? Colors.white : const Color(0xFF1A4A1A), height: 1.4)),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFC8E8C8),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(width: 14),
-                Text('${phase.label} Fazı', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: phase.color)),
-              ]),
-              const SizedBox(height: 16),
-              Text(phase.tip, style: TextStyle(fontSize: 15, color: theme.colorScheme.onSurface.withValues(alpha: 0.7), height: 1.5)),
+                child: Text('${phase.label} · ${MockCycleData.currentCycleDay}. gün', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF2D6A2D))),
+              ),
             ],
           ),
         )),
@@ -340,18 +351,23 @@ class _TodayTab extends StatelessWidget {
         ])),
         const SizedBox(height: 18),
 
-        // 6. Beslenme — büyük kart
-        staggered(index: 5, child: _FullCard(
-          isDark: isDark,
+        // 6. Beslenme — renkli kart
+        staggered(index: 5, child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF2A2218) : const Color(0xFFFFF3E0),
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Container(width: 40, height: 40,
-                  decoration: BoxDecoration(color: AppColors.phaseOvulation.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.restaurant_outlined, size: 20, color: AppColors.phaseOvulation)),
-                const SizedBox(width: 14),
-                Text('Beslenme', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.phaseOvulation)),
+                Container(width: 36, height: 36,
+                  decoration: BoxDecoration(color: AppColors.phaseOvulation.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
+                  child: const Icon(Icons.restaurant_outlined, size: 18, color: AppColors.phaseOvulation)),
+                const SizedBox(width: 12),
+                Text('Beslenme', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : const Color(0xFF8B5E00))),
               ]),
               const SizedBox(height: 16),
               ...MockWellnessData.current.nutrition.take(3).map((item) => Padding(
@@ -368,18 +384,23 @@ class _TodayTab extends StatelessWidget {
         )),
         const SizedBox(height: 16),
 
-        // 7. Hareket — büyük kart
-        staggered(index: 6, child: _FullCard(
-          isDark: isDark,
+        // 7. Hareket — renkli kart
+        staggered(index: 6, child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E1E2A) : const Color(0xFFE8E8F8),
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Container(width: 40, height: 40,
-                  decoration: BoxDecoration(color: AppColors.phaseLuteal.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.self_improvement_outlined, size: 20, color: AppColors.phaseLuteal)),
-                const SizedBox(width: 14),
-                Text('Hareket', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.phaseLuteal)),
+                Container(width: 36, height: 36,
+                  decoration: BoxDecoration(color: AppColors.phaseLuteal.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
+                  child: const Icon(Icons.self_improvement_outlined, size: 18, color: AppColors.phaseLuteal)),
+                const SizedBox(width: 12),
+                Text('Hareket', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : const Color(0xFF3A2060))),
               ]),
               const SizedBox(height: 16),
               ...MockWellnessData.current.exercises.take(3).map((item) => Padding(
@@ -1255,25 +1276,6 @@ class _SleepCard extends StatelessWidget {
 
 // ─── Büyük Tam Genişlik Kart ────────────────────────────────────────────────
 
-class _FullCard extends StatelessWidget {
-  const _FullCard({required this.child, required this.isDark});
-  final Widget child;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF241E22) : Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04)),
-      ),
-      child: child,
-    );
-  }
-}
 
 class _MoodChip extends StatelessWidget {
   const _MoodChip({required this.label, required this.color, required this.onTap});
