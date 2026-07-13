@@ -5,9 +5,8 @@ import 'app_text_styles.dart';
 class AppTheme {
   AppTheme._();
 
-  // ─── Ortak değerler ─────────────────────────────────────────────────────
-  static const _borderRadius = 16.0;
-  static const _cardElevation = 0.0; // Flat kartlar, gölgesiz minimalist görünüm
+  static const _borderRadius = 12.0;
+  static const _cardElevation = 0.0;
 
   // ─── Light Theme ────────────────────────────────────────────────────────
   static ThemeData get lightTheme {
@@ -37,9 +36,9 @@ class AppTheme {
       outlineVariant: Color(0xFFEADDE6),
       shadow: Color(0xFF000000),
       scrim: Color(0xFF000000),
-      inverseSurface: Color(0xFF2D2028),
-      onInverseSurface: Color(0xFFFFF8F6),
-      inversePrimary: Color(0xFFE8A8CC),
+      inverseSurface: Color(0xFF2B2230),
+      onInverseSurface: Color(0xFFF9F4F0),
+      inversePrimary: AppColors.rose,
     );
 
     return ThemeData(
@@ -77,7 +76,7 @@ class AppTheme {
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(24),
           ),
           textStyle: const TextStyle(
             fontFamily: 'Poppins',
@@ -92,7 +91,7 @@ class AppTheme {
           side: const BorderSide(color: AppColors.primary, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(24),
           ),
           textStyle: const TextStyle(
             fontFamily: 'Poppins',
@@ -131,7 +130,7 @@ class AppTheme {
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.surfaceLight,
         selectedItemColor: AppColors.primary,
-        unselectedItemColor: Color(0xFF9A8A94),
+        unselectedItemColor: AppColors.muted,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
         showUnselectedLabels: true,
@@ -163,20 +162,20 @@ class AppTheme {
 
   // ─── Dark Theme ─────────────────────────────────────────────────────────
   static ThemeData get darkTheme {
-    const primaryDark = Color(0xFFE8A8CC);
-    const primaryContainerDark = Color(0xFF5C3050);
+    const primaryDark = AppColors.softPink;
+    const primaryContainerDark = Color(0xFF3A2530);
 
     final colorScheme = const ColorScheme(
       brightness: Brightness.dark,
       primary: primaryDark,
       onPrimary: Color(0xFF3D1030),
       primaryContainer: primaryContainerDark,
-      onPrimaryContainer: Color(0xFFFAE8F2),
-      secondary: Color(0xFFB8AADE),
-      onSecondary: Color(0xFF241457),
-      secondaryContainer: Color(0xFF463D6A),
-      onSecondaryContainer: Color(0xFFEDE8F8),
-      tertiary: Color(0xFFD9BFA0),
+      onPrimaryContainer: Color(0xFFF2C0CC),
+      secondary: AppColors.lightBlue,
+      onSecondary: Color(0xFF0E1A3A),
+      secondaryContainer: Color(0xFF2C3C6A),
+      onSecondaryContainer: Color(0xFFCCDAF0),
+      tertiary: AppColors.salmon,
       onTertiary: Color(0xFF3D2C18),
       tertiaryContainer: Color(0xFF5C4530),
       onTertiaryContainer: Color(0xFFF5EBE0),
@@ -193,7 +192,7 @@ class AppTheme {
       shadow: Color(0xFF000000),
       scrim: Color(0xFF000000),
       inverseSurface: Color(0xFFF0E8F0),
-      onInverseSurface: Color(0xFF2D2028),
+      onInverseSurface: Color(0xFF2B2230),
       inversePrimary: AppColors.primary,
     );
 
@@ -231,7 +230,7 @@ class AppTheme {
           foregroundColor: const Color(0xFF3D1030),
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           textStyle: const TextStyle(
             fontFamily: 'Poppins',
             fontSize: 15,
@@ -244,7 +243,7 @@ class AppTheme {
           foregroundColor: primaryDark,
           side: const BorderSide(color: primaryDark, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           textStyle: const TextStyle(
             fontFamily: 'Poppins',
             fontSize: 15,

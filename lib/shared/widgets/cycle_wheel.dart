@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 class CycleWheelData {
   const CycleWheelData({
@@ -62,19 +63,23 @@ class CycleWheel extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '${data.currentDay}',
+                '${data.currentDay}. gün',
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 52,
                   fontWeight: FontWeight.w800,
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: -1.5,
+                  height: 1.0,
                   color: theme.colorScheme.onSurface,
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
-                '/ ${data.cycleLength} gün',
+                '/ ${data.cycleLength}',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
               ),
               const SizedBox(height: 14),
@@ -146,7 +151,7 @@ class _WheelPainter extends CustomPainter {
       if (isCurrent) {
         // Beyaz border
         final borderPaint = Paint()
-          ..color = isDark ? const Color(0xFF1A1518) : Colors.white
+          ..color = isDark ? AppColors.backgroundDark : Colors.white
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3;
         canvas.drawCircle(Offset(x, y), r + 2, borderPaint);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/theme/app_colors.dart';
 
 class CleanCard extends StatelessWidget {
   const CleanCard({
@@ -23,7 +24,7 @@ class CleanCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final radius = borderRadius ?? AppConstants.radiusL;
 
-    final bg = color ?? (isDark ? const Color(0xFF241E22) : Colors.white);
+    final bg = color ?? (isDark ? AppColors.surfaceVariantDark : Colors.white);
 
     final content = Container(
       padding: padding ?? const EdgeInsets.all(22),

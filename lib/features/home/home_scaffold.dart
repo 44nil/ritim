@@ -33,7 +33,7 @@ class HomeScaffold extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         height: 64,
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
+          color: const Color(0xFF1A1A1A),
           borderRadius: BorderRadius.circular(AppConstants.radiusXL),
         ),
         child: Row(

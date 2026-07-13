@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/clean_card.dart';
 
 class QaScreen extends StatefulWidget {
@@ -92,28 +93,34 @@ class _QaScreenState extends State<QaScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(color: isDark ? const Color(0xFF1A1518) : const Color(0xFFF8F3F0)),
+          Container(
+            height: 300,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter, end: Alignment.bottomCenter,
+                colors: [Color(0xFFF9C4D2), Color(0xFFFDD6A8), Color(0xFFFFFFFF)],
+              ),
+            ),
+          ),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 12),
-                // Başlık
+                const SizedBox(height: 16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Row(
                     children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Uzman\nPaneli', style: theme.textTheme.displaySmall?.copyWith(
-                              fontWeight: FontWeight.w800, height: 1.1, letterSpacing: -0.5)),
+                            Text('Uzman\nPaneli', style: AppTextStyles.heading(fontSize: 32, color: AppColors.ink)),
                             const SizedBox(height: 4),
-                            Text('Anonim sor, uzman cevaplasın', style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+                            Text('anonim sor, uzman cevaplasın.', style: AppTextStyles.accent(fontSize: 18, color: AppColors.softPink)),
                           ],
                         ),
                       ),
@@ -121,31 +128,28 @@ class _QaScreenState extends State<QaScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
-                // Kategori filtreleri
                 SizedBox(
-                  height: 34,
+                  height: 40,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     children: _categories.map((c) {
                       final isActive = c == _selectedCategory;
                       return Padding(
-                        padding: const EdgeInsets.only(right: 6),
+                        padding: const EdgeInsets.only(right: 8),
                         child: GestureDetector(
                           onTap: () => setState(() => _selectedCategory = c),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                             decoration: BoxDecoration(
-                              color: isActive
-                                  ? (isDark ? Colors.white.withValues(alpha: 0.12) : AppColors.darkCard)
-                                  : (isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white.withValues(alpha: 0.5)),
-                              borderRadius: BorderRadius.circular(20),
+                              color: isActive ? AppColors.ink : Colors.white.withValues(alpha: 0.7),
+                              borderRadius: BorderRadius.circular(24),
                             ),
                             child: Text(c, style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w600,
-                              color: isActive ? (isDark ? Colors.white : Colors.white) : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                              fontSize: 13, fontWeight: FontWeight.w600,
+                              color: isActive ? Colors.white : AppColors.ink.withValues(alpha: 0.5),
                             )),
                           ),
                         ),
@@ -155,10 +159,9 @@ class _QaScreenState extends State<QaScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Sorular
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     itemCount: _filteredQuestions.length,
                     itemBuilder: (context, i) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
@@ -175,7 +178,7 @@ class _QaScreenState extends State<QaScreen> {
         onPressed: () => _showAskSheet(context),
         icon: const Icon(Icons.edit_outlined, size: 20),
         label: const Text('Anonim Sor'),
-        backgroundColor: AppColors.darkCard,
+        backgroundColor: AppColors.ink,
         foregroundColor: Colors.white,
       ),
     );
@@ -199,7 +202,6 @@ class _QaScreenState extends State<QaScreen> {
           Text('Kimliğin gizli kalır, uzmanlar cevaplar', style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
           const SizedBox(height: 20),
-          // TODO: Backend entegrasyonu — soru Supabase'e yazılacak
           TextField(
             maxLines: 4,
             decoration: InputDecoration(
@@ -210,7 +212,6 @@ class _QaScreenState extends State<QaScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          // Kategori seçimi
           Row(children: [
             Text('Kategori: ', style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
@@ -229,7 +230,6 @@ class _QaScreenState extends State<QaScreen> {
           const SizedBox(height: 20),
           SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
             onPressed: () => Navigator.pop(ctx),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.darkCard, foregroundColor: Colors.white),
             child: const Text('Gönder'),
           )),
           SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),

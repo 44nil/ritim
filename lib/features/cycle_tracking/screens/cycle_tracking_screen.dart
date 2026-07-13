@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../core/providers/theme_provider.dart';
+import '../../../core/providers/cycle_provider.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/clean_card.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/arc_mood_selector.dart';
-import '../../../shared/widgets/cycle_wheel.dart';
+import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/mood_face.dart';
 import '../data/mock_cycle_data.dart';
-import '../data/mock_mood_data.dart';
 import '../data/mock_wellness_data.dart';
+import '../data/mock_mood_data.dart';
 
 class CycleTrackingScreen extends StatefulWidget {
   const CycleTrackingScreen({super.key});
@@ -21,7 +21,8 @@ class CycleTrackingScreen extends StatefulWidget {
 class _CycleTrackingScreenState extends State<CycleTrackingScreen>
     with TickerProviderStateMixin {
   late final AnimationController _animController;
-  int _tabIndex = 0;
+  final _scrollController = ScrollController();
+  double _scrollOffset = 0;
 
   @override
   void initState() {
@@ -30,38 +31,38 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     )..forward();
+    _scrollController.addListener(() {
+      setState(() => _scrollOffset = _scrollController.offset);
+    });
   }
 
   @override
   void dispose() {
     _animController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   Widget _staggered({required int index, required Widget child}) {
-    final delay = (index * 0.1).clamp(0.0, 0.5);
+    final delay = (index * 0.08).clamp(0.0, 0.5);
     final end = (delay + 0.5).clamp(0.0, 1.0);
     final curve = CurvedAnimation(
       parent: _animController,
-      curve: Interval(delay, end, curve: Curves.easeOutCubic),
+      curve: Interval(delay, end, curve: Curves.easeOutBack),
     );
     return AnimatedBuilder(
       animation: curve,
       builder: (context, _) => Opacity(
-        opacity: curve.value,
+        opacity: curve.value.clamp(0.0, 1.0),
         child: Transform.translate(
-          offset: Offset(0, 20 * (1 - curve.value)),
-          child: child,
+          offset: Offset(0, 24 * (1 - curve.value)),
+          child: Transform.scale(
+            scale: 0.95 + 0.05 * curve.value,
+            child: child,
+          ),
         ),
       ),
     );
-  }
-
-  void _switchTab(int index) {
-    if (index == _tabIndex) return;
-    setState(() => _tabIndex = index);
-    _animController.reset();
-    _animController.forward();
   }
 
   @override
@@ -69,139 +70,455 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
     final phase = MockCycleData.currentPhase;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final cycle = ProviderScope.containerOf(context).read(cycleProvider);
+
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF1A1518) : const Color(0xFFF8F3F0),
-      body: SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 12),
-                      _Header(phase: phase),
-                      const SizedBox(height: 18),
-                      _TabBar(selectedIndex: _tabIndex, onTap: _switchTab, isDark: isDark),
-                      const SizedBox(height: 18),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 250),
-                      child: _tabIndex == 0
-                          ? _TodayTab(key: const ValueKey(0), phase: phase, staggered: _staggered)
-                          : _tabIndex == 1
-                              ? _WeeklyTab(key: const ValueKey(1), staggered: _staggered)
-                              : _OverallTab(key: const ValueKey(2), staggered: _staggered),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-    );
-  }
-}
-
-// ─── Tab Bar ────────────────────────────────────────────────────────────────
-
-class _TabBar extends StatelessWidget {
-  const _TabBar({required this.selectedIndex, required this.onTap, required this.isDark});
-  final int selectedIndex;
-  final ValueChanged<int> onTap;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final labels = ['Bugün', 'Haftalık', 'Genel'];
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: labels.asMap().entries.map((e) {
-          final isSelected = e.key == selectedIndex;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => onTap(e.key),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 9),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? (isDark ? Colors.white.withValues(alpha: 0.12) : Colors.white)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Text(
-                  e.value,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.onSurface
-                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          // Gradient — scroll'a bağlı, aşağı kaydıkça yukarı kayar
+          Positioned(
+            top: -_scrollOffset * 0.5,
+            left: 0, right: 0,
+            child: Opacity(
+              opacity: (1 - _scrollOffset / 400).clamp(0.0, 1.0),
+              child: Container(
+                height: 400,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFFF9C4D2), Color(0xFFFDD6A8), Color(0xFFFFFFFF)],
                   ),
                 ),
               ),
             ),
-          );
+          ),
+          // Alt gradient — navbar üstünde sıcak his
+          Positioned(
+            bottom: 0, left: 0, right: 0,
+            child: IgnorePointer(
+              child: Container(
+                height: 200,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Color(0xFFF9C4D2), Color(0xFFFDD6A8), Color(0x00FFFFFF)],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  // Büyük ay başlığı
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Row(children: [
+                      Text(
+                        DateFormat('MMMM yyyy', 'tr_TR').format(DateTime.now()),
+                        style: AppTextStyles.heading(fontSize: 32, color: AppColors.ink),
+                      ),
+                      const SizedBox(width: 6),
+                      Icon(Icons.keyboard_arrow_down_rounded, size: 28, color: AppColors.ink),
+                      const Spacer(),
+                      _SmallButton(icon: Icons.settings_outlined, onTap: () {}),
+                    ]),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Gün şeridi
+                  _staggered(index: 0, child: _WeekStrip(cycle: cycle)),
+                  const SizedBox(height: 24),
+
+                  // Döngü durumu kartı
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _staggered(index: 1, child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(22),
+                      decoration: BoxDecoration(
+                        color: AppColors.softPink.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('${cycle.currentCycleDay}. gün', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
+                        const SizedBox(height: 4),
+                        Text(phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+                        const SizedBox(height: 8),
+                        Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
+                        const SizedBox(height: 16),
+                        // Adetim başladı/bitti butonu
+                        Builder(builder: (ctx) {
+                          final isOn = cycle.isOnPeriod;
+                          final notifier = ProviderScope.containerOf(ctx).read(cycleProvider.notifier);
+                          return GestureDetector(
+                            onTap: () {
+                              if (isOn) { notifier.endPeriod(); } else { notifier.startPeriod(); }
+                              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                                content: Text(isOn ? 'Adet bitiş kaydedildi' : 'Adet başlangıcı kaydedildi'),
+                                behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink,
+                              ));
+                            },
+                            child: Container(
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: AppColors.ink,
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                Icon(isOn ? Icons.stop_rounded : Icons.water_drop_rounded, size: 20, color: Colors.white),
+                                const SizedBox(width: 8),
+                                Text(isOn ? 'Adetim Bitti' : 'Adetim Başladı', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white)),
+                              ]),
+                            ),
+                          );
+                        }),
+                      ]),
+                    )),
+                  ),
+                  const SizedBox(height: 28),
+
+                  // Sağlığını kontrol et
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text('Döngü\nTakibin', style: AppTextStyles.heading(fontSize: 30, color: AppColors.ink)),
+                  ),
+                  const SizedBox(height: 18),
+
+                  // 2x2 istatistik grid — referanstaki gibi
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _staggered(index: 2, child: Column(children: [
+                      // Üst sıra — büyük kart
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF5ED),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Row(children: [
+                            Icon(Icons.mood_outlined, size: 20, color: AppColors.warmOrange),
+                            const SizedBox(width: 8),
+                            Text('Ruh Hali', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                          ]),
+                          const SizedBox(height: 16),
+                          Builder(builder: (ctx) {
+                            void saveMood(String mood) {
+                              ProviderScope.containerOf(ctx).read(cycleProvider.notifier).logMood(mood);
+                              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                                content: Text('$mood kaydedildi'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink,
+                              ));
+                            }
+                            return Wrap(spacing: 8, runSpacing: 8, children: [
+                              _MoodChip(label: 'Mutlu', color: AppColors.ink, onTap: () => saveMood('Mutlu')),
+                              _MoodChip(label: 'Sakin', color: AppColors.ink, onTap: () => saveMood('Sakin')),
+                              _MoodChip(label: 'Yorgun', color: AppColors.ink, onTap: () => saveMood('Yorgun')),
+                              _MoodChip(label: 'Hassas', color: AppColors.ink, onTap: () => saveMood('Hassas')),
+                              _MoodChip(label: 'Sinirli', color: AppColors.ink, onTap: () => saveMood('Sinirli')),
+                            ]);
+                          }),
+                        ]),
+                      ),
+                      const SizedBox(height: 12),
+                      // Alt sıra — 2 kart yan yana
+                      Row(children: [
+                        Expanded(child: Container(
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFCE8EF),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Row(children: [
+                              Icon(Icons.water_drop_outlined, size: 18, color: AppColors.softPink),
+                              const SizedBox(width: 6),
+                              Text('Su', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                            ]),
+                            const SizedBox(height: 12),
+                            RichText(text: TextSpan(children: [
+                              TextSpan(text: '${MockWellnessData.waterDrunk}/${MockWellnessData.current.waterGoal}', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.ink)),
+                              TextSpan(text: ' bardak', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.4))),
+                            ])),
+                          ]),
+                        )),
+                        const SizedBox(width: 12),
+                        Expanded(child: Container(
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFCE8EF),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Row(children: [
+                              Icon(Icons.nightlight_outlined, size: 18, color: AppColors.softPink),
+                              const SizedBox(width: 6),
+                              Text('Uyku', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                            ]),
+                            const SizedBox(height: 12),
+                            RichText(text: TextSpan(children: [
+                              TextSpan(text: MockWellnessData.current.sleepHours, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.ink)),
+                              TextSpan(text: ' saat', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.4))),
+                            ])),
+                          ]),
+                        )),
+                      ]),
+                      const SizedBox(height: 12),
+                      // Semptom + Not yan yana
+                      Row(children: [
+                        Expanded(child: GestureDetector(
+                          onTap: () => _QuickActions._showSymptoms(context),
+                          child: Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF5ED),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Icon(Icons.healing_outlined, size: 20, color: AppColors.warmOrange),
+                              const SizedBox(height: 10),
+                              Text('Semptom', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                              const SizedBox(height: 4),
+                              Text('Kaydet', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
+                            ]),
+                          ),
+                        )),
+                        const SizedBox(width: 12),
+                        Expanded(child: GestureDetector(
+                          onTap: () => _QuickActions._showNote(context),
+                          child: Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF5ED),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Icon(Icons.sticky_note_2_outlined, size: 20, color: AppColors.warmOrange),
+                              const SizedBox(height: 10),
+                              Text('Günlük Not', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                              const SizedBox(height: 4),
+                              Text('Yaz', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
+                            ]),
+                          ),
+                        )),
+                      ]),
+                    ])),
+                  ),
+
+                  const SizedBox(height: 110),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Döngü Halkası (Genspark tarzı) ────────────────────────────────────────
+
+class _CycleRing extends StatelessWidget {
+  const _CycleRing({required this.cycle, required this.phase, required this.isDark});
+  final CycleState cycle;
+  final CyclePhaseInfo phase;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final day = cycle.currentCycleDay;
+    final total = cycle.averageCycleLength;
+    final progress = day / total;
+    final prediction = cycle.daysUntilNextPeriod;
+
+    return Center(
+      child: SizedBox(
+        width: 260, height: 260,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Arka halka
+            SizedBox(
+              width: 240, height: 240,
+              child: CircularProgressIndicator(
+                value: 1.0,
+                strokeWidth: 14,
+                backgroundColor: Colors.transparent,
+                color: AppColors.softPink.withValues(alpha: 0.12),
+                strokeCap: StrokeCap.round,
+              ),
+            ),
+            // İlerleme halkası
+            SizedBox(
+              width: 240, height: 240,
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: progress),
+                duration: const Duration(milliseconds: 1200),
+                curve: Curves.easeOutCubic,
+                builder: (_, val, _) => CircularProgressIndicator(
+                  value: val,
+                  strokeWidth: 14,
+                  backgroundColor: Colors.transparent,
+                  color: AppColors.softPink,
+                  strokeCap: StrokeCap.round,
+                ),
+              ),
+            ),
+            // Merkez bilgi
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'GÜN $day / $total',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: AppColors.ink.withValues(alpha: 0.4)),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  phase.label,
+                  style: AppTextStyles.heading(fontSize: 36, color: AppColors.ink),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  prediction != null ? '$prediction gün sonra' : 'kayıt bekleniyor',
+                  style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4)),
+                ),
+              ],
+            ),
+            // Alt nokta göstergesi
+            Positioned(
+              bottom: 0,
+              child: Container(
+                width: 18, height: 18,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: AppColors.gradientPinkOrange,
+                  border: Border.all(color: isDark ? AppColors.backgroundDark : const Color(0xFFFAF5F0), width: 3),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Haftalık Gün Şeridi ───────────────────────────────────────────────────
+
+class _WeekStrip extends StatelessWidget {
+  const _WeekStrip({required this.cycle});
+  final CycleState cycle;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final days = List.generate(7, (i) => now.subtract(Duration(days: 3 - i)));
+    final dayLabels = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: days.map((date) {
+          final isToday = date.day == now.day && date.month == now.month;
+          final isPeriod = cycle.isPeriodDay(date);
+          final label = dayLabels[(date.weekday - 1) % 7];
+
+          return Expanded(child: Column(children: [
+            Container(
+              width: 44, height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isToday
+                    ? AppColors.ink
+                    : isPeriod
+                        ? AppColors.softPink.withValues(alpha: 0.15)
+                        : Colors.transparent,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '${date.day}',
+                style: TextStyle(
+                  fontSize: 16, fontWeight: isToday ? FontWeight.w800 : FontWeight.w500,
+                  color: isToday ? Colors.white : AppColors.ink.withValues(alpha: 0.6),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.ink.withValues(alpha: 0.35))),
+          ]));
         }).toList(),
       ),
     );
   }
 }
 
-// ─── Header ─────────────────────────────────────────────────────────────────
+// ─── Semptom Grid (3x2, Genspark tarzı) ────────────────────────────────────
 
-class _Header extends ConsumerWidget {
-  const _Header({required this.phase});
-  final CyclePhaseInfo phase;
+class _SymptomGrid extends StatefulWidget {
+  const _SymptomGrid();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+  State<_SymptomGrid> createState() => _SymptomGridState();
+}
 
-    return Row(
-      children: [
-        Container(
-          width: 42, height: 42,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.primaryContainer,
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
+class _SymptomGridState extends State<_SymptomGrid> {
+  final _selected = <String>{};
+
+  static const _symptoms = [
+    ('Kramp', Icons.flash_on_rounded),
+    ('Baş ağrısı', Icons.psychology_outlined),
+    ('Yorgunluk', Icons.battery_2_bar_rounded),
+    ('Şişkinlik', Icons.bubble_chart_outlined),
+    ('Hassasiyet', Icons.favorite_border_rounded),
+    ('Sakinlik', Icons.spa_outlined),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: 1.15,
+      children: _symptoms.map((s) {
+        final isSelected = _selected.contains(s.$1);
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              if (isSelected) { _selected.remove(s.$1); } else { _selected.add(s.$1); }
+            });
+            final names = _selected.toList();
+            ProviderScope.containerOf(context).read(cycleProvider.notifier).logSymptoms(names);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(names.isEmpty ? 'Semptomlar temizlendi' : '${s.$1} kaydedildi'),
+              behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink,
+              duration: const Duration(seconds: 1),
+            ));
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.softPink : AppColors.warmOrange.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(s.$2, size: 26, color: isSelected ? Colors.white : AppColors.ink.withValues(alpha: 0.5)),
+              const SizedBox(height: 8),
+              Text(s.$1, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : AppColors.ink)),
+            ]),
           ),
-          child: const Center(
-            child: Text('E', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.primary)),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Merhaba, ${MockCycleData.userName}', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-              Text(
-                DateFormat('d MMMM, EEEE', 'tr_TR').format(DateTime.now()),
-                style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
-              ),
-            ],
-          ),
-        ),
-        _SmallButton(
-          icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-          onTap: () => ref.read(themeModeProvider.notifier).state = isDark ? ThemeMode.light : ThemeMode.dark,
-        ),
-        const SizedBox(width: 6),
-        _SmallButton(icon: Icons.notifications_none_rounded, onTap: () {}),
-      ],
+        );
+      }).toList(),
     );
   }
 }
@@ -217,283 +534,13 @@ class _SmallButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 36, height: 36,
+        width: 40, height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.5),
+          color: isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.softPink.withValues(alpha: 0.15),
         ),
-        child: Icon(icon, size: 18, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
+        child: Icon(icon, size: 20, color: AppColors.ink.withValues(alpha: 0.5)),
       ),
-    );
-  }
-}
-
-// ─── Bugün Tab ──────────────────────────────────────────────────────────────
-
-class _TodayTab extends StatelessWidget {
-  const _TodayTab({super.key, required this.phase, required this.staggered});
-  final CyclePhaseInfo phase;
-  final Widget Function({required int index, required Widget child}) staggered;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // 1. Döngü çarkı
-        staggered(index: 0, child: Center(
-          child: CycleWheel(
-            data: CycleWheelData(
-              currentDay: MockCycleData.currentCycleDay,
-              cycleLength: MockCycleData.cycleLengthDays,
-              periodDays: MockCycleData.periodLengthDays,
-              ovulationDays: const [14, 15, 16],
-              phases: [
-                CycleWheelPhase(label: 'Adet', startDay: 1, endDay: 5, color: AppColors.phaseMenstruation),
-                CycleWheelPhase(label: 'Foliküler', startDay: 6, endDay: 13, color: AppColors.phaseFollicular),
-                CycleWheelPhase(label: 'Ovülasyon', startDay: 14, endDay: 16, color: AppColors.phaseOvulation),
-                CycleWheelPhase(label: 'Luteal', startDay: 17, endDay: 28, color: AppColors.phaseLuteal),
-              ],
-            ),
-            onAddTap: () => _QuickActions._showDailyLog(context),
-          ),
-        )),
-        const SizedBox(height: 20),
-
-        // 2. Tahmin bilgileri
-        staggered(index: 1, child: Center(
-          child: Column(children: [
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Container(width: 8, height: 8, decoration: BoxDecoration(color: AppColors.phaseMenstruation, shape: BoxShape.circle)),
-              const SizedBox(width: 8),
-              Text('Sonraki adet: ~${MockCycleData.daysUntilNextPeriod} gün',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface.withValues(alpha: 0.7))),
-            ]),
-            const SizedBox(height: 10),
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Container(width: 8, height: 8, decoration: BoxDecoration(color: phase.color, shape: BoxShape.circle)),
-              const SizedBox(width: 8),
-              Text('${phase.label} fazındasın',
-                style: TextStyle(fontSize: 15, color: phase.color, fontWeight: FontWeight.w700)),
-            ]),
-          ]),
-        )),
-        const SizedBox(height: 24),
-
-        // 3. Bugün nasıl hissediyorsun — renkli kart
-        staggered(index: 2, child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2A1E30) : const Color(0xFFEDE8F8),
-            borderRadius: BorderRadius.circular(20),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Bugün nasıl hissediyorsun?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface)),
-              const SizedBox(height: 14),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _MoodChip(label: 'Mutlu', color: const Color(0xFFF0A060), onTap: () {}),
-                  _MoodChip(label: 'Sakin', color: const Color(0xFF90C090), onTap: () {}),
-                  _MoodChip(label: 'Yorgun', color: const Color(0xFFA0A8D0), onTap: () {}),
-                  _MoodChip(label: 'Hassas', color: const Color(0xFFD898B0), onTap: () {}),
-                  _MoodChip(label: 'Sinirli', color: const Color(0xFFE87860), onTap: () {}),
-                ],
-              ),
-            ],
-          ),
-        )),
-        const SizedBox(height: 16),
-
-        // 4. Günlük ipucu — renkli kart
-        staggered(index: 3, child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCard : const Color(0xFFE8F5E8),
-            borderRadius: BorderRadius.circular(20),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${phase.label} Fazı', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.5) : const Color(0xFF2D6A2D))),
-              const SizedBox(height: 6),
-              Text(phase.tip, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: isDark ? Colors.white : const Color(0xFF1A4A1A), height: 1.4)),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFC8E8C8),
-                  borderRadius: BorderRadius.circular(20),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
-                ),
-                child: Text('${phase.label} · ${MockCycleData.currentCycleDay}. gün', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.6) : const Color(0xFF2D6A2D))),
-              ),
-            ],
-          ),
-        )),
-        const SizedBox(height: 16),
-
-        // 5. Hızlı aksiyonlar — yatay scroll chip'ler
-        staggered(index: 4, child: Row(children: [
-          _ActionPill(icon: Icons.edit_calendar_outlined, label: 'Kaydet', isDark: isDark, onTap: () => _QuickActions._showDailyLog(context)),
-          const SizedBox(width: 10),
-          _ActionPill(icon: Icons.healing_outlined, label: 'Semptom', isDark: isDark, onTap: () => _QuickActions._showSymptoms(context)),
-          const SizedBox(width: 10),
-          _ActionPill(icon: Icons.sticky_note_2_outlined, label: 'Not', isDark: isDark,
-            onTap: () => _QuickActions._showNote(context)),
-        ])),
-        const SizedBox(height: 18),
-
-        // 6. Beslenme — renkli kart
-        staggered(index: 5, child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2A2218) : const Color(0xFFFFF3E0),
-            borderRadius: BorderRadius.circular(20),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                Container(width: 36, height: 36,
-                  decoration: BoxDecoration(color: AppColors.phaseOvulation.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
-                  child: const Icon(Icons.restaurant_outlined, size: 18, color: AppColors.phaseOvulation)),
-                const SizedBox(width: 12),
-                Text('Beslenme', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : const Color(0xFF8B5E00))),
-              ]),
-              const SizedBox(height: 16),
-              ...MockWellnessData.current.nutrition.take(3).map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(width: 6, height: 6, margin: const EdgeInsets.only(top: 7),
-                    decoration: BoxDecoration(color: AppColors.phaseOvulation.withValues(alpha: 0.4), shape: BoxShape.circle)),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(item, style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.4))),
-                ]),
-              )),
-            ],
-          ),
-        )),
-        const SizedBox(height: 16),
-
-        // 7. Hareket — renkli kart
-        staggered(index: 6, child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E1E2A) : const Color(0xFFE8E8F8),
-            borderRadius: BorderRadius.circular(20),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 4))],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                Container(width: 36, height: 36,
-                  decoration: BoxDecoration(color: AppColors.phaseLuteal.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
-                  child: const Icon(Icons.self_improvement_outlined, size: 18, color: AppColors.phaseLuteal)),
-                const SizedBox(width: 12),
-                Text('Hareket', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : const Color(0xFF3A2060))),
-              ]),
-              const SizedBox(height: 16),
-              ...MockWellnessData.current.exercises.take(3).map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(width: 6, height: 6, margin: const EdgeInsets.only(top: 7),
-                    decoration: BoxDecoration(color: AppColors.phaseLuteal.withValues(alpha: 0.4), shape: BoxShape.circle)),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(item, style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.4))),
-                ]),
-              )),
-            ],
-          ),
-        )),
-        const SizedBox(height: 16),
-
-        // 8. Su + Uyku yan yana (bu ikisi küçük kalabilir)
-        staggered(index: 7, child: Row(children: [
-            Expanded(child: _WaterCard(
-              goal: MockWellnessData.current.waterGoal,
-              drunk: MockWellnessData.waterDrunk,
-              isDark: isDark,
-            )),
-            const SizedBox(width: 10),
-            Expanded(child: _SleepCard(
-              hours: MockWellnessData.current.sleepHours,
-              tip: MockWellnessData.current.sleepTip,
-              isDark: isDark,
-            )),
-          ])),
-        const SizedBox(height: 18),
-
-        // Bedeninde ne oluyor
-        staggered(index: 8, child: _BodyInfoCard(phase: phase)),
-        const SizedBox(height: 18),
-
-        // 7. Bunu biliyor muydun
-        staggered(index: 7, child: SizedBox(
-          height: 140,
-          child: Row(children: [
-            Expanded(child: _BentoCard(
-              onTap: () => _QuickActions._showNote(context),
-              isDark: isDark,
-              shape: _CardShape.pill,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 42, height: 42,
-                    decoration: BoxDecoration(
-                      color: AppColors.tertiary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.sticky_note_2_outlined, size: 22, color: AppColors.tertiary),
-                  ),
-                  const SizedBox(height: 10),
-                  Text('Günlük Not', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                  Text('Düşüncelerini yaz', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
-                ],
-              ),
-            )),
-            const SizedBox(width: 12),
-            Expanded(child: _BentoCard(
-              isDark: isDark,
-              shape: _CardShape.archBottom,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.lightbulb_outline_rounded, size: 22, color: AppColors.phaseOvulation),
-                  const SizedBox(height: 8),
-                  Text(
-                    MockCycleData.didYouKnow[DateTime.now().day % MockCycleData.didYouKnow.length],
-                    style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.6), height: 1.35),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            )),
-          ]),
-        )),
-        const SizedBox(height: 18),
-
-        // 8. Timeline
-        const SizedBox(height: 100),
-      ],
     );
   }
 }
@@ -517,39 +564,60 @@ class _QuickActions extends StatelessWidget {
   }
 
   static void _showMoodSelector(BuildContext context) {
+    final container = ProviderScope.containerOf(context);
     _sheet(context, (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
       _sheetHandle(context),
       const SizedBox(height: 20),
-      ArcMoodSelector(onMoodSelected: (mood) => Navigator.pop(ctx)),
+      ArcMoodSelector(onMoodSelected: (mood) {
+        container.read(cycleProvider.notifier).logMood(mood.label);
+        Navigator.pop(ctx);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ruh halin kaydedildi'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink),
+        );
+      }),
       SizedBox(height: MediaQuery.of(ctx).padding.bottom + 8),
     ]));
   }
 
   static void _showDailyLog(BuildContext context) {
     final theme = Theme.of(context);
-    _sheet(context, (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
-      _sheetHandle(context),
-      const SizedBox(height: 24),
-      Text('Bugünü Kaydet', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-      const SizedBox(height: 6),
-      Text('Akış yoğunluğunu seç', style: theme.textTheme.bodySmall?.copyWith(
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
-      const SizedBox(height: 24),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        _FlowOption(label: 'Yok', icon: Icons.remove_rounded, color: Colors.grey),
-        _FlowOption(label: 'Az', icon: Icons.water_drop_outlined, color: AppColors.phaseMenstruation.withValues(alpha: 0.5)),
-        _FlowOption(label: 'Normal', icon: Icons.water_drop_rounded, color: AppColors.phaseMenstruation.withValues(alpha: 0.75)),
-        _FlowOption(label: 'Yoğun', icon: Icons.opacity_rounded, color: AppColors.phaseMenstruation),
-      ]),
-      const SizedBox(height: 24),
-      SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
-        onPressed: () => Navigator.pop(ctx), child: const Text('Kaydet'))),
-      SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
-    ]));
+    final container = ProviderScope.containerOf(context);
+    _sheet(context, (ctx) => StatefulBuilder(builder: (ctx, setSt) {
+      String? selectedFlow;
+      return Column(mainAxisSize: MainAxisSize.min, children: [
+        _sheetHandle(context),
+        const SizedBox(height: 24),
+        Text('Bugünü Kaydet', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
+        const SizedBox(height: 6),
+        Text('Akış yoğunluğunu seç', style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+        const SizedBox(height: 24),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          _FlowOption(label: 'Yok', icon: Icons.remove_rounded, color: Colors.grey, isSelected: selectedFlow == 'Yok', onTap: () => setSt(() => selectedFlow = 'Yok')),
+          _FlowOption(label: 'Az', icon: Icons.water_drop_outlined, color: AppColors.phaseMenstruation.withValues(alpha: 0.5), isSelected: selectedFlow == 'Az', onTap: () => setSt(() => selectedFlow = 'Az')),
+          _FlowOption(label: 'Normal', icon: Icons.water_drop_rounded, color: AppColors.phaseMenstruation.withValues(alpha: 0.75), isSelected: selectedFlow == 'Normal', onTap: () => setSt(() => selectedFlow = 'Normal')),
+          _FlowOption(label: 'Yoğun', icon: Icons.opacity_rounded, color: AppColors.phaseMenstruation, isSelected: selectedFlow == 'Yoğun', onTap: () => setSt(() => selectedFlow = 'Yoğun')),
+        ]),
+        const SizedBox(height: 24),
+        SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
+          onPressed: () {
+            if (selectedFlow != null) {
+              container.read(cycleProvider.notifier).logFlow(selectedFlow!);
+            }
+            Navigator.pop(ctx);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(selectedFlow != null ? 'Akış kaydedildi: $selectedFlow' : 'Kayıt atlandı'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink),
+            );
+          },
+          child: Text(selectedFlow != null ? 'Kaydet' : 'Atla'))),
+        SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
+      ]);
+    }));
   }
 
   static void _showSymptoms(BuildContext context) {
     final theme = Theme.of(context);
+    final container = ProviderScope.containerOf(context);
     _sheet(context, (ctx) => StatefulBuilder(builder: (ctx, setSt) {
       final selected = <int>{};
       final symptoms = [
@@ -562,7 +630,7 @@ class _QuickActions extends StatelessWidget {
       return Column(mainAxisSize: MainAxisSize.min, children: [
         _sheetHandle(context),
         const SizedBox(height: 24),
-        Text('Semptomlar', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+        Text('Semptomlar', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
         const SizedBox(height: 6),
         Text('Bugün yaşadıklarını işaretle', style: theme.textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
@@ -581,7 +649,16 @@ class _QuickActions extends StatelessWidget {
         }).toList()),
         const SizedBox(height: 24),
         SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
-          onPressed: () => Navigator.pop(ctx),
+          onPressed: () {
+            if (selected.isNotEmpty) {
+              final names = selected.map((i) => symptoms[i].$1).toList();
+              container.read(cycleProvider.notifier).logSymptoms(names);
+            }
+            Navigator.pop(ctx);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(selected.isEmpty ? 'Kayıt atlandı' : '${selected.length} semptom kaydedildi'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink),
+            );
+          },
           child: Text(selected.isEmpty ? 'Atla' : 'Kaydet (${selected.length})'))),
         SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
       ]);
@@ -590,17 +667,29 @@ class _QuickActions extends StatelessWidget {
 
   static void _showNote(BuildContext context) {
     final theme = Theme.of(context);
+    final container = ProviderScope.containerOf(context);
+    final controller = TextEditingController();
     _sheet(context, (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
       _sheetHandle(context),
       const SizedBox(height: 24),
-      Text('Günlük Not', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+      Text('Günlük Not', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
       const SizedBox(height: 20),
-      TextField(maxLines: 4, decoration: InputDecoration(
+      TextField(controller: controller, maxLines: 4, decoration: InputDecoration(
         hintText: 'Bugün nasıl hissediyorum...', border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none), filled: true)),
       const SizedBox(height: 20),
       SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
-        onPressed: () => Navigator.pop(ctx), child: const Text('Kaydet'))),
+        onPressed: () {
+          final text = controller.text.trim();
+          if (text.isNotEmpty) {
+            container.read(cycleProvider.notifier).logNote(text);
+          }
+          Navigator.pop(ctx);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(text.isNotEmpty ? 'Notun kaydedildi' : 'Kayıt atlandı'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink),
+          );
+        },
+        child: const Text('Kaydet'))),
       SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
     ]));
   }
@@ -625,20 +714,31 @@ class _QuickActions extends StatelessWidget {
 }
 
 class _FlowOption extends StatelessWidget {
-  const _FlowOption({required this.label, required this.icon, required this.color});
+  const _FlowOption({required this.label, required this.icon, required this.color, this.isSelected = false, this.onTap});
   final String label;
   final IconData icon;
   final Color color;
+  final bool isSelected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(width: 52, height: 52,
-        decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(14)),
-        child: Icon(icon, size: 26, color: color)),
-      const SizedBox(height: 5),
-      Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600)),
-    ]);
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 56, height: 56,
+          decoration: BoxDecoration(
+            color: isSelected ? color : color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(16),
+            border: isSelected ? Border.all(color: color, width: 2) : null,
+          ),
+          child: Icon(icon, size: 26, color: isSelected ? Colors.white : color)),
+        const SizedBox(height: 5),
+        Text(label, style: TextStyle(fontSize: 11, fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500, color: isSelected ? color : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
+      ]),
+    );
   }
 }
 
@@ -698,7 +798,7 @@ class _MonthCalendar extends StatelessWidget {
         children: [
           Row(children: [
             Text(monthName[0].toUpperCase() + monthName.substring(1),
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+              style: AppTextStyles.heading(fontSize: 16, color: AppColors.ink)),
             const Spacer(),
             Icon(Icons.chevron_left_rounded, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
             const SizedBox(width: 8),
@@ -799,6 +899,134 @@ class _FilterPill extends StatelessWidget {
   }
 }
 
+// ─── Yardımcı Widgetlar ────────────────────────────────────────────────────
+
+class _CycleCalendarHero extends StatelessWidget {
+  const _CycleCalendarHero({required this.phase, required this.isDark});
+  final CyclePhaseInfo phase;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final now = DateTime.now();
+    final cycleState = ProviderScope.containerOf(context).read(cycleProvider);
+
+    final monthName = DateFormat('MMMM yyyy', 'tr_TR').format(now);
+    final firstDay = DateTime(now.year, now.month, 1);
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final startWeekday = (firstDay.weekday - 1) % 7;
+
+    return Column(children: [
+      Row(children: [
+        _IconBadge(icon: Icons.calendar_month_outlined, color: phase.color),
+        const SizedBox(width: 10),
+        Text(
+          monthName[0].toUpperCase() + monthName.substring(1),
+          style: AppTextStyles.heading(fontSize: 16, color: AppColors.ink),
+        ),
+        const Spacer(),
+        Icon(Icons.chevron_left_rounded, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
+        const SizedBox(width: 8),
+        Icon(Icons.chevron_right_rounded, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
+      ]),
+      const SizedBox(height: 14),
+      Row(children: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((d) => Expanded(
+        child: Text(d, textAlign: TextAlign.center, style: TextStyle(
+          fontSize: 10, fontWeight: FontWeight.w600,
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.35))),
+      )).toList()),
+      const SizedBox(height: 6),
+      ...List.generate(6, (week) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: Row(children: List.generate(7, (dow) {
+            final dayNum = week * 7 + dow - startWeekday + 1;
+            if (dayNum < 1 || dayNum > daysInMonth) {
+              return const Expanded(child: SizedBox(height: 38));
+            }
+
+            final isToday = dayNum == now.day;
+            final date = DateTime(now.year, now.month, dayNum);
+            final isPeriod = cycleState.isPeriodDay(date);
+            final isPredicted = !isPeriod && cycleState.isPredictedPeriodDay(date);
+            final hasLog = cycleState.logForDate(date) != null;
+
+            Color bg;
+            Color textColor;
+            FontWeight weight;
+            if (isToday) {
+              bg = AppColors.softPink;
+              textColor = Colors.white;
+              weight = FontWeight.w800;
+            } else if (isPeriod) {
+              bg = AppColors.softPink.withValues(alpha: 0.25);
+              textColor = AppColors.softPink;
+              weight = FontWeight.w700;
+            } else if (isPredicted) {
+              bg = AppColors.warmOrange.withValues(alpha: 0.12);
+              textColor = AppColors.warmOrange;
+              weight = FontWeight.w600;
+            } else {
+              bg = Colors.transparent;
+              textColor = theme.colorScheme.onSurface.withValues(alpha: 0.35);
+              weight = FontWeight.w400;
+            }
+
+            return Expanded(
+              child: SizedBox(
+                height: 42,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 34, height: 34,
+                      decoration: BoxDecoration(
+                        color: bg,
+                        shape: BoxShape.circle,
+                        border: isPredicted ? Border.all(color: AppColors.warmOrange.withValues(alpha: 0.3), width: 1.5, strokeAlign: BorderSide.strokeAlignInside) : null,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text('$dayNum', style: TextStyle(fontSize: 12, fontWeight: weight, color: textColor)),
+                    ),
+                    if (hasLog) Container(
+                      width: 4, height: 4, margin: const EdgeInsets.only(top: 1),
+                      decoration: BoxDecoration(color: AppColors.warmOrange, shape: BoxShape.circle),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          })),
+        );
+      }),
+      const SizedBox(height: 10),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        _PhaseDot(label: 'Adet', color: AppColors.softPink),
+        const SizedBox(width: 14),
+        _PhaseDot(label: 'Tahmini', color: AppColors.warmOrange),
+        const SizedBox(width: 14),
+        _PhaseDot(label: 'Kayıt', color: AppColors.warmOrange),
+      ]),
+    ]);
+  }
+}
+
+class _PhaseDot extends StatelessWidget {
+  const _PhaseDot({required this.label, required this.color});
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+      const SizedBox(width: 4),
+      Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: color)),
+    ]);
+  }
+}
+
 // ─── Bedeninde Ne Oluyor? ────────────────────────────────────────────────────
 
 class _BodyInfoCard extends StatelessWidget {
@@ -823,8 +1051,7 @@ class _BodyInfoCard extends StatelessWidget {
           Row(children: [
             Icon(Icons.auto_awesome_rounded, size: 16, color: phase.color),
             const SizedBox(width: 8),
-            Text('Bedeninde Ne Oluyor?', style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w700, color: phase.color)),
+            Text('Bedeninde Ne Oluyor?', style: AppTextStyles.heading(fontSize: 16, color: phase.color)),
           ]),
           const SizedBox(height: 12),
           Text(phase.bodyInfo, style: TextStyle(
@@ -866,7 +1093,7 @@ class _WeeklyTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        staggered(index: 0, child: Text('Bu Hafta', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800))),
+        staggered(index: 0, child: Text('Bu Hafta', style: AppTextStyles.heading(fontSize: 22, color: AppColors.ink))),
         const SizedBox(height: 4),
         staggered(index: 0, child: Text('Bugün sekmesinden kayıt ekle',
           style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)))),
@@ -940,7 +1167,7 @@ class _OverallTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        staggered(index: 0, child: Text('Genel Bakış', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800))),
+        staggered(index: 0, child: Text('Genel Bakış', style: AppTextStyles.heading(fontSize: 22, color: AppColors.ink))),
         const SizedBox(height: 18),
         // İstatistik kartları
         staggered(index: 1, child: Row(children: [
@@ -959,7 +1186,7 @@ class _OverallTab extends StatelessWidget {
         const SizedBox(height: 18),
         staggered(index: 4, child: const _MoodCalendar()),
         const SizedBox(height: 20),
-        staggered(index: 5, child: Text('Döngü Geçmişi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
+        staggered(index: 5, child: Text('Döngü Geçmişi', style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink))),
         const SizedBox(height: 12),
         staggered(index: 6, child: const _CycleHistory()),
         const SizedBox(height: 100),
@@ -1031,46 +1258,6 @@ class _CycleHistory extends StatelessWidget {
 
 
 
-// ─── Bento Kart Bileşenleri ─────────────────────────────────────────────────
-
-class _BentoCard extends StatelessWidget {
-  const _BentoCard({required this.child, required this.isDark, this.onTap, this.shape});
-  final Widget child;
-  final bool isDark;
-  final VoidCallback? onTap;
-  final _CardShape? shape;
-
-  @override
-  Widget build(BuildContext context) {
-    final radius = switch (shape) {
-      _CardShape.archTop => const BorderRadius.only(
-        topLeft: Radius.circular(32), topRight: Radius.circular(32),
-        bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
-      _CardShape.archBottom => const BorderRadius.only(
-        topLeft: Radius.circular(16), topRight: Radius.circular(16),
-        bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
-      _CardShape.pill => BorderRadius.circular(28),
-      _CardShape.softSquare => BorderRadius.circular(22),
-      _ => BorderRadius.circular(20),
-    };
-
-    final content = Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF241E22) : Colors.white,
-        borderRadius: radius,
-        border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
-        ),
-      ),
-      child: child,
-    );
-    if (onTap == null) return content;
-    return GestureDetector(onTap: onTap, child: content);
-  }
-}
-
-enum _CardShape { archTop, archBottom, pill, softSquare }
 
 
 // ─── Mood Takvimi (Genel tab için) ──────────────────────────────────────────
@@ -1094,7 +1281,7 @@ class _MoodCalendar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Text('Mood Takvimi', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+            Text('Mood Takvimi', style: AppTextStyles.heading(fontSize: 16, color: AppColors.ink)),
             const Spacer(),
             Text(monthName[0].toUpperCase() + monthName.substring(1),
               style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
@@ -1200,85 +1387,6 @@ class _MoodSummaryCard extends StatelessWidget {
   }
 }
 
-// ─── Wellness Kartları ──────────────────────────────────────────────────────
-
-
-class _WaterCard extends StatelessWidget {
-  const _WaterCard({required this.goal, required this.drunk, required this.isDark});
-  final int goal;
-  final int drunk;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final progress = drunk / goal;
-
-    return _BentoCard(
-      isDark: isDark,
-      shape: _CardShape.archBottom,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(children: [
-            Container(width: 28, height: 28,
-              decoration: BoxDecoration(color: const Color(0xFF6BA8D4).withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.water_drop_outlined, size: 15, color: Color(0xFF6BA8D4))),
-            const SizedBox(width: 8),
-            Text('Su', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: const Color(0xFF6BA8D4))),
-          ]),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: progress,
-              backgroundColor: const Color(0xFF6BA8D4).withValues(alpha: 0.1),
-              color: const Color(0xFF6BA8D4),
-              minHeight: 8,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text('$drunk / $goal bardak', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
-        ],
-      ),
-    );
-  }
-}
-
-class _SleepCard extends StatelessWidget {
-  const _SleepCard({required this.hours, required this.tip, required this.isDark});
-  final String hours;
-  final String tip;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return _BentoCard(
-      isDark: isDark,
-      shape: _CardShape.archTop,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Container(width: 28, height: 28,
-              decoration: BoxDecoration(color: AppColors.secondary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.nightlight_outlined, size: 15, color: AppColors.secondary)),
-            const SizedBox(width: 8),
-            Text('Uyku', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.secondary)),
-          ]),
-          const SizedBox(height: 6),
-          Text(hours, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.secondary)),
-          const SizedBox(height: 2),
-          Text(tip, style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.4), height: 1.3),
-            maxLines: 2, overflow: TextOverflow.ellipsis),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Büyük Tam Genişlik Kart ────────────────────────────────────────────────
 
@@ -1294,22 +1402,26 @@ class _MoodChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(24),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: AppColors.softPink.withValues(alpha: 0.4)),
+          boxShadow: [
+            BoxShadow(color: AppColors.softPink.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, 2)),
+          ],
         ),
-        child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color)),
+        child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
       ),
     );
   }
 }
 
-class _ActionPill extends StatelessWidget {
-  const _ActionPill({required this.icon, required this.label, required this.isDark, required this.onTap});
+
+class _QuickActionBtn extends StatelessWidget {
+  const _QuickActionBtn({required this.icon, required this.label, required this.onTap});
   final IconData icon;
   final String label;
-  final bool isDark;
   final VoidCallback onTap;
 
   @override
@@ -1318,19 +1430,181 @@ class _ActionPill extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          height: 64,
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF241E22) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04)),
+            color: AppColors.softPink.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
           ),
-          child: Column(children: [
-            Icon(icon, size: 22, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
-            const SizedBox(height: 6),
-            Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, size: 24, color: AppColors.ink.withValues(alpha: 0.6)),
+            const SizedBox(height: 4),
+            Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.5))),
           ]),
         ),
       ),
+    );
+  }
+}
+
+
+// ─── Soft Card — pastel arka planlı, gölgeli, yuvarlak köşeli ──────────────
+
+class _SoftCard extends StatelessWidget {
+  const _SoftCard({required this.color, required this.child});
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: isDark ? null : [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 12, offset: const Offset(0, 3)),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+// ─── Sparkle dekoratif yıldız ──────────────────────────────────────────────
+
+class _Sparkle extends StatelessWidget {
+  const _Sparkle({required this.size, required this.color});
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(Icons.auto_awesome, size: size, color: color);
+  }
+}
+
+// ─── Hero Day Card — büyük gün göstergesi + yıldızlar ──────────────────────
+
+class _HeroDayCard extends StatelessWidget {
+  const _HeroDayCard({required this.phase, required this.isDark, required this.cycleState});
+  final CyclePhaseInfo phase;
+  final bool isDark;
+  final CycleState cycleState;
+
+  @override
+  Widget build(BuildContext context) {
+    final cycleDay = cycleState.currentCycleDay;
+    final isOn = cycleState.isOnPeriod;
+    final prediction = cycleState.daysUntilNextPeriod;
+
+    String subtitle;
+    if (isOn) {
+      subtitle = 'adet günlerinde kendine nazik ol.';
+    } else if (prediction != null && prediction <= 5) {
+      subtitle = 'adetin yaklaşıyor, hazırlıklı ol.';
+    } else {
+      subtitle = 'kendine iyi bak.';
+    }
+
+    String info;
+    if (isOn) {
+      info = 'Adet · ${cycleState.activePeriod!.lengthDays}. gün';
+    } else if (prediction != null) {
+      info = 'Tahmini $prediction gün sonra';
+    } else {
+      info = '${phase.label} fazı · $cycleDay. gün';
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 26),
+      decoration: BoxDecoration(
+        gradient: isDark ? AppColors.gradientDeepPurple : AppColors.gradientWarmSunset,
+        borderRadius: BorderRadius.circular(32),
+        boxShadow: isDark ? null : [
+          BoxShadow(color: AppColors.warmOrange.withValues(alpha: 0.25), blurRadius: 24, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(top: -4, right: 0, child: _Sparkle(size: 24, color: Colors.white.withValues(alpha: 0.5))),
+          Positioned(top: 24, right: 36, child: _Sparkle(size: 14, color: Colors.white.withValues(alpha: 0.35))),
+          Positioned(bottom: 0, right: 16, child: _Sparkle(size: 18, color: Colors.white.withValues(alpha: 0.4))),
+          Positioned(top: 14, left: 12, child: _Sparkle(size: 10, color: Colors.white.withValues(alpha: 0.3))),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$cycleDay. gün',
+                style: TextStyle(
+                  fontSize: 52, fontWeight: FontWeight.w800,
+                  fontStyle: FontStyle.italic, letterSpacing: -2,
+                  height: 1.0, color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(subtitle, style: AppTextStyles.accent(fontSize: 22, color: Colors.white.withValues(alpha: 0.8))),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(info, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.8))),
+              ),
+              if (!cycleState.canPredict) ...[
+                const SizedBox(height: 8),
+                Text(
+                  'Kayıt yaptıkça seni daha iyi tanıyacağız',
+                  style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.45)),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Icon Badge — yuvarlak kare ikon kutusu ────────────────────────────────
+
+class _IconBadge extends StatelessWidget {
+  const _IconBadge({required this.icon, required this.color});
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 44, height: 44,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Icon(icon, size: 22, color: color),
+    );
+  }
+}
+
+// ─── Circle Arrow — yuvarlak ok butonu ─────────────────────────────────────
+
+class _CircleArrow extends StatelessWidget {
+  const _CircleArrow({this.size = 40});
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size, height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: AppColors.gradientPinkOrange,
+      ),
+      child: Icon(Icons.arrow_forward_rounded, size: size * 0.45, color: Colors.white),
     );
   }
 }

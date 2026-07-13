@@ -158,8 +158,8 @@ class _SetupScreenState extends State<SetupScreen> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: _canProceed
-                            ? AppColors.darkCard
-                            : AppColors.darkCard.withValues(alpha: 0.2),
+                            ? AppColors.primary
+                            : AppColors.primary.withValues(alpha: 0.2),
                       ),
                       child: Icon(
                         _currentStep == _totalSteps - 1 ? Icons.check_rounded : Icons.arrow_forward_rounded,

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/staggered_list.dart';
 
@@ -16,29 +17,37 @@ class ProfileScreen extends ConsumerWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(color: isDark ? const Color(0xFF1A1518) : const Color(0xFFF8F3F0)),
+          Container(
+            height: 320,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter, end: Alignment.bottomCenter,
+                colors: [Color(0xFFFDD6A8), Color(0xFFF9C4D2), Color(0xFFFFFFFF)],
+              ),
+            ),
+          ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: StaggeredList(children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
 
-                // Avatar + isim
                 Center(child: Column(children: [
                   Container(
-                    width: 76, height: 76,
+                    width: 80, height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primaryContainer,
-                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
+                      color: Colors.white,
+                      border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 3),
                     ),
-                    child: const Center(child: Text('E', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: AppColors.primary))),
+                    child: Center(child: Text('E', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.ink))),
                   ),
-                  const SizedBox(height: 10),
-                  Text('Ela', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-                  Text('14 yaşında', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+                  const SizedBox(height: 12),
+                  Text('Ela', style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
+                  Text('14 yaşında', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.4))),
                 ])),
                 const SizedBox(height: 20),
 
@@ -53,7 +62,7 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
 
                 // Öğrenme İlerlemesi
-                Text('Öğrenme İlerlemen', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                Text('Öğrenme İlerlemen', style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
                 const SizedBox(height: 12),
                 CleanCard(
                   padding: const EdgeInsets.all(18),
@@ -68,7 +77,7 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
 
                 // Rozetler
-                Text('Rozetlerin', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                Text('Rozetlerin', style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
                 const SizedBox(height: 12),
                 Row(children: [
                   _Badge(icon: Icons.water_drop_rounded, label: 'İlk Kayıt', earned: true, color: AppColors.phaseMenstruation),

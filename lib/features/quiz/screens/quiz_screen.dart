@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/clean_card.dart';
-import '../../../shared/widgets/staggered_list.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -16,13 +14,12 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _answered = false;
 
   static const _quizSets = [
-    _QuizSet(title: 'Döngü Bilgisi', icon: Icons.autorenew_rounded, color: AppColors.primary, questionCount: 8, completed: 5),
-    _QuizSet(title: 'Mitleri Yık', icon: Icons.cancel_outlined, color: AppColors.phaseMenstruation, questionCount: 6, completed: 2),
-    _QuizSet(title: 'Beslenme', icon: Icons.restaurant_outlined, color: AppColors.phaseOvulation, questionCount: 5, completed: 0),
-    _QuizSet(title: 'Duygular', icon: Icons.psychology_outlined, color: AppColors.secondary, questionCount: 7, completed: 0),
+    _QuizSet(title: 'Döngü Bilgisi', icon: Icons.autorenew_rounded, questionCount: 8, completed: 5),
+    _QuizSet(title: 'Mitleri Yık', icon: Icons.cancel_outlined, questionCount: 6, completed: 2),
+    _QuizSet(title: 'Beslenme', icon: Icons.restaurant_outlined, questionCount: 5, completed: 0),
+    _QuizSet(title: 'Duygular', icon: Icons.psychology_outlined, questionCount: 7, completed: 0),
   ];
 
-  // Günün sorusu
   static const _question = 'Aşağıdakilerden hangisi adet döngüsü hakkında doğrudur?';
   static const _options = [
     'Döngü her zaman tam 28 gün sürer',
@@ -35,179 +32,199 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(color: isDark ? const Color(0xFF1A1518) : const Color(0xFFF8F3F0)),
+          Container(
+            height: 300,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter, end: Alignment.bottomCenter,
+                colors: [Color(0xFFF9C4D2), Color(0xFFFDD6A8), Color(0xFFFFFFFF)],
+              ),
+            ),
+          ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: StaggeredList(children: [
-                const SizedBox(height: 12),
-                Text('Öğren &\nTest Et', style: theme.textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.w800, height: 1.1, letterSpacing: -0.5)),
-                const SizedBox(height: 4),
-                Text('Bilgini sına, rozetler kazan', style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
-                const SizedBox(height: 20),
-
-                // Seri + puan
-                CleanCard(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(children: [
-                    Container(
-                      width: 40, height: 40,
-                      decoration: BoxDecoration(color: AppColors.tertiary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(11)),
-                      child: const Icon(Icons.local_fire_department_rounded, size: 22, color: AppColors.tertiary),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('3 Günlük Seri', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                      Text('Her gün çöz, serisini koru!', style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 11)),
-                    ])),
-                    Column(children: [
-                      Text('240', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.tertiary)),
-                      Text('puan', style: TextStyle(fontSize: 10, color: AppColors.tertiary.withValues(alpha: 0.6))),
-                    ]),
-                  ]),
-                ),
-                const SizedBox(height: 20),
-
-                // Günün sorusu — koyu kart
-                Container(
-                  padding: const EdgeInsets.all(26),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkCard.withValues(alpha: 0.9) : AppColors.darkCard,
-                    borderRadius: BorderRadius.circular(22),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text('Öğren &\nTest Et', style: AppTextStyles.heading(fontSize: 32, color: AppColors.ink)),
                   ),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(8)),
-                        child: const Text('Günün Sorusu', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.primary)),
+                  const SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text('bilgini sına, rozetler kazan.', style: AppTextStyles.accent(fontSize: 18, color: AppColors.softPink)),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Seri + puan
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF5ED),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      const Spacer(),
-                      Text('+20 puan', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.4))),
-                    ]),
-                    const SizedBox(height: 16),
-                    Text(_question, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white, height: 1.3)),
-                    const SizedBox(height: 18),
-                    ..._options.asMap().entries.map((e) {
-                      final i = e.key;
-                      final isSelected = _selected == i;
-                      final isCorrect = i == _correct;
-
-                      Color bg; Color border; Color textCol;
-                      if (!_answered) {
-                        bg = Colors.white.withValues(alpha: 0.08);
-                        border = Colors.transparent;
-                        textCol = Colors.white.withValues(alpha: 0.9);
-                      } else if (isCorrect) {
-                        bg = AppColors.success.withValues(alpha: 0.15);
-                        border = AppColors.success;
-                        textCol = Colors.white;
-                      } else if (isSelected) {
-                        bg = AppColors.error.withValues(alpha: 0.15);
-                        border = AppColors.error;
-                        textCol = Colors.white.withValues(alpha: 0.6);
-                      } else {
-                        bg = Colors.white.withValues(alpha: 0.04);
-                        border = Colors.transparent;
-                        textCol = Colors.white.withValues(alpha: 0.3);
-                      }
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: GestureDetector(
-                          onTap: _answered ? null : () => setState(() { _selected = i; _answered = true; }),
-                          child: AnimatedContainer(
-                            duration: AppConstants.animDurationFast,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                            decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: border, width: 1.5)),
-                            child: Row(children: [
-                              Text(String.fromCharCode(65 + i), style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white.withValues(alpha: 0.3))),
-                              const SizedBox(width: 10),
-                              Expanded(child: Text(e.value, style: TextStyle(fontSize: 13, color: textCol))),
-                              if (_answered && isCorrect) const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 18),
-                              if (_answered && isSelected && !isCorrect) const Icon(Icons.cancel_rounded, color: AppColors.error, size: 18),
-                            ]),
-                          ),
+                      child: Row(children: [
+                        Container(
+                          width: 44, height: 44,
+                          decoration: BoxDecoration(color: AppColors.warmOrange.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(14)),
+                          child: Icon(Icons.local_fire_department_rounded, size: 24, color: AppColors.warmOrange),
                         ),
-                      );
-                    }),
-                  ]),
-                ),
-
-                // Açıklama kartı
-                if (_answered) ...[
-                  const SizedBox(height: 14),
-                  CleanCard(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Row(children: [
-                        Icon(Icons.school_outlined, size: 16, color: AppColors.phaseOvulation),
-                        const SizedBox(width: 8),
-                        Text('Açıklama', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.phaseOvulation)),
+                        const SizedBox(width: 14),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text('3 Günlük Seri', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink)),
+                          Text('Her gün çöz, serisini koru!', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
+                        ])),
+                        Text('240', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.warmOrange)),
+                        Text(' pt', style: TextStyle(fontSize: 12, color: AppColors.warmOrange.withValues(alpha: 0.6))),
                       ]),
-                      const SizedBox(height: 8),
-                      Text(_explanation, style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7), height: 1.5)),
-                      const SizedBox(height: 14),
-                      SizedBox(width: double.infinity, height: 44, child: ElevatedButton(
-                        onPressed: () => setState(() { _selected = null; _answered = false; }),
-                        child: const Text('Sonraki Soru →'),
-                      )),
-                    ]),
+                    ),
                   ),
-                ],
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                // Quiz setleri
-                Text('Konu Bazlı Quizler', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                const SizedBox(height: 12),
-
-                ..._quizSets.map((s) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: CleanCard(
-                    onTap: () {},
-                    padding: const EdgeInsets.all(16),
-                    child: Row(children: [
-                      Container(
-                        width: 40, height: 40,
-                        decoration: BoxDecoration(color: s.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(11)),
-                        child: Icon(s.icon, size: 20, color: s.color),
+                  // Günün sorusu
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppColors.softPink.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      const SizedBox(width: 14),
-                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(s.title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                        const SizedBox(height: 4),
-                        // İlerleme barı
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: s.completed / s.questionCount,
-                            backgroundColor: s.color.withValues(alpha: 0.1),
-                            color: s.color,
-                            minHeight: 4,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text('${s.completed}/${s.questionCount} tamamlandı', style: TextStyle(
-                          fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
-                      ])),
-                      Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
-                    ]),
-                  ),
-                )),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Row(children: [
+                          Text('Günün Sorusu', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.softPink)),
+                          const Spacer(),
+                          Text('+20 puan', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.35))),
+                        ]),
+                        const SizedBox(height: 14),
+                        Text(_question, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.4)),
+                        const SizedBox(height: 18),
+                        ..._options.asMap().entries.map((e) {
+                          final i = e.key;
+                          final isSelected = _selected == i;
+                          final isCorrect = i == _correct;
 
-                const SizedBox(height: 100),
-              ]),
+                          Color bg; Color textCol;
+                          if (!_answered) {
+                            bg = Colors.white;
+                            textCol = AppColors.ink;
+                          } else if (isCorrect) {
+                            bg = const Color(0xFFD4EDDA);
+                            textCol = const Color(0xFF155724);
+                          } else if (isSelected) {
+                            bg = const Color(0xFFFCE8EF);
+                            textCol = AppColors.ink.withValues(alpha: 0.5);
+                          } else {
+                            bg = Colors.white.withValues(alpha: 0.5);
+                            textCol = AppColors.ink.withValues(alpha: 0.3);
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: GestureDetector(
+                              onTap: _answered ? null : () => setState(() { _selected = i; _answered = true; }),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(16)),
+                                child: Row(children: [
+                                  Text(String.fromCharCode(65 + i), style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink.withValues(alpha: 0.25))),
+                                  const SizedBox(width: 12),
+                                  Expanded(child: Text(e.value, style: TextStyle(fontSize: 14, color: textCol))),
+                                  if (_answered && isCorrect) Icon(Icons.check_circle_rounded, color: const Color(0xFF28A745), size: 20),
+                                  if (_answered && isSelected && !isCorrect) Icon(Icons.cancel_rounded, color: AppColors.softPink, size: 20),
+                                ]),
+                              ),
+                            ),
+                          );
+                        }),
+                      ]),
+                    ),
+                  ),
+
+                  if (_answered) ...[
+                    const SizedBox(height: 14),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Container(
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(color: const Color(0xFFFFF5ED), borderRadius: BorderRadius.circular(20)),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text('Açıklama', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.warmOrange)),
+                          const SizedBox(height: 8),
+                          Text(_explanation, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
+                          const SizedBox(height: 14),
+                          GestureDetector(
+                            onTap: () => setState(() { _selected = null; _answered = false; }),
+                            child: Container(
+                              width: double.infinity, height: 48,
+                              decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(24)),
+                              alignment: Alignment.center,
+                              child: Text('Sonraki Soru', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 28),
+
+                  // Quiz setleri
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text('Konu Bazlı', style: AppTextStyles.heading(fontSize: 20, color: AppColors.ink)),
+                  ),
+                  const SizedBox(height: 14),
+
+                  ..._quizSets.map((s) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFCE8EF),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(children: [
+                        Container(
+                          width: 44, height: 44,
+                          decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(14)),
+                          child: Icon(s.icon, size: 22, color: AppColors.ink.withValues(alpha: 0.6)),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(s.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                          const SizedBox(height: 6),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: s.completed / s.questionCount,
+                              backgroundColor: AppColors.softPink.withValues(alpha: 0.15),
+                              color: AppColors.softPink,
+                              minHeight: 4,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text('${s.completed}/${s.questionCount} tamamlandı', style: TextStyle(fontSize: 10, color: AppColors.ink.withValues(alpha: 0.35))),
+                        ])),
+                        Container(
+                          width: 36, height: 36,
+                          decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.ink),
+                          child: const Icon(Icons.arrow_forward_rounded, size: 18, color: Colors.white),
+                        ),
+                      ]),
+                    ),
+                  )),
+
+                  const SizedBox(height: 110),
+                ],
+              ),
             ),
           ),
         ],
@@ -217,9 +234,8 @@ class _QuizScreenState extends State<QuizScreen> {
 }
 
 class _QuizSet {
-  const _QuizSet({required this.title, required this.icon, required this.color, required this.questionCount, required this.completed});
+  const _QuizSet({required this.title, required this.icon, required this.questionCount, required this.completed});
   final String title;
   final IconData icon;
-  final Color color;
   final int questionCount, completed;
 }
