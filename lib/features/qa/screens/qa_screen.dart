@@ -89,9 +89,6 @@ class _QaScreenState extends State<QaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(

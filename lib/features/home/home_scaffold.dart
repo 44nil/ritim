@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/router/route_names.dart';
-import '../../core/theme/app_colors.dart';
 
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({super.key, required this.navigationShell});
@@ -24,7 +23,6 @@ class HomeScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentIndex = navigationShell.currentIndex;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       extendBody: true,
