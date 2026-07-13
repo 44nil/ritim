@@ -52,6 +52,14 @@ abstract class AppColors {
   static const phaseOvulation = Color(0xFFFBB47C);
   static const phaseLuteal = Color(0xFFFCD9A8);
 
+  // ─── Kart arkaplanları (Döngüm/Quiz/Makaleler kartlarında tekrar eden) ──
+  static const cardCream = Color(0xFFFFF5ED);
+  static const cardPink = Color(0xFFFCE8EF);
+
+  // ─── Hero header gradient (soft pastel, tab üstlerinde) ─────────────────
+  static const heroPink = Color(0xFFF9C4D2);
+  static const heroPeach = Color(0xFFFDD6A8);
+
   // ─── Koyu kart / nav bar ───────────────────────────────────────────────
   static const darkCard = Color(0xFF2D2438);
   static const navBar = Color(0xFFF472B6);
@@ -86,5 +94,9 @@ abstract class AppColors {
   static const gradientDeepPurple = LinearGradient(
     begin: Alignment.topLeft, end: Alignment.bottomRight,
     colors: [Color(0xFF2E2536), Color(0xFF1A1520)],
+  );
+  static const gradientHeroSoft = LinearGradient(
+    begin: Alignment.topCenter, end: Alignment.bottomCenter,
+    colors: [heroPink, heroPeach, Color(0xFFFFFFFF)],
   );
 }

@@ -39,10 +39,7 @@ class _QuizScreenState extends State<QuizScreen> {
           Container(
             height: 300,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Color(0xFFF9C4D2), Color(0xFFFDD6A8), Color(0xFFFFFFFF)],
-              ),
+              gradient: AppColors.gradientHeroSoft,
             ),
           ),
           SafeArea(
@@ -68,7 +65,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF5ED),
+                        color: AppColors.cardCream,
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Row(children: [
@@ -120,7 +117,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             bg = const Color(0xFFD4EDDA);
                             textCol = const Color(0xFF155724);
                           } else if (isSelected) {
-                            bg = const Color(0xFFFCE8EF);
+                            bg = AppColors.cardPink;
                             textCol = AppColors.ink.withValues(alpha: 0.5);
                           } else {
                             bg = Colors.white.withValues(alpha: 0.5);
@@ -155,7 +152,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Container(
                         padding: const EdgeInsets.all(18),
-                        decoration: BoxDecoration(color: const Color(0xFFFFF5ED), borderRadius: BorderRadius.circular(20)),
+                        decoration: BoxDecoration(color: AppColors.cardCream, borderRadius: BorderRadius.circular(20)),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text('Açıklama', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.warmOrange)),
                           const SizedBox(height: 8),
@@ -188,7 +185,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFCE8EF),
+                        color: AppColors.cardPink,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(children: [

@@ -90,7 +90,7 @@ class _SetupScreenState extends State<SetupScreen> {
                           shape: BoxShape.circle,
                           color: Colors.white.withValues(alpha: 0.6),
                         ),
-                        child: const Icon(Icons.arrow_back_rounded, size: 18, color: Color(0xFF2D2028)),
+                        child: const Icon(Icons.arrow_back_rounded, size: 18, color: AppColors.ink),
                       ),
                     )
                   else
@@ -201,7 +201,7 @@ class _AgePage extends StatelessWidget {
           const SizedBox(height: 12),
           const Text('Kaç\nyaşındasın?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: Color(0xFF2D2028),
+            color: AppColors.ink,
           )),
           const Spacer(),
           // Büyük sayı göstergesi
@@ -262,7 +262,7 @@ class _PeriodStartedPage extends StatelessWidget {
           const SizedBox(height: 12),
           const Text('İlk adetin\noldu mu?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: Color(0xFF2D2028),
+            color: AppColors.ink,
           )),
           const SizedBox(height: 12),
           Text(
@@ -386,7 +386,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
           const SizedBox(height: 12),
           const Text('Son adetin\nne zaman\nbaşladı?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: Color(0xFF2D2028),
+            color: AppColors.ink,
           )),
           const SizedBox(height: 12),
           Text(
@@ -488,7 +488,7 @@ class _CycleLengthPage extends StatelessWidget {
           const SizedBox(height: 12),
           const Text('Döngün\ngenelde kaç\ngün sürüyor?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: Color(0xFF2D2028),
+            color: AppColors.ink,
           )),
           const SizedBox(height: 12),
           Text(
@@ -567,7 +567,7 @@ class _NamePage extends StatelessWidget {
           const SizedBox(height: 12),
           const Text('Sana nasıl\nhitap\nedelim?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: Color(0xFF2D2028),
+            color: AppColors.ink,
           )),
           const SizedBox(height: 12),
           Text(
@@ -580,7 +580,7 @@ class _NamePage extends StatelessWidget {
             onChanged: (_) => onChanged(),
             style: const TextStyle(
               fontSize: 28, fontWeight: FontWeight.w700,
-              color: Color(0xFF2D2028),
+              color: AppColors.ink,
             ),
             decoration: InputDecoration(
               hintText: 'Adın...',

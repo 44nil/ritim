@@ -80,11 +80,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
               child: Container(
                 height: 400,
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFFF9C4D2), Color(0xFFFDD6A8), Color(0xFFFFFFFF)],
-                  ),
+                  gradient: AppColors.gradientHeroSoft,
                 ),
               ),
             ),
@@ -99,7 +95,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                    colors: [Color(0xFFF9C4D2), Color(0xFFFDD6A8), Color(0x00FFFFFF)],
+                    colors: [AppColors.heroPink, AppColors.heroPeach, Color(0x00FFFFFF)],
                   ),
                 ),
               ),
@@ -196,7 +192,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFF5ED),
+                          color: AppColors.cardCream,
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -229,7 +225,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                         Expanded(child: Container(
                           padding: const EdgeInsets.all(18),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFCE8EF),
+                            color: AppColors.cardPink,
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -249,7 +245,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                         Expanded(child: Container(
                           padding: const EdgeInsets.all(18),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFCE8EF),
+                            color: AppColors.cardPink,
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -274,7 +270,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                           child: Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF5ED),
+                              color: AppColors.cardCream,
                               borderRadius: BorderRadius.circular(24),
                             ),
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -292,7 +288,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                           child: Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF5ED),
+                              color: AppColors.cardCream,
                               borderRadius: BorderRadius.circular(24),
                             ),
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

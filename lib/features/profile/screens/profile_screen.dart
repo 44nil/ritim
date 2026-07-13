@@ -23,10 +23,7 @@ class ProfileScreen extends ConsumerWidget {
           Container(
             height: 320,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Color(0xFFFDD6A8), Color(0xFFF9C4D2), Color(0xFFFFFFFF)],
-              ),
+              gradient: AppColors.gradientHeroSoft,
             ),
           ),
           SafeArea(

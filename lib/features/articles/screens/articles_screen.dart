@@ -46,10 +46,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
           Container(
             height: 300,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Color(0xFFFDD6A8), Color(0xFFF9C4D2), Color(0xFFFFFFFF)],
-              ),
+              gradient: AppColors.gradientHeroSoft,
             ),
           ),
           SafeArea(
@@ -142,7 +139,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF5ED),
+                        color: AppColors.cardCream,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(children: [
