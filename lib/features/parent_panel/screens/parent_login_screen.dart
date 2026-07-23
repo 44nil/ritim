@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/router/route_names.dart';
 
 enum _LoginStep { emailInput, linkSent }
 
@@ -449,6 +450,15 @@ class _LinkSentView extends StatelessWidget {
               color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
+        ),
+        const SizedBox(height: 4),
+
+        // TODO: Backend entegrasyonu — gerçek magic link akışında bu buton
+        // kalkacak, kullanıcı e-postadaki bağlantıya tıklayınca panele girecek.
+        // Backend olmadığı için şimdilik demo amaçlı doğrudan geçiş.
+        TextButton(
+          onPressed: () => context.goNamed(RouteNames.parentPanel),
+          child: const Text('Girişi tamamla (demo)'),
         ),
       ],
     );
