@@ -68,7 +68,7 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
     final cycle = ProviderScope.containerOf(context).read(cycleProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surfaceVariantLight,
       body: Stack(
         children: [
           // Gradient — scroll'a bağlı, aşağı kaydıkça yukarı kayar
@@ -80,7 +80,13 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
               child: Container(
                 height: 400,
                 decoration: const BoxDecoration(
-                  gradient: AppColors.gradientHeroSoft,
+                  // gradientHeroSoft biter beyaza — bu ekranın arkaplanı ise
+                  // hafif tonlu (surfaceVariantLight), o yüzden burada kendi
+                  // arkaplanımıza biten bir versiyon kullanıyoruz (dikişsiz geçiş).
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter, end: Alignment.bottomCenter,
+                    colors: [AppColors.heroPink, AppColors.heroPeach, AppColors.surfaceVariantLight],
+                  ),
                 ),
               ),
             ),
@@ -116,22 +122,16 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                         DateFormat('MMMM yyyy', 'tr_TR').format(DateTime.now()),
                         style: AppTextStyles.heading(fontSize: 32, color: AppColors.ink),
                       ),
-                      const SizedBox(width: 6),
-                      Icon(Icons.keyboard_arrow_down_rounded, size: 28, color: AppColors.ink),
                       const Spacer(),
                       _SmallButton(icon: Icons.settings_outlined, onTap: () {}),
                     ]),
                   ),
-                  const SizedBox(height: 20),
-
-                  // Gün şeridi
-                  _staggered(index: 0, child: _WeekStrip(cycle: cycle)),
                   const SizedBox(height: 24),
 
-                  // Döngü durumu kartı
+                  // Döngü durumu kartı — tek net "bugün nasılım" cevabı + tek ana eylem
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 1, child: Container(
+                    child: _staggered(index: 0, child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
@@ -144,6 +144,26 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                         Text(phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
                         const SizedBox(height: 8),
                         Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
+                        const SizedBox(height: 12),
+                        // Adetin ne zaman başladı / sonraki tahmini ne zaman
+                        Builder(builder: (ctx) {
+                          final String info;
+                          if (cycle.isOnPeriod) {
+                            info = '${DateFormat('d MMMM', 'tr_TR').format(cycle.activePeriod!.startDate)} tarihinde başladı';
+                          } else if (cycle.daysUntilNextPeriod != null) {
+                            info = 'Sonraki adet tahmini: ${cycle.daysUntilNextPeriod} gün sonra · ${DateFormat('d MMMM', 'tr_TR').format(cycle.nextPeriodEstimate!)}';
+                          } else {
+                            info = 'Kayıt yaptıkça tahminlerin daha isabetli olur';
+                          }
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(info, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.7))),
+                          );
+                        }),
                         const SizedBox(height: 16),
                         // Adetim başladı/bitti butonu
                         Builder(builder: (ctx) {
@@ -176,132 +196,81 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 28),
 
-                  // Sağlığını kontrol et
+                  // Bugünü kaydet — tek nötr panel, renk sadece hero'da
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text('Döngü\nTakibin', style: AppTextStyles.heading(fontSize: 30, color: AppColors.ink)),
+                    child: Text('Bugünü Kaydet', style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 14),
 
-                  // 2x2 istatistik grid — referanstaki gibi
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 2, child: Column(children: [
-                      // Üst sıra — büyük kart
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardCream,
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Row(children: [
-                            Icon(Icons.mood_outlined, size: 20, color: AppColors.warmOrange),
-                            const SizedBox(width: 8),
-                            Text('Ruh Hali', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                          ]),
-                          const SizedBox(height: 16),
-                          Builder(builder: (ctx) {
-                            void saveMood(String mood) {
-                              ProviderScope.containerOf(ctx).read(cycleProvider.notifier).logMood(mood);
-                              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                                content: Text('$mood kaydedildi'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink,
-                              ));
-                            }
-                            return Wrap(spacing: 8, runSpacing: 8, children: [
-                              _MoodChip(label: 'Mutlu', color: AppColors.ink, onTap: () => saveMood('Mutlu')),
-                              _MoodChip(label: 'Sakin', color: AppColors.ink, onTap: () => saveMood('Sakin')),
-                              _MoodChip(label: 'Yorgun', color: AppColors.ink, onTap: () => saveMood('Yorgun')),
-                              _MoodChip(label: 'Hassas', color: AppColors.ink, onTap: () => saveMood('Hassas')),
-                              _MoodChip(label: 'Sinirli', color: AppColors.ink, onTap: () => saveMood('Sinirli')),
-                            ]);
-                          }),
-                        ]),
+                    child: _staggered(index: 1, child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 16, offset: const Offset(0, 4)),
+                        ],
                       ),
-                      const SizedBox(height: 12),
-                      // Alt sıra — 2 kart yan yana
-                      Row(children: [
-                        Expanded(child: Container(
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: AppColors.cardPink,
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Row(children: [
-                              Icon(Icons.water_drop_outlined, size: 18, color: AppColors.softPink),
-                              const SizedBox(width: 6),
-                              Text('Su', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                            ]),
-                            const SizedBox(height: 12),
-                            RichText(text: TextSpan(children: [
-                              TextSpan(text: '${MockWellnessData.waterDrunk}/${MockWellnessData.current.waterGoal}', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.ink)),
-                              TextSpan(text: ' bardak', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.4))),
-                            ])),
-                          ]),
-                        )),
-                        const SizedBox(width: 12),
-                        Expanded(child: Container(
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: AppColors.cardPink,
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Row(children: [
-                              Icon(Icons.nightlight_outlined, size: 18, color: AppColors.softPink),
-                              const SizedBox(width: 6),
-                              Text('Uyku', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                            ]),
-                            const SizedBox(height: 12),
-                            RichText(text: TextSpan(children: [
-                              TextSpan(text: MockWellnessData.current.sleepHours, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.ink)),
-                              TextSpan(text: ' saat', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.4))),
-                            ])),
-                          ]),
-                        )),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        // Ruh hali
+                        Row(children: [
+                          Icon(Icons.mood_outlined, size: 18, color: AppColors.warmOrange),
+                          const SizedBox(width: 8),
+                          Text('Ruh Hali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+                        ]),
+                        const SizedBox(height: 12),
+                        Builder(builder: (ctx) {
+                          return _MoodPicker(
+                            initialMood: cycle.todayLog?.mood,
+                            onSelected: (mood) => ProviderScope.containerOf(ctx).read(cycleProvider.notifier).logMood(mood),
+                          );
+                        }),
+
+                        _QuickLogDivider(),
+
+                        // Su / Uyku
+                        Row(children: [
+                          const Expanded(child: _WaterGauge()),
+                          const SizedBox(width: 16),
+                          Expanded(child: _QuickStat(
+                            icon: Icons.nightlight_outlined,
+                            label: 'Uyku',
+                            value: MockWellnessData.current.sleepHours,
+                          )),
+                        ]),
+
+                        _QuickLogDivider(),
+
+                        // Semptom / Not
+                        Row(children: [
+                          Expanded(child: _QuickLogAction(
+                            icon: Icons.healing_outlined,
+                            label: 'Semptom',
+                            caption: 'Kaydet',
+                            onTap: () => _showSymptoms(context),
+                          )),
+                          const SizedBox(width: 16),
+                          Expanded(child: _QuickLogAction(
+                            icon: Icons.sticky_note_2_outlined,
+                            label: 'Günlük Not',
+                            caption: 'Yaz',
+                            onTap: () => _showNote(context),
+                          )),
+                        ]),
+                        const SizedBox(height: 16),
+                        // İlaç
+                        _QuickLogAction(
+                          icon: Icons.medication_outlined,
+                          label: 'İlaçlarım',
+                          caption: 'Bugün aldıklarını işaretle',
+                          onTap: () => _showMedications(context),
+                        ),
                       ]),
-                      const SizedBox(height: 12),
-                      // Semptom + Not yan yana
-                      Row(children: [
-                        Expanded(child: GestureDetector(
-                          onTap: () => _showSymptoms(context),
-                          child: Container(
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: AppColors.cardCream,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Icon(Icons.healing_outlined, size: 20, color: AppColors.warmOrange),
-                              const SizedBox(height: 10),
-                              Text('Semptom', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                              const SizedBox(height: 4),
-                              Text('Kaydet', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
-                            ]),
-                          ),
-                        )),
-                        const SizedBox(width: 12),
-                        Expanded(child: GestureDetector(
-                          onTap: () => _showNote(context),
-                          child: Container(
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: AppColors.cardCream,
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Icon(Icons.sticky_note_2_outlined, size: 20, color: AppColors.warmOrange),
-                              const SizedBox(height: 10),
-                              Text('Günlük Not', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                              const SizedBox(height: 4),
-                              Text('Yaz', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
-                            ]),
-                          ),
-                        )),
-                      ]),
-                    ])),
+                    )),
                   ),
 
                   const SizedBox(height: 110),
@@ -310,55 +279,6 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ─── Haftalık Gün Şeridi ───────────────────────────────────────────────────
-
-class _WeekStrip extends StatelessWidget {
-  const _WeekStrip({required this.cycle});
-  final CycleState cycle;
-
-  @override
-  Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final days = List.generate(7, (i) => now.subtract(Duration(days: 3 - i)));
-    final dayLabels = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        children: days.map((date) {
-          final isToday = date.day == now.day && date.month == now.month;
-          final isPeriod = cycle.isPeriodDay(date);
-          final label = dayLabels[(date.weekday - 1) % 7];
-
-          return Expanded(child: Column(children: [
-            Container(
-              width: 44, height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isToday
-                    ? AppColors.ink
-                    : isPeriod
-                        ? AppColors.softPink.withValues(alpha: 0.15)
-                        : Colors.transparent,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '${date.day}',
-                style: TextStyle(
-                  fontSize: 16, fontWeight: isToday ? FontWeight.w800 : FontWeight.w500,
-                  color: isToday ? Colors.white : AppColors.ink.withValues(alpha: 0.6),
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.ink.withValues(alpha: 0.35))),
-          ]));
-        }).toList(),
       ),
     );
   }
@@ -467,6 +387,77 @@ void _showNote(BuildContext context) {
   ]));
 }
 
+// İlaçlarım — kullanıcının kendi yazdığı isim + bugün kaç kez alındığı sayacı.
+// Kasıtlı olarak doz/mg gibi hiçbir tıbbi bilgi/öneri içermiyor, sadece kişisel bir sayım.
+void _showMedications(BuildContext context) {
+  final theme = Theme.of(context);
+  final container = ProviderScope.containerOf(context);
+  final controller = TextEditingController();
+  _sheet(context, (ctx) => StatefulBuilder(builder: (ctx, setSt) {
+    final cycle = container.read(cycleProvider);
+    final names = cycle.medicationNames;
+    final counts = cycle.todayLog?.medications ?? const {};
+
+    void adjust(String name, int delta) {
+      final newCount = ((counts[name] ?? 0) + delta).clamp(0, 20);
+      container.read(cycleProvider.notifier).logMedicationCount(name, newCount);
+      setSt(() {});
+    }
+
+    void addNew() {
+      final name = controller.text.trim();
+      if (name.isEmpty) return;
+      container.read(cycleProvider.notifier).addMedication(name);
+      controller.clear();
+      setSt(() {});
+    }
+
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      _sheetHandle(context),
+      const SizedBox(height: 24),
+      Text('İlaçlarım', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
+      const SizedBox(height: 6),
+      Text('Kendi ilacını ekle, bugün kaç kez aldığını işaretle', style: theme.textTheme.bodySmall?.copyWith(
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+      const SizedBox(height: 20),
+      if (names.isEmpty)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text('Henüz ilaç eklemedin', style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+        ),
+      ...names.map((name) => Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(color: AppColors.cardCream, borderRadius: BorderRadius.circular(16)),
+          child: Row(children: [
+            Expanded(child: Text(name, style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.ink))),
+            Text('${counts[name] ?? 0}x', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink.withValues(alpha: 0.5))),
+            const SizedBox(width: 10),
+            _StepperBtn(icon: Icons.remove_rounded, onTap: () => adjust(name, -1)),
+            const SizedBox(width: 6),
+            _StepperBtn(icon: Icons.add_rounded, onTap: () => adjust(name, 1)),
+          ]),
+        ),
+      )),
+      const SizedBox(height: 8),
+      Row(children: [
+        Expanded(child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: 'İlaç adı ekle...',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            filled: true,
+          ),
+        )),
+        const SizedBox(width: 8),
+        SizedBox(height: 48, child: ElevatedButton(onPressed: addNew, child: const Text('Ekle'))),
+      ]),
+      SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
+    ]);
+  }));
+}
+
 void _sheet(BuildContext context, Widget Function(BuildContext) builder) {
   showModalBottomSheet(
     context: context,
@@ -485,10 +476,151 @@ Widget _sheetHandle(BuildContext context) {
     color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2))));
 }
 
-class _MoodChip extends StatelessWidget {
-  const _MoodChip({required this.label, required this.color, required this.onTap});
-  final String label;
-  final Color color;
+// ─── Ruh hali seçici — büyük animasyonlu gösterge + küçük seçim ikonları ───
+
+class _MoodPicker extends StatefulWidget {
+  const _MoodPicker({required this.initialMood, required this.onSelected});
+  final String? initialMood;
+  final ValueChanged<String> onSelected;
+
+  @override
+  State<_MoodPicker> createState() => _MoodPickerState();
+}
+
+class _MoodPickerState extends State<_MoodPicker> {
+  late String? _mood = widget.initialMood;
+
+  static const _moods = [
+    ('Mutlu', Icons.sentiment_satisfied_rounded),
+    ('Sakin', Icons.self_improvement_rounded),
+    ('Yorgun', Icons.bedtime_rounded),
+    ('Hassas', Icons.favorite_rounded),
+    ('Sinirli', Icons.sentiment_very_dissatisfied_rounded),
+  ];
+
+  void _select(String mood) {
+    setState(() => _mood = mood);
+    widget.onSelected(mood);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    (String, IconData)? selected;
+    for (final m in _moods) {
+      if (m.$1 == _mood) { selected = m; break; }
+    }
+
+    return Column(children: [
+      AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
+        child: Container(
+          key: ValueKey(_mood),
+          width: 72, height: 72,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.softPink.withValues(alpha: selected == null ? 0.1 : 0.2),
+          ),
+          child: Icon(selected?.$2 ?? Icons.mood_outlined, size: 34, color: AppColors.softPink),
+        ),
+      ),
+      const SizedBox(height: 6),
+      Text(_mood ?? 'Nasıl hissediyorsun?', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.5))),
+      const SizedBox(height: 14),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _moods.map((m) {
+        final isSelected = _mood == m.$1;
+        return GestureDetector(
+          onTap: () => _select(m.$1),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            width: 44, height: 44,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isSelected ? AppColors.ink : Colors.white,
+              border: Border.all(color: isSelected ? AppColors.ink : AppColors.softPink.withValues(alpha: 0.3)),
+              boxShadow: isSelected ? null : [
+                BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 2)),
+              ],
+            ),
+            child: Icon(m.$2, size: 20, color: isSelected ? Colors.white : AppColors.ink.withValues(alpha: 0.4)),
+          ),
+        );
+      }).toList()),
+    ]);
+  }
+}
+
+// ─── Su göstergesi — dolan kapsül + artı/eksi ──────────────────────────────
+
+class _WaterGauge extends StatefulWidget {
+  const _WaterGauge();
+
+  @override
+  State<_WaterGauge> createState() => _WaterGaugeState();
+}
+
+class _WaterGaugeState extends State<_WaterGauge> {
+  void _adjust(int delta) {
+    setState(() {
+      MockWellnessData.waterDrunk = (MockWellnessData.waterDrunk + delta).clamp(0, MockWellnessData.current.waterGoal);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final goal = MockWellnessData.current.waterGoal;
+    final drunk = MockWellnessData.waterDrunk;
+    final ratio = goal == 0 ? 0.0 : (drunk / goal).clamp(0.0, 1.0);
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Icon(Icons.water_drop_outlined, size: 16, color: AppColors.softPink),
+        const SizedBox(width: 6),
+        Text('Su', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+      ]),
+      const SizedBox(height: 10),
+      Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            width: 30, height: 60,
+            color: AppColors.softPink.withValues(alpha: 0.12),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: ratio),
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeOut,
+                builder: (_, val, _) => FractionallySizedBox(
+                  widthFactor: 1,
+                  heightFactor: val,
+                  child: Container(color: AppColors.softPink),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          RichText(text: TextSpan(children: [
+            TextSpan(text: '$drunk/$goal', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink)),
+            TextSpan(text: ' bardak', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
+          ])),
+          const SizedBox(height: 8),
+          Row(children: [
+            _StepperBtn(icon: Icons.remove_rounded, onTap: () => _adjust(-1)),
+            const SizedBox(width: 8),
+            _StepperBtn(icon: Icons.add_rounded, onTap: () => _adjust(1)),
+          ]),
+        ])),
+      ]),
+    ]);
+  }
+}
+
+class _StepperBtn extends StatelessWidget {
+  const _StepperBtn({required this.icon, required this.onTap});
+  final IconData icon;
   final VoidCallback onTap;
 
   @override
@@ -496,17 +628,69 @@ class _MoodChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
+        width: 28, height: 28,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: AppColors.softPink.withValues(alpha: 0.4)),
-          boxShadow: [
-            BoxShadow(color: AppColors.softPink.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, 2)),
-          ],
+          shape: BoxShape.circle,
+          color: AppColors.softPink.withValues(alpha: 0.15),
         ),
-        child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
+        child: Icon(icon, size: 16, color: AppColors.softPink),
       ),
+    );
+  }
+}
+
+class _QuickLogDivider extends StatelessWidget {
+  const _QuickLogDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      child: Container(height: 1, color: AppColors.ink.withValues(alpha: 0.06)),
+    );
+  }
+}
+
+class _QuickStat extends StatelessWidget {
+  const _QuickStat({required this.icon, required this.label, required this.value});
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Icon(icon, size: 16, color: AppColors.softPink),
+        const SizedBox(width: 6),
+        Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+      ]),
+      const SizedBox(height: 10),
+      Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.ink)),
+    ]);
+  }
+}
+
+class _QuickLogAction extends StatelessWidget {
+  const _QuickLogAction({required this.icon, required this.label, required this.caption, required this.onTap});
+  final IconData icon;
+  final String label;
+  final String caption;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Row(children: [
+        Icon(icon, size: 18, color: AppColors.warmOrange),
+        const SizedBox(width: 8),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
+          Text(caption, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
+        ])),
+      ]),
     );
   }
 }

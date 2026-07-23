@@ -1,21 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DailyLog {
-  const DailyLog({this.flow, this.mood, this.symptoms = const [], this.note});
+  const DailyLog({this.flow, this.mood, this.symptoms = const [], this.note, this.medications = const {}});
   final String? flow;
   final String? mood;
   final List<String> symptoms;
   final String? note;
+  // İlaç adı (kullanıcının kendi yazdığı) -> bugün kaç kez alındığı.
+  // Doz/mg gibi tıbbi bilgi tutulmuyor, sadece kişisel bir sayım.
+  final Map<String, int> medications;
 
-  bool get hasAnyData => flow != null || mood != null || symptoms.isNotEmpty || note != null;
+  bool get hasAnyData => flow != null || mood != null || symptoms.isNotEmpty || note != null || medications.isNotEmpty;
   bool get isOnPeriod => flow != null && flow != 'Yok';
 
-  DailyLog copyWith({String? flow, String? mood, List<String>? symptoms, String? note}) {
+  DailyLog copyWith({String? flow, String? mood, List<String>? symptoms, String? note, Map<String, int>? medications}) {
     return DailyLog(
       flow: flow ?? this.flow,
       mood: mood ?? this.mood,
       symptoms: symptoms ?? this.symptoms,
       note: note ?? this.note,
+      medications: medications ?? this.medications,
     );
   }
 }
@@ -36,11 +40,14 @@ class CycleState {
     this.periods = const [],
     this.logs = const {},
     this.userName = 'Ela',
+    this.medicationNames = const [],
   });
 
   final List<PeriodRecord> periods;
   final Map<String, DailyLog> logs;
   final String userName;
+  // Kullanıcının takip etmeye başladığı ilaç isimleri (kalıcı liste, günlük değil).
+  final List<String> medicationNames;
 
   static String _key(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
@@ -120,7 +127,11 @@ class CycleState {
   CycleState _withLog(DateTime date, DailyLog log) {
     final newLogs = Map<String, DailyLog>.from(logs);
     newLogs[_key(date)] = log;
-    return CycleState(periods: periods, logs: newLogs, userName: userName);
+    return CycleState(periods: periods, logs: newLogs, userName: userName, medicationNames: medicationNames);
+  }
+
+  CycleState _withMedicationNames(List<String> names) {
+    return CycleState(periods: periods, logs: logs, userName: userName, medicationNames: names);
   }
 }
 
@@ -149,7 +160,7 @@ class CycleNotifier extends StateNotifier<CycleState> {
       ));
     }
     periods.add(PeriodRecord(startDate: start));
-    state = CycleState(periods: periods, logs: state.logs, userName: state.userName);
+    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames);
   }
 
   void endPeriod([DateTime? date]) {
@@ -160,7 +171,7 @@ class CycleNotifier extends StateNotifier<CycleState> {
       startDate: last.startDate,
       endDate: date ?? DateTime.now(),
     ));
-    state = CycleState(periods: periods, logs: state.logs, userName: state.userName);
+    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames);
   }
 
   void logFlow(String flow) {
@@ -185,6 +196,21 @@ class CycleNotifier extends StateNotifier<CycleState> {
     final today = DateTime.now();
     final existing = state.logForDate(today) ?? const DailyLog();
     state = state._withLog(today, existing.copyWith(note: note));
+  }
+
+  // Kullanıcının kendi yazdığı ilaç ismini takip listesine ekler (zaten varsa dokunmaz).
+  void addMedication(String name) {
+    if (state.medicationNames.contains(name)) return;
+    state = state._withMedicationNames([...state.medicationNames, name]);
+  }
+
+  // Bugün için o ilacın kaç kez alındığını günceller. Doz/mg bilgisi tutulmaz.
+  void logMedicationCount(String name, int count) {
+    final today = DateTime.now();
+    final existing = state.logForDate(today) ?? const DailyLog();
+    final meds = Map<String, int>.from(existing.medications);
+    if (count <= 0) { meds.remove(name); } else { meds[name] = count; }
+    state = state._withLog(today, existing.copyWith(medications: meds));
   }
 }
 
