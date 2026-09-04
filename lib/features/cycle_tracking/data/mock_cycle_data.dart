@@ -80,10 +80,12 @@ class MockCycleData {
   // döngü uzunluğunu alıp hangi faza denk geldiğini döner. cycleLength 28'den
   // farklıysa referans sınırlar (yukarıdaki phases) oranlanır.
   static CyclePhaseInfo phaseForDay(int cycleDay, {int cycleLength = _referenceCycleLength}) {
-    final clampedDay = cycleDay.clamp(1, cycleLength);
+    // cycleLength 1'den küçük olamaz — olursa clamp(1, cycleLength) çöker.
+    final safeCycleLength = cycleLength < 1 ? _referenceCycleLength : cycleLength;
+    final clampedDay = cycleDay.clamp(1, safeCycleLength);
     for (final phase in phases) {
-      final start = (phase.dayRange.$1 * cycleLength / _referenceCycleLength).round();
-      final end = (phase.dayRange.$2 * cycleLength / _referenceCycleLength).round();
+      final start = (phase.dayRange.$1 * safeCycleLength / _referenceCycleLength).round();
+      final end = (phase.dayRange.$2 * safeCycleLength / _referenceCycleLength).round();
       if (clampedDay >= start && clampedDay <= end) return phase;
     }
     return phases.last;

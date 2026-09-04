@@ -17,7 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   static const _pages = [
     _Page(icon: Icons.favorite_rounded, title: 'Ritim\'e\nHoş Geldin', body: 'Bedenini tanımana yardımcı olmak için buradayız.', color: AppColors.primary),
     _Page(icon: Icons.calendar_month_rounded, title: 'Döngünü\nTakip Et', body: 'Adet günlerini kaydet, belirtilerini not al, döngünü anla.', color: AppColors.phaseFollicular),
-    _Page(icon: Icons.shield_rounded, title: 'Güvenli\nAlan', body: 'Merak ettiğin soruları güvenle sor. Uzman onaylı içerikler burada.', color: AppColors.secondary),
+    _Page(icon: Icons.shield_rounded, title: 'Güvenli\nAlan', body: 'Kaydettiğin her şey sadece senin telefonunda kalır, kimseyle paylaşılmaz. Burada yargılanmadan, güvenle kendin olabilirsin.', color: AppColors.secondary),
   ];
 
   @override

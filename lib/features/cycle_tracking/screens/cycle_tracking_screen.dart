@@ -19,6 +19,11 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
   late final AnimationController _animController;
   final _scrollController = ScrollController();
   double _scrollOffset = 0;
+  late DateTime _displayedMonth = DateTime(DateTime.now().year, DateTime.now().month);
+
+  void _changeMonth(int delta) {
+    setState(() => _displayedMonth = DateTime(_displayedMonth.year, _displayedMonth.month + delta));
+  }
 
   @override
   void initState() {
@@ -113,24 +118,36 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  // Büyük ay başlığı
+                  // Büyük ay başlığı — aynı zamanda takvimin gezinme kontrolü
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(children: [
-                      Text(
-                        DateFormat('MMMM yyyy', 'tr_TR').format(DateTime.now()),
-                        style: AppTextStyles.heading(fontSize: 32, color: AppColors.ink),
+                      Expanded(
+                        child: Text(
+                          DateFormat('MMMM yyyy', 'tr_TR').format(_displayedMonth),
+                          style: AppTextStyles.heading(fontSize: 28, color: AppColors.ink),
+                        ),
                       ),
-                      const Spacer(),
+                      _CalendarNavButton(icon: Icons.chevron_left_rounded, onTap: () => _changeMonth(-1)),
+                      const SizedBox(width: 8),
+                      _CalendarNavButton(icon: Icons.chevron_right_rounded, onTap: () => _changeMonth(1)),
+                      const SizedBox(width: 8),
                       _SmallButton(icon: Icons.settings_outlined, onTap: () {}),
                     ]),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Aylık takvim — geçmiş adet günleri ve tahmini günler
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _staggered(index: 0, child: _MonthCalendar(cycle: cycle, displayedMonth: _displayedMonth)),
                   ),
                   const SizedBox(height: 24),
 
                   // Döngü durumu kartı — tek net "bugün nasılım" cevabı + tek ana eylem
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 0, child: Container(
+                    child: _staggered(index: 1, child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
@@ -204,7 +221,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 1, child: Container(
+                    child: _staggered(index: 2, child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -692,5 +709,152 @@ class _QuickLogAction extends StatelessWidget {
         ])),
       ]),
     );
+  }
+}
+
+// ─── Aylık takvim ───────────────────────────────────────────────────────────
+
+class _MonthCalendar extends StatelessWidget {
+  const _MonthCalendar({required this.cycle, required this.displayedMonth});
+  final CycleState cycle;
+  final DateTime displayedMonth;
+
+  @override
+  Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final firstDay = DateTime(displayedMonth.year, displayedMonth.month, 1);
+    final daysInMonth = DateTime(displayedMonth.year, displayedMonth.month + 1, 0).day;
+    // Pazartesi başlangıçlı hafta: weekday 1=Pzt..7=Paz, öncesine boş hücre.
+    final leadingEmpty = firstDay.weekday - 1;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.cardCream,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 16, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
+                .map((d) => Expanded(
+                      child: Center(
+                        child: Text(d, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.35))),
+                      ),
+                    ))
+                .toList(),
+          ),
+          const SizedBox(height: 6),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: leadingEmpty + daysInMonth,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+            itemBuilder: (context, index) {
+              if (index < leadingEmpty) return const SizedBox.shrink();
+              final day = index - leadingEmpty + 1;
+              final date = DateTime(displayedMonth.year, displayedMonth.month, day);
+              final isToday = date.year == today.year && date.month == today.month && date.day == today.day;
+              final isPeriod = cycle.isPeriodDay(date);
+              final isPredicted = !isPeriod && cycle.isPredictedPeriodDay(date);
+              return _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted);
+            },
+          ),
+          const SizedBox(height: 16),
+          Row(children: [
+            _LegendDot(color: AppColors.phaseMenstruation, filled: true, label: 'Adet günü'),
+            const SizedBox(width: 18),
+            _LegendDot(color: AppColors.phaseMenstruation, filled: false, label: 'Tahmini'),
+          ]),
+        ],
+      ),
+    );
+  }
+}
+
+class _CalendarNavButton extends StatelessWidget {
+  const _CalendarNavButton({required this.icon, required this.onTap});
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 30, height: 30,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.softPink.withValues(alpha: 0.12)),
+        child: Icon(icon, size: 18, color: AppColors.ink.withValues(alpha: 0.6)),
+      ),
+    );
+  }
+}
+
+class _DayCell extends StatelessWidget {
+  const _DayCell({required this.day, required this.isToday, required this.isPeriod, required this.isPredicted});
+  final int day;
+  final bool isToday;
+  final bool isPeriod;
+  final bool isPredicted;
+
+  @override
+  Widget build(BuildContext context) {
+    Color? background;
+    Color textColor = AppColors.ink.withValues(alpha: 0.7);
+    Border? border;
+
+    if (isPeriod) {
+      background = AppColors.phaseMenstruation;
+      textColor = Colors.white;
+    } else if (isPredicted) {
+      border = Border.all(color: AppColors.phaseMenstruation.withValues(alpha: 0.5), width: 1.5);
+      textColor = AppColors.phaseMenstruation;
+    } else if (isToday) {
+      background = AppColors.softPink.withValues(alpha: 0.25);
+      textColor = AppColors.ink;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(3),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Container(
+          decoration: BoxDecoration(color: background, shape: BoxShape.circle, border: border),
+          alignment: Alignment.center,
+          child: Text(
+            '$day',
+            style: TextStyle(fontSize: 12.5, fontWeight: isToday ? FontWeight.w700 : FontWeight.w500, color: textColor),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({required this.color, required this.filled, required this.label});
+  final Color color;
+  final bool filled;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Container(
+        width: 10, height: 10,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: filled ? color : Colors.transparent,
+          border: filled ? null : Border.all(color: color, width: 1.5),
+        ),
+      ),
+      const SizedBox(width: 6),
+      Text(label, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.5))),
+    ]);
   }
 }

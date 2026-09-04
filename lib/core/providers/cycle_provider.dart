@@ -89,9 +89,10 @@ class CycleState {
   // Yeterli veri var mı tahmin için? (3+ döngü)
   bool get canPredict => cycleLengths.length >= 3;
 
-  // Ortalama döngü süresi
+  // Ortalama döngü süresi. Aynı gün içinde art arda başlat/bitir/başlat gibi
+  // gerçek olmayan (0 gün ve altı) döngüler ortalamayı bozmasın diye filtrelenir.
   int get averageCycleLength {
-    final lengths = cycleLengths;
+    final lengths = cycleLengths.where((l) => l > 0).toList();
     if (lengths.isEmpty) return 28;
     return (lengths.reduce((a, b) => a + b) / lengths.length).round();
   }
