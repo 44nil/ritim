@@ -17,6 +17,11 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: RitimApp()));
     await tester.pumpAndSettle();
 
+    // İlk soru: "Bu telefonu kim kullanacak?" — çocuk yolunu seç.
+    expect(find.text('Ben kullanacağım'), findsOneWidget);
+    await tester.tap(find.text('Ben kullanacağım'));
+    await tester.pumpAndSettle();
+
     expect(find.text('Ritim\'e\nHoş Geldin'), findsOneWidget);
 
     await tester.tap(find.text('Atla'));
