@@ -23,12 +23,12 @@ class _QuizScreenState extends State<QuizScreen> {
   static const _question = 'Aşağıdakilerden hangisi adet döngüsü hakkında doğrudur?';
   static const _options = [
     'Döngü her zaman tam 28 gün sürer',
-    '21-35 gün arası döngü süresi normaldir',
+    'Senin yaşında 21-45 gün arası döngü süresi normaldir',
     'Adet sadece 3 gün sürer',
     'Egzersiz adet döneminde zararlıdır',
   ];
   static const _correct = 1;
-  static const _explanation = 'Her kadının döngüsü farklıdır. 21-35 gün arasında değişen döngü süreleri tamamen normaldir. "28 gün" sadece bir ortalamadır.';
+  static const _explanation = 'Senin yaşındaki (10-17) bir döngü için 21-45 gün arası tamamen normal — bu, yetişkinlerdeki aralıktan (21-35 gün) daha geniş. İlk adetten sonraki birkaç yıl içinde döngün kademeli olarak daha düzenli hale gelir. "28 gün" sadece bir ortalama, senin döngün farklı olabilir ve bu sorun değil.\n\nKaynak: ACOG & AAP Committee Opinion No. 651 (2015)';
 
   @override
   Widget build(BuildContext context) {
