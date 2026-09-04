@@ -114,7 +114,11 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text('${cycle.currentCycleDay}. gün', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
                         const SizedBox(height: 4),
-                        Text(phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+                        Text(phase.friendlyLabel ?? phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+                        if (phase.friendlyLabel != null) ...[
+                          const SizedBox(height: 2),
+                          Text('(${phase.label} faz)', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
+                        ],
                         const SizedBox(height: 8),
                         Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
                         const SizedBox(height: 12),
@@ -229,7 +233,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         Row(children: [
                           Expanded(child: _QuickLogAction(
                             icon: Icons.healing_outlined,
-                            label: 'Semptom',
+                            label: 'Belirti',
                             caption: 'Kaydet',
                             onTap: () => _showSymptoms(context),
                           )),
@@ -303,7 +307,7 @@ void _showSymptoms(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
       _sheetHandle(context),
       const SizedBox(height: 24),
-      Text('Semptomlar', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
+      Text('Belirtiler', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
       const SizedBox(height: 6),
       Text('Bugün yaşadıklarını işaretle', style: theme.textTheme.bodySmall?.copyWith(
         color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
@@ -329,7 +333,7 @@ void _showSymptoms(BuildContext context) {
           }
           Navigator.pop(ctx);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(selected.isEmpty ? 'Kayıt atlandı' : '${selected.length} semptom kaydedildi'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink),
+            SnackBar(content: Text(selected.isEmpty ? 'Kayıt atlandı' : '${selected.length} belirti kaydedildi'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink),
           );
         },
         child: Text(selected.isEmpty ? 'Atla' : 'Kaydet (${selected.length})'))),

@@ -26,7 +26,7 @@ kullandığımızı burada açıkça anlatıyoruz.
 Hangi bilgileri topluyoruz?
 • Yaşın
 • Adet döngünle ilgili bilgiler (başlangıç/bitiş tarihleri, döngü uzunluğu)
-• Günlük ruh hali, semptom ve serbest metin notların
+• Günlük ruh hali, belirti ve serbest metin notların
 • Kendi yazdığın ilaç isimleri ve günlük alım sayıların (doz/mg gibi tıbbi
   bilgi tutulmaz, sadece kişisel bir hatırlatma sayacı)
 • Sana nasıl hitap edeceğimizi belirlemen için bir isim/takma ad
@@ -48,7 +48,7 @@ Bilgilerin hiçbiri üçüncü taraflarla paylaşılmıyor, satılmıyor.
 
 Ebeveyn paneli hakkında
 İstersen bir ebeveyn/vasi, senin adına ayrı bir girişle döngü genel bakışını
-görebilir. Ruh hali, semptom ve serbest metin notların bu panelde
+görebilir. Ruh hali, belirti ve serbest metin notların bu panelde
 gösterilmez — bu bilinçli bir tercih, sana özel ve dürüst kayıt tutabileceğin
 bir alan tanımak için.
 
@@ -70,7 +70,7 @@ E-posta: info@eduxperts.com.tr
 
 Topladığımız veriler
 KVKK Aydınlatma Metni'nde listelenen veriler (yaş, döngü bilgileri, ruh
-hali/semptom/not, ilaç hatırlatma sayacı, isim/takma ad).
+hali/belirti/not, ilaç hatırlatma sayacı, isim/takma ad).
 
 Saklama
 Bugün: cihaz hafızasında, uygulama kapanınca silinir, hiçbir sunucuya
@@ -85,7 +85,7 @@ Veriler satılmaz, paylaşılmaz.
 Ritim, 10-17 yaş arası kullanıcılar için tasarlanmıştır. 13 yaş altındaki
 kullanıcılara, kuruluma bir ebeveyn/vasiyle birlikte başlamaları önerilir
 (zorunlu değildir). Ebeveyn paneli üzerinden bir yetişkin, çocuğun genel
-döngü bilgilerini görebilir; kişisel not/ruh hali/semptom kayıtları
+döngü bilgilerini görebilir; kişisel not/ruh hali/belirti kayıtları
 gösterilmez.
 
 Haklarınız

@@ -7,6 +7,7 @@ class CyclePhaseInfo {
   const CyclePhaseInfo({
     required this.phase,
     required this.label,
+    this.friendlyLabel,
     required this.color,
     required this.icon,
     required this.tip,
@@ -16,7 +17,12 @@ class CyclePhaseInfo {
   });
 
   final CyclePhase phase;
+  // Bilimsel/klinik terim (ör. "Foliküler") — 10 yaşındaki biri için tek
+  // başına anlaşılır değil, bu yüzden ana başlıkta günlük bir isimle
+  // ("Toparlanma Dönemi") birlikte gösterilir; kendisi küçük bir alt
+  // yazı olarak kalır ki kız hem anlasın hem de gerçek terimi öğrensin.
   final String label;
+  final String? friendlyLabel;
   final Color color;
   final IconData icon;
   final String tip;
@@ -47,6 +53,7 @@ class MockCycleData {
     CyclePhaseInfo(
       phase: CyclePhase.follicular,
       label: 'Foliküler',
+      friendlyLabel: 'Toparlanma Dönemi',
       color: AppColors.phaseFollicular,
       icon: Icons.eco_rounded,
       tip: 'Bazı kızlar bu dönemde kendini daha enerjik hissediyor — sen nasıl hissettiğine bak.',
@@ -57,6 +64,7 @@ class MockCycleData {
     CyclePhaseInfo(
       phase: CyclePhase.ovulation,
       label: 'Ovülasyon',
+      friendlyLabel: 'Zirve Dönemi',
       color: AppColors.phaseOvulation,
       icon: Icons.brightness_high_rounded,
       tip: 'Bazı kızlar bu dönemde kendini daha enerjik ve özgüvenli hissediyor.',
@@ -67,6 +75,7 @@ class MockCycleData {
     CyclePhaseInfo(
       phase: CyclePhase.luteal,
       label: 'Luteal',
+      friendlyLabel: 'Sakinleşme Dönemi',
       color: AppColors.phaseLuteal,
       icon: Icons.nights_stay_rounded,
       tip: 'Enerjin azalabilir, bu tamamen normal. Rahatlatıcı aktiviteler dene.',

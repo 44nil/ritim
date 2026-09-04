@@ -75,7 +75,7 @@ class ConsentGateStep extends StatelessWidget {
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(
-                      'Adet döngüm, ruh halim ve semptomlarımla ilgili bilgilerin '
+                      'Adet döngüm, ruh halim ve belirtilerimle ilgili bilgilerin '
                       'KVKK Aydınlatma Metni\'nde açıklanan şekilde Ritim tarafından '
                       'işlenmesini kabul ediyorum.',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.darkCard, height: 1.4),
