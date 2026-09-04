@@ -36,7 +36,7 @@ class ProfileScreen extends ConsumerWidget {
                     width: 80, height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white,
+                      color: AppColors.cardCream,
                       border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 3),
                     ),
                     child: Center(child: Text(userName.isNotEmpty ? userName[0].toUpperCase() : '?', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.ink))),

@@ -107,7 +107,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
                           Color bg; Color textCol;
                           if (!_answered) {
-                            bg = Colors.white;
+                            bg = AppColors.cardTranslucent;
                             textCol = AppColors.ink;
                           } else if (isCorrect) {
                             bg = const Color(0xFFD4EDDA);
@@ -116,7 +116,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             bg = AppColors.cardPink;
                             textCol = AppColors.ink.withValues(alpha: 0.5);
                           } else {
-                            bg = Colors.white.withValues(alpha: 0.5);
+                            bg = AppColors.cardCream.withValues(alpha: 0.5);
                             textCol = AppColors.ink.withValues(alpha: 0.3);
                           }
 

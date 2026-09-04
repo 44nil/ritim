@@ -86,7 +86,7 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.cardCream,
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 6)),

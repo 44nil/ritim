@@ -53,7 +53,8 @@ abstract class AppColors {
   static const phaseLuteal = Color(0xFFFCD9A8);
 
   // ─── Kart arkaplanları (Döngüm/Quiz/Makaleler kartlarında tekrar eden) ──
-  static const cardCream = Color(0xFFFFF5ED);
+  // "Rice" (#FAF5EF) — kırık beyaz, saf beyazdan daha sıcak.
+  static const cardCream = Color(0xFFFAF5EF);
   static const cardPink = Color(0xFFFCE8EF);
   // Gradient'in üzerine oturan büyük kartlar için: tam opak yerine hafif
   // saydam — arkadaki renk geçişi hafifçe sızsın, kart arka plana daha
