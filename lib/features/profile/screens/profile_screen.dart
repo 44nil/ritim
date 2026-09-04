@@ -8,6 +8,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/staggered_list.dart';
 import '../../../shared/widgets/screen_gradient_background.dart';
+import '../../../core/providers/cycle_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -16,6 +17,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final userName = ref.watch(cycleProvider).userName;
 
     return Scaffold(
       backgroundColor: AppColors.cardCream,
@@ -36,11 +38,10 @@ class ProfileScreen extends ConsumerWidget {
                       color: Colors.white,
                       border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 3),
                     ),
-                    child: Center(child: Text('E', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.ink))),
+                    child: Center(child: Text(userName.isNotEmpty ? userName[0].toUpperCase() : '?', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.ink))),
                   ),
                   const SizedBox(height: 12),
-                  Text('Ela', style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
-                  Text('14 yaşında', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.4))),
+                  Text(userName, style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
                 ])),
                 const SizedBox(height: 20),
 

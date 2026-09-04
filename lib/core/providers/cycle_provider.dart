@@ -63,6 +63,7 @@ class CycleState {
     this.logs = const {},
     this.userName = 'Ela',
     this.medicationNames = const [],
+    this.reportedCycleLength,
   });
 
   final List<PeriodRecord> periods;
@@ -70,6 +71,11 @@ class CycleState {
   final String userName;
   // Kullanıcının takip etmeye başladığı ilaç isimleri (kalıcı liste, günlük değil).
   final List<String> medicationNames;
+  // Onboarding'de kullanıcının kendi bildirdiği "genelde kaç gün sürüyor"
+  // cevabı. Henüz gerçek döngü geçmişi (2+ adet) yokken averageCycleLength
+  // için sabit 28 yerine bunu kullanırız — kullanıcı gerçek veri girdikçe
+  // gerçek ortalama bunun yerini alır.
+  final int? reportedCycleLength;
 
   static String _key(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
@@ -93,8 +99,10 @@ class CycleState {
   // gerçek olmayan (0 gün ve altı) döngüler ortalamayı bozmasın diye filtrelenir.
   int get averageCycleLength {
     final lengths = cycleLengths.where((l) => l > 0).toList();
-    if (lengths.isEmpty) return 28;
-    return (lengths.reduce((a, b) => a + b) / lengths.length).round();
+    if (lengths.isNotEmpty) {
+      return (lengths.reduce((a, b) => a + b) / lengths.length).round();
+    }
+    return reportedCycleLength ?? 28;
   }
 
   // Ortalama adet süresi
@@ -150,11 +158,11 @@ class CycleState {
   CycleState _withLog(DateTime date, DailyLog log) {
     final newLogs = Map<String, DailyLog>.from(logs);
     newLogs[_key(date)] = log;
-    return CycleState(periods: periods, logs: newLogs, userName: userName, medicationNames: medicationNames);
+    return CycleState(periods: periods, logs: newLogs, userName: userName, medicationNames: medicationNames, reportedCycleLength: reportedCycleLength);
   }
 
   CycleState _withMedicationNames(List<String> names) {
-    return CycleState(periods: periods, logs: logs, userName: userName, medicationNames: names);
+    return CycleState(periods: periods, logs: logs, userName: userName, medicationNames: names, reportedCycleLength: reportedCycleLength);
   }
 
   Map<String, dynamic> toJson() => {
@@ -162,6 +170,7 @@ class CycleState {
     'logs': logs.map((key, log) => MapEntry(key, log.toJson())),
     'userName': userName,
     'medicationNames': medicationNames,
+    'reportedCycleLength': reportedCycleLength,
   };
 
   factory CycleState.fromJson(Map<String, dynamic> json) => CycleState(
@@ -169,6 +178,7 @@ class CycleState {
     logs: (json['logs'] as Map<String, dynamic>).map((key, log) => MapEntry(key, DailyLog.fromJson(log as Map<String, dynamic>))),
     userName: json['userName'] as String? ?? 'Ela',
     medicationNames: (json['medicationNames'] as List?)?.cast<String>() ?? const [],
+    reportedCycleLength: json['reportedCycleLength'] as int?,
   );
 }
 
@@ -207,7 +217,32 @@ class CycleNotifier extends StateNotifier<CycleState> {
       ));
     }
     periods.add(PeriodRecord(startDate: start));
-    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames);
+    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames, reportedCycleLength: state.reportedCycleLength);
+  }
+
+  // Onboarding'de kullanıcı "ilk adetim oldu" dediyse ve bize son adetinin
+  // ne zaman başladığını + döngüsünün genelde kaç gün sürdüğünü söylediyse,
+  // bu cevapları gerçek bir kayda çevirir. Gerçek veri zaten varsa (ör.
+  // kalıcı depodan yüklendiyse) üzerine yazmaz.
+  void seedFromOnboarding({required DateTime lastPeriodStart, int? reportedCycleLength}) {
+    if (state.periods.isNotEmpty) return;
+    // Son adet yakın zamanda başladıysa muhtemelen hâlâ sürüyordur —
+    // kullanıcı kendi "Adetim Bitti" diyene kadar açık (aktif) bırakılır.
+    // Değilse ortalama bir adet süresiyle (5 gün) kapatılmış sayılır.
+    final daysSince = DateTime.now().difference(lastPeriodStart).inDays;
+    final isLikelyOngoing = daysSince < 5;
+    state = CycleState(
+      periods: [
+        PeriodRecord(
+          startDate: lastPeriodStart,
+          endDate: isLikelyOngoing ? null : lastPeriodStart.add(const Duration(days: 4)),
+        ),
+      ],
+      logs: state.logs,
+      userName: state.userName,
+      medicationNames: state.medicationNames,
+      reportedCycleLength: reportedCycleLength,
+    );
   }
 
   void endPeriod([DateTime? date]) {
@@ -218,7 +253,13 @@ class CycleNotifier extends StateNotifier<CycleState> {
       startDate: last.startDate,
       endDate: date ?? DateTime.now(),
     ));
-    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames);
+    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames, reportedCycleLength: state.reportedCycleLength);
+  }
+
+  // Onboarding'de girilen isim/takma ad.
+  void setUserName(String name) {
+    if (name.isEmpty) return;
+    state = CycleState(periods: state.periods, logs: state.logs, userName: name, medicationNames: state.medicationNames, reportedCycleLength: state.reportedCycleLength);
   }
 
   void logFlow(String flow) {

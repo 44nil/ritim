@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/providers/cycle_provider.dart';
 import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../legal/content/legal_content.dart';
@@ -73,10 +74,16 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         curve: Curves.easeOutCubic,
       );
     } else {
-      // TODO: Backend entegrasyonu — kullanıcı verilerini VE rıza kaydını
-      // (onboardingConsentProvider: consentGivenAt, contentVersion,
-      // ageAtOnboarding, guardianAssisted) aynı Supabase kayıt çağrısıyla
-      // birlikte kaydet — rıza kaydı sonradan eklenmemeli.
+      // "İlk adetin oldu mu?" -> evetse, "ne zaman başladı"/"kaç gün sürüyor"
+      // cevaplarını gerçek bir kayda çeviriyoruz — yoksa bu sorulara verilen
+      // cevaplar hiçbir yere yazılmadan kayboluyordu.
+      if (_hasStarted == true) {
+        ref.read(cycleProvider.notifier).seedFromOnboarding(
+          lastPeriodStart: _lastPeriod,
+          reportedCycleLength: _cycleLength,
+        );
+      }
+      ref.read(cycleProvider.notifier).setUserName(_nameController.text.trim());
       context.go('/cycle-tracking');
     }
   }
