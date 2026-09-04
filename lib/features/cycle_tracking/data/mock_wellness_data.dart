@@ -6,7 +6,6 @@ class PhaseWellness {
     required this.avoid,
     required this.exercises,
     required this.waterGoal,
-    required this.sleepHours,
     required this.sleepTip,
   });
 
@@ -14,7 +13,9 @@ class PhaseWellness {
   final List<String> avoid;
   final List<String> exercises;
   final int waterGoal;
-  final String sleepHours;
+  // Önerilen uyku süresi artık faza göre değişmiyor (13-18 yaş için sabit
+  // 8-10 saat, AASM/AAP — bkz. docs/content-sources.md), bu yüzden ayrı bir
+  // alan olarak taşınmıyor; sadece faza özel ipucu kalıyor.
   final String sleepTip;
 }
 
@@ -27,7 +28,6 @@ class MockWellnessData {
       avoid: ['Çok tuzlu atıştırmalıklar', 'Fazla gazlı içecekler', 'Aşırı şekerli yiyecekler'],
       exercises: ['Hafif tempolu yürüyüş', 'Esneme hareketleri', 'Rahatlatıcı yoga', 'Nefes egzersizleri'],
       waterGoal: 7,
-      sleepHours: '8-10 saat',
       sleepTip: 'Yatmadan önce sıcak süt veya papatya çayı dene.',
     ),
     CyclePhase.follicular: PhaseWellness(
@@ -35,7 +35,6 @@ class MockWellnessData {
       avoid: ['Fast food', 'Çok şekerli içecekler'],
       exercises: ['Bisiklete bin', 'Arkadaşlarınla yürüyüşe çık', 'Yüzme', 'Yeni bir dans videosu dene!'],
       waterGoal: 7,
-      sleepHours: '8-10 saat',
       sleepTip: 'Enerjin yükseliyor ama uyku saatini aksatma.',
     ),
     CyclePhase.ovulation: PhaseWellness(
@@ -43,7 +42,6 @@ class MockWellnessData {
       avoid: ['Hazır gıdalar ve cipsi azalt', 'Çok fazla kafeinli içecek'],
       exercises: ['Tempolu koşu veya ip atlama', 'Dans dersi veya Just Dance', 'Voleybol, basketbol gibi sporlar', 'Pilates videoları'],
       waterGoal: 8,
-      sleepHours: '8-10 saat',
       sleepTip: 'Kendini enerjik hissetsen bile gece 23:00\'dan sonra ekranları kapatmak uyku kaliteni korur.',
     ),
     CyclePhase.luteal: PhaseWellness(
@@ -51,7 +49,6 @@ class MockWellnessData {
       avoid: ['Çok tuzlu yemekler (şişkinlik yapar)', 'Aşırı şekerli atıştırmalıklar', 'Geç saatte ağır yemek'],
       exercises: ['Sakin tempolu yoga', 'Kısa bir yürüyüş', 'Esneme ve meditasyon', 'Hafif bisiklet'],
       waterGoal: 8,
-      sleepHours: '8-10 saat',
       sleepTip: 'Uyku kaliten düşebilir. Yatmadan 1 saat önce telefonu bırak.',
     ),
   };

@@ -220,11 +220,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         Row(children: [
                           Expanded(child: _WaterGauge(phase: phase.phase)),
                           const SizedBox(width: 16),
-                          Expanded(child: _QuickStat(
-                            icon: Icons.nightlight_outlined,
-                            label: 'Uyku',
-                            value: MockWellnessData.forPhase(phase.phase).sleepHours,
-                          )),
+                          Expanded(child: _SleepStepper(phase: phase.phase)),
                         ]),
 
                         _QuickLogDivider(),
@@ -295,15 +291,23 @@ class _SmallButton extends StatelessWidget {
 void _showSymptoms(BuildContext context) {
   final theme = Theme.of(context);
   final container = ProviderScope.containerOf(context);
+  // selected, StatefulBuilder'ın DIŞINDA tanımlanmalı — içeride tanımlanırsa
+  // her setSt() çağrısı builder'ı yeniden çalıştırıp seti sıfırlıyordu,
+  // bu yüzden hiçbir belirti seçili görünmüyordu (gerçek bir hataydı).
+  final symptoms = [
+    ('Kramp', Icons.flash_on_rounded), ('Baş ağrısı', Icons.psychology_outlined),
+    ('Yorgunluk', Icons.battery_2_bar_rounded), ('Şişkinlik', Icons.bubble_chart_outlined),
+    ('Akne', Icons.face_outlined), ('Hassasiyet', Icons.favorite_border_rounded),
+    ('Bulantı', Icons.sick_outlined), ('Uykusuzluk', Icons.nightlight_outlined),
+    ('Bel ağrısı', Icons.accessibility_new_rounded), ('İştahsızlık', Icons.no_food_outlined),
+  ];
+  // Bugün zaten kayıtlı belirtiler varsa sheet açılınca önceden seçili görünsün.
+  final existingSymptoms = container.read(cycleProvider).todayLog?.symptoms ?? const [];
+  final selected = <int>{
+    for (var i = 0; i < symptoms.length; i++)
+      if (existingSymptoms.contains(symptoms[i].$1)) i,
+  };
   _sheet(context, (ctx) => StatefulBuilder(builder: (ctx, setSt) {
-    final selected = <int>{};
-    final symptoms = [
-      ('Kramp', Icons.flash_on_rounded), ('Baş ağrısı', Icons.psychology_outlined),
-      ('Yorgunluk', Icons.battery_2_bar_rounded), ('Şişkinlik', Icons.bubble_chart_outlined),
-      ('Akne', Icons.face_outlined), ('Hassasiyet', Icons.favorite_border_rounded),
-      ('Bulantı', Icons.sick_outlined), ('Uykusuzluk', Icons.nightlight_outlined),
-      ('Bel ağrısı', Icons.accessibility_new_rounded), ('İştahsızlık', Icons.no_food_outlined),
-    ];
     return Column(mainAxisSize: MainAxisSize.min, children: [
       _sheetHandle(context),
       const SizedBox(height: 24),
@@ -636,22 +640,52 @@ class _QuickLogDivider extends StatelessWidget {
   }
 }
 
-class _QuickStat extends StatelessWidget {
-  const _QuickStat({required this.icon, required this.label, required this.value});
-  final IconData icon;
-  final String label;
-  final String value;
+// Bugün kaç saat uyuduğunu gerçekten kaydeden giriş — eskiden burada
+// sadece o fazın önerilen uyku süresi gösteriliyordu, tıklanabilir
+// değildi (bkz. su göstergesiyle tutarsızlık).
+class _SleepStepper extends ConsumerWidget {
+  const _SleepStepper({required this.phase});
+  final CyclePhase phase;
+
+  static String _format(double h) => h == h.roundToDouble() ? '${h.toInt()}' : '$h';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hours = ref.watch(cycleProvider).todayLog?.sleepHours;
+
+    void adjust(double delta) {
+      ref.read(cycleProvider.notifier).logSleepHours((hours ?? 7.5) + delta);
+    }
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        Icon(icon, size: 16, color: AppColors.softPink),
+        Icon(Icons.nightlight_outlined, size: 16, color: AppColors.softPink),
         const SizedBox(width: 6),
-        Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+        Text('Uyku', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+        const SizedBox(width: 4),
+        GestureDetector(
+          onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(MockWellnessData.forPhase(phase).sleepTip),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.softPink,
+          )),
+          child: Icon(Icons.info_outline_rounded, size: 13, color: AppColors.ink.withValues(alpha: 0.3)),
+        ),
       ]),
       const SizedBox(height: 10),
-      Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.ink)),
+      RichText(text: TextSpan(children: [
+        TextSpan(text: hours != null ? _format(hours) : '—', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink)),
+        if (hours != null) TextSpan(text: ' saat', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
+      ])),
+      const SizedBox(height: 8),
+      Row(children: [
+        _StepperBtn(icon: Icons.remove_rounded, onTap: () => adjust(-0.5)),
+        const SizedBox(width: 8),
+        _StepperBtn(icon: Icons.add_rounded, onTap: () => adjust(0.5)),
+      ]),
+      const SizedBox(height: 6),
+      // 13-18 yaş için AASM/AAP önerisi — bkz. docs/content-sources.md.
+      Text('Önerilen: 8-10 saat', style: TextStyle(fontSize: 10, color: AppColors.ink.withValues(alpha: 0.35))),
     ]);
   }
 }

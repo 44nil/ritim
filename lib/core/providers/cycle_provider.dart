@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/cycle_storage_service.dart';
 
 class DailyLog {
-  const DailyLog({this.flow, this.mood, this.symptoms = const [], this.note, this.medications = const {}});
+  const DailyLog({this.flow, this.mood, this.symptoms = const [], this.note, this.medications = const {}, this.sleepHours});
   final String? flow;
   final String? mood;
   final List<String> symptoms;
@@ -10,22 +10,25 @@ class DailyLog {
   // İlaç adı (kullanıcının kendi yazdığı) -> bugün kaç kez alındığı.
   // Doz/mg gibi tıbbi bilgi tutulmuyor, sadece kişisel bir sayım.
   final Map<String, int> medications;
+  // Bugün kaç saat uyuduğu (kullanıcının kendi girdiği, yarım saatlik adımlarla).
+  final double? sleepHours;
 
-  bool get hasAnyData => flow != null || mood != null || symptoms.isNotEmpty || note != null || medications.isNotEmpty;
+  bool get hasAnyData => flow != null || mood != null || symptoms.isNotEmpty || note != null || medications.isNotEmpty || sleepHours != null;
   bool get isOnPeriod => flow != null && flow != 'Yok';
 
-  DailyLog copyWith({String? flow, String? mood, List<String>? symptoms, String? note, Map<String, int>? medications}) {
+  DailyLog copyWith({String? flow, String? mood, List<String>? symptoms, String? note, Map<String, int>? medications, double? sleepHours}) {
     return DailyLog(
       flow: flow ?? this.flow,
       mood: mood ?? this.mood,
       symptoms: symptoms ?? this.symptoms,
       note: note ?? this.note,
       medications: medications ?? this.medications,
+      sleepHours: sleepHours ?? this.sleepHours,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'flow': flow, 'mood': mood, 'symptoms': symptoms, 'note': note, 'medications': medications,
+    'flow': flow, 'mood': mood, 'symptoms': symptoms, 'note': note, 'medications': medications, 'sleepHours': sleepHours,
   };
 
   factory DailyLog.fromJson(Map<String, dynamic> json) => DailyLog(
@@ -34,6 +37,7 @@ class DailyLog {
     symptoms: (json['symptoms'] as List?)?.cast<String>() ?? const [],
     note: json['note'] as String?,
     medications: (json['medications'] as Map?)?.cast<String, int>() ?? const {},
+    sleepHours: (json['sleepHours'] as num?)?.toDouble(),
   );
 }
 
@@ -329,6 +333,13 @@ class CycleNotifier extends StateNotifier<CycleState> {
     final today = DateTime.now();
     final existing = state.logForDate(today) ?? const DailyLog();
     state = state._withLog(today, existing.copyWith(mood: mood));
+  }
+
+  // Bugün kaç saat uyuduğunu kaydeder — 0'ın altına inemez.
+  void logSleepHours(double hours) {
+    final today = DateTime.now();
+    final existing = state.logForDate(today) ?? const DailyLog();
+    state = state._withLog(today, existing.copyWith(sleepHours: hours.clamp(0, 24)));
   }
 
   void logSymptoms(List<String> symptoms) {
