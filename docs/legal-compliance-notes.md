@@ -140,15 +140,17 @@ Ayrıca backend aşamasında ele alınması gerekenler:
 - [ ] Ebeveyn kapısı yaş eşiği (şu an: 13) — nihai risk toleransı kararı.
 - [ ] Yumuşak öneri mi (mevcut) yoksa zorunlu engel mi olmalı — ürün/hukuk
       ortak kararı.
-- [ ] Üç yasal metnin nihai metni — gerçek şirket/kişi adı, adres, iletişim
-      bilgisi ve KVKK'nın istediği veri sorumlusu detayları eklenmeden
-      yayına alınamaz.
+- [x] Üç yasal metnin veri sorumlusu/iletişim bilgisi — dolduruldu
+      (2026-09-04, aşağıya bkz.). **Ama** metnin içeriği (aydınlatma
+      kapsamı, haklar bölümü, saklama süresi ifadeleri vb.) henüz bir
+      avukat tarafından incelenmedi — "nihai" sayılamaz, hâlâ TASLAK.
 - [ ] VERBİS kayıt gerekliliği tespiti (genel istisna mı, mikro istisna mı,
       yoksa kayıt zorunlu mu — bölüm 2).
 - [ ] Yurt dışı veri aktarımı: Supabase (yurt dışı barındırma) + Standart
-      Sözleşme/taahhütname mi, yoksa yerli barındırma mı — bölüm 2.
-- [ ] Şirket yapısı: EduXperts çatısı altında mı, ayrı bir tüzel kişilik mi
-      (sorumluluğu ayırma açısından fark yaratabilir).
+      Sözleşme/taahhütname mi, yoksa yerli barındırma mı — bölüm 2. (Not:
+      backend henüz yok, bu madde şimdilik düşük öncelikli.)
+- [x] Şirket yapısı: **EduXperts çatısı altında** yayınlanacak (kullanıcı
+      kararı, 2026-09-04) — ayrı bir tüzel kişilik kurulmayacak.
 - [ ] App Store Connect yaş derecelendirme anketinin ve Play Console Data
       Safety / hedef kitle formunun resmi gönderimi.
 
@@ -164,3 +166,11 @@ Ayrıca backend aşamasında ele alınması gerekenler:
   iddialar tek tek doğrulandı; bazıları teyit edildi (VERBİS mikro istisna,
   yurt dışı aktarım), bazıları doğrulanamadı (net "15 yaş" eşiği iddiası) —
   doğrulanamayanlar bu belgeye eklenmedi.
+- 2026-09-04: Şirket yapısı kararı verildi (EduXperts çatısı altında).
+  Kullanıcıdan alınan gerçek bilgilerle (unvan: Esra Nil Doğan Eduxperts
+  Eğitim Teknoloji Danışmanlık Ticaret Limited Şirketi; adres: Girne Mah.,
+  09100 Efeler/Aydın; e-posta: info@eduxperts.com.tr — vergi/MERSİS no
+  kullanıcı tarafından bilinçli olarak eklenmedi) üç yasal metindeki veri
+  sorumlusu/iletişim placeholder'ları dolduruldu, `kLegalContentVersion`
+  v2-2026-09-04'e yükseltildi. Metnin içeriği hâlâ avukat incelemesi
+  bekliyor — TASLAK etiketi kaldırılmadı.

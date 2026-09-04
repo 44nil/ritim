@@ -1,9 +1,11 @@
 /// Ritim'in yasal metinleri — TASLAK.
 ///
 /// Bu metinler uygulamanın bugünkü gerçek davranışını anlatır (hangi veri
-/// toplanıyor, neden, kiminle paylaşılmıyor). Gerçek şirket/kişi adı, adres
-/// ve iletişim bilgisi eksik olduğu için yayına alınmadan önce hukuki
-/// inceleme gerekir — bkz. docs/legal-compliance-notes.md.
+/// toplanıyor, neden, kiminle paylaşılmıyor). Veri sorumlusu/iletişim
+/// bilgileri dolduruldu (2026-09-04), ama metnin içeriği henüz bir avukat
+/// tarafından incelenmedi — yayına alınmadan önce hukuki inceleme gerekir,
+/// bkz. docs/legal-compliance-notes.md (özellikle bölüm 7'deki açık
+/// kararlar: VERBİS kaydı, ebeveyn kapısı eşiği, veri saklama süresi).
 library;
 
 /// Yasal metin ekranlarının üstünde gösterilen taslak uyarısı.
@@ -11,9 +13,13 @@ const kLegalDraftDisclaimer =
     'TASLAK — bu metin yayına alınmadan önce hukuki inceleme gerektirir.';
 
 /// Rıza kaydında hangi metin versiyonuna onay verildiğini işaretlemek için.
-const kLegalContentVersion = 'v1-2026-08-12';
+const kLegalContentVersion = 'v2-2026-09-04';
 
 const kKvkkAydinlatmaMetni = '''
+Veri sorumlusu: Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık
+Ticaret Limited Şirketi (Girne Mah., 09100 Efeler/Aydın,
+info@eduxperts.com.tr)
+
 Ritim olarak, uygulamayı kullanırken bize verdiğin bilgileri neden ve nasıl
 kullandığımızı burada açıkça anlatıyoruz.
 
@@ -57,8 +63,10 @@ Bu Gizlilik Politikası, Ritim uygulamasının kişisel verilerini nasıl ele
 aldığını açıklar.
 
 Veri sorumlusu
-[Şirket/kişi adı, adres ve iletişim bilgisi — hukuki inceleme sonrası
-eklenecek]
+Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
+Şirketi
+Girne Mah., 09100 Efeler/Aydın
+E-posta: info@eduxperts.com.tr
 
 Topladığımız veriler
 KVKK Aydınlatma Metni'nde listelenen veriler (yaş, döngü bilgileri, ruh
@@ -85,7 +93,10 @@ KVKK kapsamında bilgi alma, düzeltme, silme ve itiraz haklarına sahipsiniz.
 Başvuru yöntemi, sunucu altyapısı devreye girdiğinde burada belirtilecektir.
 
 İletişim
-[İletişim bilgisi — hukuki inceleme sonrası eklenecek]
+Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
+Şirketi
+Girne Mah., 09100 Efeler/Aydın
+E-posta: info@eduxperts.com.tr
 ''';
 
 const kKullanimSartlari = '''
@@ -116,5 +127,8 @@ eklendiğinde) güncellenebilir. Güncel sürüm her zaman uygulama içinden
 erişilebilir olacaktır.
 
 İletişim
-[İletişim bilgisi — hukuki inceleme sonrası eklenecek]
+Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
+Şirketi
+Girne Mah., 09100 Efeler/Aydın
+E-posta: info@eduxperts.com.tr
 ''';
