@@ -24,7 +24,7 @@ class CleanCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final radius = borderRadius ?? AppConstants.radiusL;
 
-    final bg = color ?? (isDark ? AppColors.surfaceVariantDark : Colors.white);
+    final bg = color ?? (isDark ? AppColors.surfaceVariantDark : AppColors.cardCream);
 
     final content = Container(
       padding: padding ?? const EdgeInsets.all(22),
