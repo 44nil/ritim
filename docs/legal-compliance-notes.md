@@ -36,18 +36,22 @@ desenleri (aydınlatma → rıza → kayıt) belgeler.
   bilgilendirmek zorundadır (hangi veri, neden, kime aktarılıyor, saklama
   süresi, haklar). Ritim'de bu, onboarding'deki yeni "Aydınlatma Metni"
   adımıyla karşılanıyor.
-- **VERBİS:** Genel istisna eşiği (2026 itibarıyla): yıllık çalışan sayısı
-  50'den az VE yıllık mali bilanço 100 milyon TL'den az olan veri sorumluları
-  VERBİS'ten muaf — **ancak** ana faaliyet konusu özel nitelikli kişisel veri
-  işleme olanlar bu genel istisnadan yararlanamaz. Ritim'in ana işlevi (adet/
-  sağlık verisi işleme) tam bu kategoriye girebilir. Eylül 2025'te bu
-  kategori için ayrı, daha düşük bir **mikro ölçek istisnası** eklendi:
-  çalışan sayısı 10'dan az VE yıllık bilanço 10 milyon TL'den az olanlar yine
-  de muaf olabiliyor. Kayıt yükümlülüğüne aykırılığın idari para cezası
-  (2026 itibarıyla) 85.437 TL – 17.092.242 TL bandında. Bu eşiklerin hangisi
-  Ritim'e uygulanacağı — ve şirketin hangi tüzel yapı altında (EduXperts mi,
-  ayrı bir şirket mi) faaliyet göstereceği — bir avukat/mali müşavirle
-  netleştirilmeli; bu bir mühendislik görevi değil, hukuki bir tespit.
+- **VERBİS — ÇÖZÜLDÜ (2026-09-04):** Genel istisna eşiği: yıllık çalışan
+  sayısı 50'den az VE yıllık mali bilanço 100 milyon TL'den az olan veri
+  sorumluları VERBİS'ten muaf. Ana faaliyet konusu özel nitelikli kişisel
+  veri işleme olanlar için ayrı, daha dar bir **mikro ölçek istisnası** var
+  (04.09.2025 tarihli 2025/1572 sayılı Kurul Kararı): çalışan sayısı 10'dan
+  az VE yıllık bilanço 10 milyon TL'den az olanlar da muaf.
+  Kullanıcı, KVKK'nın resmi "Sorularla VERBİS" belgesini (Soru 7) kaynak
+  göstererek EduXperts'in ölçeğini bildirdi: **10'dan az çalışan, 10 milyon
+  TL altı yıllık bilanço.** Bu, "ana faaliyet" EduXperts'in genel iş modeli
+  (LMS/EduQR/Erasmus+ danışmanlık) mi yoksa Ritim'in özel nitelikli veri
+  işlemesi mi sayılırsa sayılsın, **her iki eşiği de** (genel 50/100M ve
+  mikro 10/10M) karşılıyor — yani hangi sınıflandırma uygulanırsa uygulansın
+  sonuç değişmiyor. Bu nedenle **VERBİS kaydı gerekmiyor** sonucuna makul
+  güvenle varılabildi, ayrı bir avukat/mali müşavir tespitine gerek
+  kalmadı. (Şirket ölçeği ileride büyürse — özellikle 10 çalışan/10M TL
+  sınırına yaklaşılırsa — bu değerlendirme tekrar yapılmalı.)
 - **Yurt dışına veri aktarımı:** 10 Temmuz 2024'te yürürlüğe giren yeni
   yönetmelikle KVKK'nın yurt dışı aktarım kuralları değişti — Standart
   Sözleşme (Kurul'un ilan ettiği 4 model: veri sorumlusundan veri
@@ -144,8 +148,9 @@ Ayrıca backend aşamasında ele alınması gerekenler:
       (2026-09-04, aşağıya bkz.). **Ama** metnin içeriği (aydınlatma
       kapsamı, haklar bölümü, saklama süresi ifadeleri vb.) henüz bir
       avukat tarafından incelenmedi — "nihai" sayılamaz, hâlâ TASLAK.
-- [ ] VERBİS kayıt gerekliliği tespiti (genel istisna mı, mikro istisna mı,
-      yoksa kayıt zorunlu mu — bölüm 2).
+- [x] VERBİS kayıt gerekliliği tespiti — **kayıt gerekmiyor** (bölüm 2,
+      2026-09-04): EduXperts'in ölçeği hem genel hem mikro istisna eşiğini
+      karşılıyor.
 - [ ] Yurt dışı veri aktarımı: Supabase (yurt dışı barındırma) + Standart
       Sözleşme/taahhütname mi, yoksa yerli barındırma mı — bölüm 2. (Not:
       backend henüz yok, bu madde şimdilik düşük öncelikli.)
@@ -174,3 +179,9 @@ Ayrıca backend aşamasında ele alınması gerekenler:
   sorumlusu/iletişim placeholder'ları dolduruldu, `kLegalContentVersion`
   v2-2026-09-04'e yükseltildi. Metnin içeriği hâlâ avukat incelemesi
   bekliyor — TASLAK etiketi kaldırılmadı.
+- 2026-09-04: VERBİS sorusu çözüldü. Kullanıcı KVKK'nın resmi "Sorularla
+  VERBİS" belgesini (Soru 7) kaynak gösterdi ve EduXperts'in ölçeğini
+  bildirdi (10'dan az çalışan, 10M TL altı bilanço) — bu ölçek hem genel
+  hem mikro istisna eşiğini karşıladığı için "ana faaliyet" sınıflandırması
+  ne olursa olsun sonuç değişmiyor: VERBİS kaydı gerekmiyor. Ayrı bir
+  avukat/mali müşavir tespitine gerek kalmadı.
