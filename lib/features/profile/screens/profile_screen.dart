@@ -17,7 +17,8 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final userName = ref.watch(cycleProvider).userName;
+    final cycle = ref.watch(cycleProvider);
+    final userName = cycle.userName;
 
     return Scaffold(
       backgroundColor: AppColors.cardCream,
@@ -45,42 +46,15 @@ class ProfileScreen extends ConsumerWidget {
                 ])),
                 const SizedBox(height: 20),
 
-                // İstatistikler
+                // İstatistikler — gerçek cycleProvider verisinden hesaplanır
+                // (eskiden "3 Ay / 12 Seri / 240 Puan" gibi sabit/sahte
+                // değerlerdi, hiç kimse hiçbir şey yapmadan bunları görürdü).
                 Row(children: [
-                  _StatMini(value: '3', label: 'Ay', icon: Icons.calendar_month_outlined, color: AppColors.primary),
+                  _StatMini(value: '${cycle.currentStreak}', label: 'Gün Seri', icon: Icons.local_fire_department_outlined, color: AppColors.tertiary),
                   const SizedBox(width: 8),
-                  _StatMini(value: '12', label: 'Seri', icon: Icons.local_fire_department_outlined, color: AppColors.tertiary),
+                  _StatMini(value: '${cycle.logs.length}', label: 'Kayıt Günü', icon: Icons.edit_calendar_outlined, color: AppColors.primary),
                   const SizedBox(width: 8),
-                  _StatMini(value: '240', label: 'Puan', icon: Icons.emoji_events_outlined, color: AppColors.secondary),
-                ]),
-                const SizedBox(height: 20),
-
-                // Öğrenme İlerlemesi
-                Text('Öğrenme İlerlemen', style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
-                const SizedBox(height: 12),
-                CleanCard(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(children: [
-                    _ProgressRow(label: 'Quiz', value: 7, total: 26, color: AppColors.primary),
-                    const SizedBox(height: 12),
-                    _ProgressRow(label: 'Makale', value: 4, total: 12, color: AppColors.phaseFollicular),
-                    const SizedBox(height: 12),
-                    _ProgressRow(label: 'Kayıt Günü', value: 18, total: 30, color: AppColors.phaseMenstruation),
-                  ]),
-                ),
-                const SizedBox(height: 20),
-
-                // Rozetler
-                Text('Rozetlerin', style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
-                const SizedBox(height: 12),
-                Row(children: [
-                  _Badge(icon: Icons.water_drop_rounded, label: 'İlk Kayıt', earned: true, color: AppColors.phaseMenstruation),
-                  const SizedBox(width: 8),
-                  _Badge(icon: Icons.local_fire_department_rounded, label: '7 Gün Seri', earned: true, color: AppColors.tertiary),
-                  const SizedBox(width: 8),
-                  _Badge(icon: Icons.school_rounded, label: '5 Quiz', earned: true, color: AppColors.secondary),
-                  const SizedBox(width: 8),
-                  _Badge(icon: Icons.auto_stories_rounded, label: '10 Makale', earned: false, color: AppColors.phaseFollicular),
+                  _StatMini(value: '${cycle.periods.length}', label: 'Döngü', icon: Icons.water_drop_outlined, color: AppColors.secondary),
                 ]),
                 const SizedBox(height: 20),
 
@@ -190,67 +164,6 @@ class _StatMini extends StatelessWidget {
         Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
         Text(label, style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
       ]),
-    ));
-  }
-}
-
-class _ProgressRow extends StatelessWidget {
-  const _ProgressRow({required this.label, required this.value, required this.total, required this.color});
-  final String label;
-  final int value, total;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
-        Text(label, style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600)),
-        const Spacer(),
-        Text('$value/$total', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
-      ]),
-      const SizedBox(height: 6),
-      ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: LinearProgressIndicator(
-          value: value / total,
-          backgroundColor: color.withValues(alpha: 0.1),
-          color: color,
-          minHeight: 5,
-        ),
-      ),
-    ]);
-  }
-}
-
-class _Badge extends StatelessWidget {
-  const _Badge({required this.icon, required this.label, required this.earned, required this.color});
-  final IconData icon;
-  final String label;
-  final bool earned;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Expanded(child: CleanCard(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
-      child: Opacity(
-        opacity: earned ? 1.0 : 0.3,
-        child: Column(children: [
-          Container(
-            width: 36, height: 36,
-            decoration: BoxDecoration(
-              color: earned ? color.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 18, color: earned ? color : Colors.grey),
-          ),
-          const SizedBox(height: 6),
-          Text(label, style: theme.textTheme.labelSmall?.copyWith(fontSize: 9, fontWeight: FontWeight.w600),
-            textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
-        ]),
-      ),
     ));
   }
 }

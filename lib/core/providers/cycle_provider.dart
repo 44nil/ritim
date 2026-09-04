@@ -160,6 +160,22 @@ class CycleState {
   DailyLog? logForDate(DateTime date) => logs[_key(date)];
   DailyLog? get todayLog => logForDate(DateTime.now());
 
+  // Kaç gündür art arda bir kayıt (ruh hali/semptom/not/ilaç/adet) girilmiş.
+  // Bugün henüz kayıt yoksa dünden sayılır — gün bitmedi, seri henüz bozulmuş
+  // sayılmaz.
+  int get currentStreak {
+    var date = DateTime.now();
+    if (logForDate(date)?.hasAnyData != true) {
+      date = date.subtract(const Duration(days: 1));
+    }
+    var streak = 0;
+    while (logForDate(date)?.hasAnyData == true) {
+      streak++;
+      date = date.subtract(const Duration(days: 1));
+    }
+    return streak;
+  }
+
   CycleState copyWith({
     List<PeriodRecord>? periods,
     Map<String, DailyLog>? logs,
