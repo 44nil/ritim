@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/screen_gradient_background.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -190,8 +191,10 @@ class _RoleGateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5EDE8),
-      body: SafeArea(
+      backgroundColor: AppColors.cardCream,
+      body: Stack(children: [
+        const ScreenGradientBackground(),
+        SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(28),
           child: Column(
@@ -234,7 +237,8 @@ class _RoleGateScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+        ),
+      ]),
     );
   }
 }

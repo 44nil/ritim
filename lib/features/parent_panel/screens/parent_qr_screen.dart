@@ -71,9 +71,11 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
           padding: const EdgeInsets.all(24),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              'Bu kodu velinle/vasinle paylaş — kendi telefonundaki uygulamada '
-              '"QR Tara" ile okusun. Ruh hali, semptom ya da notların bu kodda '
-              'hiç yer almaz, sadece döngü genel bakışı paylaşılır.',
+              'Bu kodu velinle/vasinle paylaş — kendi telefonundaki Ritim '
+              'uygulamasında "QR Tara" ile okusun (telefonun normal Kamera '
+              'uygulaması bu kodu tanımaz, sadece uygulamanın kendi tarayıcısı '
+              'çalışır). Ruh hali, semptom ya da notların bu kodda hiç yer '
+              'almaz, sadece döngü genel bakışı paylaşılır.',
               style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5),
             ),
             const SizedBox(height: 28),
@@ -92,7 +94,20 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
                           ),
                           child: QrImageView(data: _payload!, size: 220, version: QrVersions.auto),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.warmOrange.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Icon(Icons.info_outline_rounded, size: 14, color: AppColors.warmOrange),
+                            const SizedBox(width: 6),
+                            Text('Kamera değil, uygulamadaki "QR Tara"', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.7))),
+                          ]),
+                        ),
+                        const SizedBox(height: 12),
                         Text('$_secondsLeft saniye sonra kaybolur', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
                       ])
                     : Column(mainAxisSize: MainAxisSize.min, children: [
