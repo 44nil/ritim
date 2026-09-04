@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/router/route_names.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/screen_gradient_background.dart';
 import '../models/parent_summary.dart';
 
 // Veli tarafı: çocuğun ekranındaki QR kodunu kamerayla okur. Hesap/şifre
 // yok — sadece anlık bir özet (bkz. ParentSummary) çözülüp gösteriliyor,
-// hiçbir yerde saklanmıyor.
+// hiçbir yerde saklanmıyor. Kamerayı hemen açmak yerine önce neden
+// gerektiğini anlatan bir ara ekran gösteriyoruz — izin isteği kullanıcıyı
+// hazırlıksız yakalamasın diye.
 class ParentScanScreen extends StatefulWidget {
   const ParentScanScreen({super.key});
 
@@ -15,6 +19,7 @@ class ParentScanScreen extends StatefulWidget {
 }
 
 class _ParentScanScreenState extends State<ParentScanScreen> {
+  bool _started = false;
   bool _handled = false;
   String? _error;
 
@@ -33,6 +38,10 @@ class _ParentScanScreenState extends State<ParentScanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_started) {
+      return _ScanIntroScreen(onStart: () => setState(() => _started = true));
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -55,6 +64,60 @@ class _ParentScanScreenState extends State<ParentScanScreen> {
             ),
           ),
         ),
+      ]),
+    );
+  }
+}
+
+class _ScanIntroScreen extends StatelessWidget {
+  const _ScanIntroScreen({required this.onStart});
+  final VoidCallback onStart;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.cardCream,
+      body: Stack(children: [
+        const ScreenGradientBackground(),
+        SafeArea(child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              Container(
+                width: 88, height: 88,
+                decoration: BoxDecoration(color: AppColors.secondary.withValues(alpha: 0.12), shape: BoxShape.circle),
+                child: Icon(Icons.qr_code_scanner_rounded, size: 40, color: AppColors.secondary),
+              ),
+              const SizedBox(height: 28),
+              Text(
+                'QR Kodunu\nOkut',
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w800, height: 1.1),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Çocuğunun ekranında gösterdiği QR kodu okumak için kamerana '
+                'ihtiyacımız var. Hiçbir görüntü kaydedilmez ya da saklanmaz — '
+                'sadece kod anlık olarak çözülür.',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                ),
+              ),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: ElevatedButton(
+                  onPressed: onStart,
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.ink, foregroundColor: Colors.white),
+                  child: const Text('Taramaya Başla', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        )),
       ]),
     );
   }
