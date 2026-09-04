@@ -84,6 +84,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         );
       }
       ref.read(cycleProvider.notifier).setUserName(_nameController.text.trim());
+      ref.read(cycleProvider.notifier).markOnboardingComplete();
       context.go('/cycle-tracking');
     }
   }

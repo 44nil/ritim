@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/home/home_scaffold.dart';
+import '../../features/onboarding/screens/splash_screen.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/onboarding/screens/setup_screen.dart';
 import '../../features/cycle_tracking/screens/cycle_tracking_screen.dart';
@@ -16,19 +17,24 @@ import 'route_names.dart';
 /// Uygulama navigasyonu — go_router ile tanımlı.
 ///
 /// Akış:
-///  1. Onboarding → /onboarding (ilk açılış)
-///  2. Ana uygulama → / (4 sekmeli bottom nav shell)
+///  0. Splash → / (kalıcı veri yüklenene kadar bekler, sonra 1 ya da 2'ye yönlendirir)
+///  1. Onboarding → /onboarding (ilk açılış / tamamlanmadıysa)
+///  2. Ana uygulama → /cycle-tracking (4 sekmeli bottom nav shell)
 ///  3. Ebeveyn paneli → /parent/login → /parent/panel (bağımsız akış)
-///
-/// TODO: Backend entegrasyonu — redirect mantığı: onboarding tamamlandıysa / oturumu varsa
-///       kullanıcıyı doğrudan ana sayfaya yönlendir.
 class AppRouter {
   AppRouter._();
 
   static final GoRouter router = GoRouter(
-    initialLocation: RoutePaths.onboarding,
+    initialLocation: RoutePaths.home,
     debugLogDiagnostics: true,
     routes: [
+      // ─── Splash — onboarding tamamlanmış mı diye kalıcı veriyi kontrol eder ──
+      GoRoute(
+        path: RoutePaths.home,
+        name: RouteNames.home,
+        builder: (context, state) => const SplashScreen(),
+      ),
+
       // ─── Onboarding ───────────────────────────────────────────────────────
       GoRoute(
         path: RoutePaths.onboarding,

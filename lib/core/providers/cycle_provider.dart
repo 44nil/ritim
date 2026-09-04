@@ -64,6 +64,7 @@ class CycleState {
     this.userName = 'Ela',
     this.medicationNames = const [],
     this.reportedCycleLength,
+    this.hasCompletedOnboarding = false,
   });
 
   final List<PeriodRecord> periods;
@@ -76,6 +77,10 @@ class CycleState {
   // için sabit 28 yerine bunu kullanırız — kullanıcı gerçek veri girdikçe
   // gerçek ortalama bunun yerini alır.
   final int? reportedCycleLength;
+  // Onboarding sihirbazını bitirdi mi? Uygulama açılışında bunu kontrol
+  // edip tamamlamış kullanıcıyı direkt Döngüm'e yönlendiriyoruz — yoksa
+  // veri kalıcı olsa bile her açılışta baştan onboarding görünür.
+  final bool hasCompletedOnboarding;
 
   static String _key(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
@@ -155,14 +160,32 @@ class CycleState {
   DailyLog? logForDate(DateTime date) => logs[_key(date)];
   DailyLog? get todayLog => logForDate(DateTime.now());
 
+  CycleState copyWith({
+    List<PeriodRecord>? periods,
+    Map<String, DailyLog>? logs,
+    String? userName,
+    List<String>? medicationNames,
+    int? reportedCycleLength,
+    bool? hasCompletedOnboarding,
+  }) {
+    return CycleState(
+      periods: periods ?? this.periods,
+      logs: logs ?? this.logs,
+      userName: userName ?? this.userName,
+      medicationNames: medicationNames ?? this.medicationNames,
+      reportedCycleLength: reportedCycleLength ?? this.reportedCycleLength,
+      hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+    );
+  }
+
   CycleState _withLog(DateTime date, DailyLog log) {
     final newLogs = Map<String, DailyLog>.from(logs);
     newLogs[_key(date)] = log;
-    return CycleState(periods: periods, logs: newLogs, userName: userName, medicationNames: medicationNames, reportedCycleLength: reportedCycleLength);
+    return copyWith(logs: newLogs);
   }
 
   CycleState _withMedicationNames(List<String> names) {
-    return CycleState(periods: periods, logs: logs, userName: userName, medicationNames: names, reportedCycleLength: reportedCycleLength);
+    return copyWith(medicationNames: names);
   }
 
   Map<String, dynamic> toJson() => {
@@ -171,6 +194,7 @@ class CycleState {
     'userName': userName,
     'medicationNames': medicationNames,
     'reportedCycleLength': reportedCycleLength,
+    'hasCompletedOnboarding': hasCompletedOnboarding,
   };
 
   factory CycleState.fromJson(Map<String, dynamic> json) => CycleState(
@@ -179,6 +203,7 @@ class CycleState {
     userName: json['userName'] as String? ?? 'Ela',
     medicationNames: (json['medicationNames'] as List?)?.cast<String>() ?? const [],
     reportedCycleLength: json['reportedCycleLength'] as int?,
+    hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ?? false,
   );
 }
 
@@ -188,8 +213,13 @@ final cycleProvider = StateNotifierProvider<CycleNotifier, CycleState>((ref) {
 
 class CycleNotifier extends StateNotifier<CycleState> {
   CycleNotifier() : super(const CycleState()) {
-    _hydrate();
+    _ready = _hydrate();
   }
+
+  // Splash ekranı, yönlendirme kararını vermeden önce bunu bekler — yoksa
+  // kalıcı veri henüz yüklenmeden "onboarding tamamlanmamış" sanılabilir.
+  late final Future<void> _ready;
+  Future<void> get ready => _ready;
 
   // Uygulama açılışında cihazın güvenli depolamasından önceki kayıtları yükler.
   Future<void> _hydrate() async {
@@ -225,7 +255,7 @@ class CycleNotifier extends StateNotifier<CycleState> {
       ));
     }
     periods.add(PeriodRecord(startDate: start));
-    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames, reportedCycleLength: state.reportedCycleLength);
+    state = state.copyWith(periods: periods);
   }
 
   // Onboarding'de kullanıcı "ilk adetim oldu" dediyse ve bize son adetinin
@@ -239,18 +269,21 @@ class CycleNotifier extends StateNotifier<CycleState> {
     // Değilse ortalama bir adet süresiyle (5 gün) kapatılmış sayılır.
     final daysSince = DateTime.now().difference(lastPeriodStart).inDays;
     final isLikelyOngoing = daysSince < 5;
-    state = CycleState(
+    state = state.copyWith(
       periods: [
         PeriodRecord(
           startDate: lastPeriodStart,
           endDate: isLikelyOngoing ? null : lastPeriodStart.add(const Duration(days: 4)),
         ),
       ],
-      logs: state.logs,
-      userName: state.userName,
-      medicationNames: state.medicationNames,
       reportedCycleLength: reportedCycleLength,
     );
+  }
+
+  // Onboarding sihirbazının tamamlandığını işaretler — bir sonraki açılışta
+  // splash ekranı kullanıcıyı direkt Döngüm'e yönlendirir.
+  void markOnboardingComplete() {
+    state = state.copyWith(hasCompletedOnboarding: true);
   }
 
   void endPeriod([DateTime? date]) {
@@ -261,13 +294,13 @@ class CycleNotifier extends StateNotifier<CycleState> {
       startDate: last.startDate,
       endDate: date ?? DateTime.now(),
     ));
-    state = CycleState(periods: periods, logs: state.logs, userName: state.userName, medicationNames: state.medicationNames, reportedCycleLength: state.reportedCycleLength);
+    state = state.copyWith(periods: periods);
   }
 
   // Onboarding'de girilen isim/takma ad.
   void setUserName(String name) {
     if (name.isEmpty) return;
-    state = CycleState(periods: state.periods, logs: state.logs, userName: name, medicationNames: state.medicationNames, reportedCycleLength: state.reportedCycleLength);
+    state = state.copyWith(userName: name);
   }
 
   void logFlow(String flow) {
