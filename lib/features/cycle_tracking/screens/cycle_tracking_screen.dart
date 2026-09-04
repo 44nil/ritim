@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../data/mock_cycle_data.dart';
 import '../data/mock_wellness_data.dart';
+import '../../../shared/widgets/screen_gradient_background.dart';
 
 class CycleTrackingScreen extends ConsumerStatefulWidget {
   const CycleTrackingScreen({super.key});
@@ -18,7 +19,6 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
     with TickerProviderStateMixin {
   late final AnimationController _animController;
   final _scrollController = ScrollController();
-  double _scrollOffset = 0;
   late DateTime _displayedMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
   void _changeMonth(int delta) {
@@ -32,9 +32,6 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     )..forward();
-    _scrollController.addListener(() {
-      setState(() => _scrollOffset = _scrollController.offset);
-    });
   }
 
   @override
@@ -72,45 +69,10 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
     final phase = MockCycleData.phaseForDay(cycle.currentCycleDay, cycleLength: cycle.averageCycleLength);
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceVariantLight,
+      backgroundColor: AppColors.cardCream,
       body: Stack(
         children: [
-          // Gradient — scroll'a bağlı, aşağı kaydıkça yukarı kayar
-          Positioned(
-            top: -_scrollOffset * 0.5,
-            left: 0, right: 0,
-            child: Opacity(
-              opacity: (1 - _scrollOffset / 400).clamp(0.0, 1.0),
-              child: Container(
-                height: 400,
-                decoration: const BoxDecoration(
-                  // gradientHeroSoft biter beyaza — bu ekranın arkaplanı ise
-                  // hafif tonlu (surfaceVariantLight), o yüzden burada kendi
-                  // arkaplanımıza biten bir versiyon kullanıyoruz (dikişsiz geçiş).
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                    colors: [AppColors.heroPink, AppColors.heroPeach, AppColors.surfaceVariantLight],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Alt gradient — navbar üstünde sıcak his
-          Positioned(
-            bottom: 0, left: 0, right: 0,
-            child: IgnorePointer(
-              child: Container(
-                height: 200,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [AppColors.heroPink, AppColors.heroPeach, Color(0x00FFFFFF)],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          const ScreenGradientBackground(),
           SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
@@ -137,17 +99,12 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 20),
 
-                  // Aylık takvim — geçmiş adet günleri ve tahmini günler
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 0, child: _MonthCalendar(cycle: cycle, displayedMonth: _displayedMonth)),
-                  ),
-                  const SizedBox(height: 24),
-
                   // Döngü durumu kartı — tek net "bugün nasılım" cevabı + tek ana eylem
+                  // (ilk sırada: kullanıcı ekranı açtığında önce buna bakmak istiyor,
+                  // takvim referans/detay amaçlı ikinci sırada)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 1, child: Container(
+                    child: _staggered(index: 0, child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
@@ -210,6 +167,13 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       ]),
                     )),
                   ),
+                  const SizedBox(height: 24),
+
+                  // Aylık takvim — geçmiş adet günleri ve tahmini günler
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _staggered(index: 1, child: _MonthCalendar(cycle: cycle, displayedMonth: _displayedMonth)),
+                  ),
                   const SizedBox(height: 28),
 
                   // Bugünü kaydet — tek nötr panel, renk sadece hero'da
@@ -225,7 +189,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.cardCream,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 16, offset: const Offset(0, 4)),
@@ -552,7 +516,7 @@ class _MoodPickerState extends State<_MoodPicker> {
             width: 44, height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected ? AppColors.ink : Colors.white,
+              color: isSelected ? AppColors.ink : Colors.white.withValues(alpha: 0.7),
               border: Border.all(color: isSelected ? AppColors.ink : AppColors.softPink.withValues(alpha: 0.3)),
               boxShadow: isSelected ? null : [
                 BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 2)),

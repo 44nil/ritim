@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/clean_card.dart';
+import '../../../shared/widgets/screen_gradient_background.dart';
 
 // Not: Bu ekran daha önce sabit kodlanmış, kurgusal doktor isimleri ve
 // önceden yazılmış cevaplar içeriyordu — gerçek bir uzman tarafından
@@ -14,15 +15,10 @@ class QaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.cardCream,
       body: Stack(
         children: [
-          Container(
-            height: 300,
-            decoration: const BoxDecoration(
-              gradient: AppColors.gradientHeroSoft,
-            ),
-          ),
+          const ScreenGradientBackground(),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -36,6 +32,7 @@ class QaScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                   CleanCard(
                     padding: const EdgeInsets.all(20),
+                    color: AppColors.cardCream,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

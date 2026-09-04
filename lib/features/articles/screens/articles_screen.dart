@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../shared/widgets/screen_gradient_background.dart';
 
 class ArticlesScreen extends StatefulWidget {
   const ArticlesScreen({super.key});
@@ -40,15 +41,10 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.cardCream,
       body: Stack(
         children: [
-          Container(
-            height: 300,
-            decoration: const BoxDecoration(
-              gradient: AppColors.gradientHeroSoft,
-            ),
-          ),
+          const ScreenGradientBackground(),
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
