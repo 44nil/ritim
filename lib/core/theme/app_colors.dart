@@ -55,6 +55,10 @@ abstract class AppColors {
   // ─── Kart arkaplanları (Döngüm/Quiz/Makaleler kartlarında tekrar eden) ──
   static const cardCream = Color(0xFFFFF5ED);
   static const cardPink = Color(0xFFFCE8EF);
+  // Gradient'in üzerine oturan büyük kartlar için: tam opak yerine hafif
+  // saydam — arkadaki renk geçişi hafifçe sızsın, kart arka plana daha
+  // yumuşak kaynaşsın (tam opak + keskin gölge "çiğ/sert" duruyordu).
+  static Color get cardTranslucent => cardCream.withValues(alpha: 0.88);
 
   // ─── Hero header gradient (soft pastel, tab üstlerinde) ─────────────────
   static const heroPink = Color(0xFFF9C4D2);

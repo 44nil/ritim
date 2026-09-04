@@ -189,10 +189,10 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppColors.cardCream,
+                        color: AppColors.cardTranslucent,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 16, offset: const Offset(0, 4)),
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
                         ],
                       ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -695,10 +695,10 @@ class _MonthCalendar extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.cardCream,
+        color: AppColors.cardTranslucent,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 16, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
         ],
       ),
       child: Column(

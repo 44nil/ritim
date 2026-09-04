@@ -32,7 +32,6 @@ class QaScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                   CleanCard(
                     padding: const EdgeInsets.all(20),
-                    color: AppColors.cardCream,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
