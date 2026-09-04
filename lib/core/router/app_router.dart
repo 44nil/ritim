@@ -4,7 +4,6 @@ import '../../features/home/home_scaffold.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/onboarding/screens/setup_screen.dart';
 import '../../features/cycle_tracking/screens/cycle_tracking_screen.dart';
-import '../../features/qa/screens/qa_screen.dart';
 import '../../features/articles/screens/articles_screen.dart';
 import '../../features/quiz/screens/quiz_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
@@ -18,7 +17,7 @@ import 'route_names.dart';
 ///
 /// Akış:
 ///  1. Onboarding → /onboarding (ilk açılış)
-///  2. Ana uygulama → / (5 sekmeli bottom nav shell)
+///  2. Ana uygulama → / (4 sekmeli bottom nav shell)
 ///  3. Ebeveyn paneli → /parent/login → /parent/panel (bağımsız akış)
 ///
 /// TODO: Backend entegrasyonu — redirect mantığı: onboarding tamamlandıysa / oturumu varsa
@@ -61,18 +60,11 @@ class AppRouter {
             ],
           ),
 
-          // Sekme 1 — Soru-Cevap
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: RoutePaths.qa,
-                name: RouteNames.qa,
-                builder: (context, state) => const QaScreen(),
-              ),
-            ],
-          ),
+          // Sorular sekmesi (Uzman Paneli) gerçek, uzman onaylı içerik hazır
+          // olana kadar kaldırıldı — bkz. lib/features/qa/screens/qa_screen.dart.
+          // İçerik hazır olduğunda buraya ve home_scaffold.dart'a geri eklenmeli.
 
-          // Sekme 2 — Makaleler
+          // Sekme 1 — Makaleler
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -83,7 +75,7 @@ class AppRouter {
             ],
           ),
 
-          // Sekme 3 — Quiz
+          // Sekme 2 — Quiz
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -94,7 +86,7 @@ class AppRouter {
             ],
           ),
 
-          // Sekme 4 — Profil
+          // Sekme 3 — Profil
           StatefulShellBranch(
             routes: [
               GoRoute(
