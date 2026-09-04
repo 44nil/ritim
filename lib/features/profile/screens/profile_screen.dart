@@ -101,6 +101,15 @@ class ProfileScreen extends ConsumerWidget {
                   _SettingsRow(icon: Icons.language_rounded, label: 'Dil', trailing: const Text('Türkçe'), onTap: () {}),
                 ]),
                 const SizedBox(height: 12),
+                _SettingsGroup(title: 'Veri', items: [
+                  _SettingsRow(
+                    icon: Icons.delete_outline_rounded,
+                    label: 'Tüm Verilerimi Sil',
+                    color: AppColors.error,
+                    onTap: () => _confirmDeleteAllData(context, ref),
+                  ),
+                ]),
+                const SizedBox(height: 12),
 
                 // Ebeveyn paneli
                 CleanCard(
@@ -129,6 +138,39 @@ class ProfileScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+// Cihazdaki şifreli kaydı gerçekten siler — uygulamayı silmek yeterli
+// değildir çünkü iOS'ta Keychain kalıcıdır (bkz. cycle_storage_service.dart).
+void _confirmDeleteAllData(BuildContext context, WidgetRef ref) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      title: const Text('Tüm verilerini sil?'),
+      content: const Text(
+        'Döngü kayıtların, notların ve ayarların cihazından kalıcı olarak '
+        'silinir. Bu işlem geri alınamaz.',
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
+        TextButton(
+          onPressed: () async {
+            Navigator.pop(ctx);
+            await ref.read(cycleProvider.notifier).deleteAll();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Tüm verilerin silindi'),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: AppColors.error,
+              ));
+            }
+          },
+          child: Text('Evet, Sil', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w700)),
+        ),
+      ],
+    ),
+  );
 }
 
 class _StatMini extends StatelessWidget {
@@ -238,11 +280,14 @@ class _SettingsGroup extends StatelessWidget {
 }
 
 class _SettingsRow extends StatelessWidget {
-  const _SettingsRow({required this.icon, required this.label, required this.onTap, this.trailing});
+  const _SettingsRow({required this.icon, required this.label, required this.onTap, this.trailing, this.color});
   final IconData icon;
   final String label;
   final VoidCallback onTap;
   final Widget? trailing;
+  // Belirtilirse (ör. yıkıcı bir eylem için) satırı bu renkte vurgular ve
+  // gezinme çağrışımı yapan ok ikonunu gizler — bu bir sayfaya gitmiyor.
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -250,14 +295,15 @@ class _SettingsRow extends StatelessWidget {
     return InkWell(onTap: onTap, child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       child: Row(children: [
-        Icon(icon, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
+        Icon(icon, size: 20, color: color ?? theme.colorScheme.onSurface.withValues(alpha: 0.5)),
         const SizedBox(width: 14),
-        Expanded(child: Text(label, style: theme.textTheme.bodyMedium?.copyWith(fontSize: 14))),
+        Expanded(child: Text(label, style: theme.textTheme.bodyMedium?.copyWith(fontSize: 14, color: color, fontWeight: color != null ? FontWeight.w600 : null))),
         if (trailing != null) DefaultTextStyle(
           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
           child: trailing!),
         const SizedBox(width: 4),
-        Icon(Icons.chevron_right_rounded, size: 18, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
+        if (color == null)
+          Icon(Icons.chevron_right_rounded, size: 18, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
       ]),
     ));
   }

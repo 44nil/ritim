@@ -205,6 +205,14 @@ class CycleNotifier extends StateNotifier<CycleState> {
     CycleStorageService.save(value);
   }
 
+  // Kullanıcının "tüm verilerimi sil" isteği — cihazdaki şifreli kaydı
+  // gerçekten siler ve uygulamayı taze bir duruma döndürür. Sadece
+  // uygulamayı kaldırmak yeterli değildir çünkü iOS'ta Keychain kalıcıdır.
+  Future<void> deleteAll() async {
+    await CycleStorageService.delete();
+    state = const CycleState();
+  }
+
   void startPeriod([DateTime? date]) {
     final start = date ?? DateTime.now();
     // Önceki aktif adet varsa kapat

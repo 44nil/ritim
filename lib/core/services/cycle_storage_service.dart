@@ -24,4 +24,11 @@ class CycleStorageService {
   static Future<void> save(CycleState state) {
     return _storage.write(key: _key, value: jsonEncode(state.toJson()));
   }
+
+  // Not: iOS'ta Keychain uygulama silinse bile kalır — bu yüzden "verilerimi
+  // sil" isteği gerçek bir silme çağrısı gerektiriyor, sadece uygulamayı
+  // kaldırmak yeterli değil.
+  static Future<void> delete() {
+    return _storage.delete(key: _key);
+  }
 }
