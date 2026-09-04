@@ -91,7 +91,7 @@ class ProfileScreen extends ConsumerWidget {
                 _SettingsGroup(title: 'Hesap', items: [
                   _SettingsRow(icon: Icons.person_outline_rounded, label: 'Profili Düzenle', onTap: () {}),
                   _SettingsRow(icon: Icons.notifications_none_rounded, label: 'Bildirimler', onTap: () {}),
-                  _SettingsRow(icon: Icons.lock_outline_rounded, label: 'Gizlilik', onTap: () {}),
+                  _SettingsRow(icon: Icons.lock_outline_rounded, label: 'Gizlilik', onTap: () => context.pushNamed(RouteNames.privacyPolicy)),
                 ]),
                 const SizedBox(height: 12),
                 _SettingsGroup(title: 'Uygulama', items: [

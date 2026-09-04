@@ -28,20 +28,10 @@ class CyclePhaseInfo {
 class MockCycleData {
   MockCycleData._();
 
-  static const userName = 'Ela';
-  static const cycleLengthDays = 28;
-  static const periodLengthDays = 5;
-  static const currentCycleDay = 14;
-
-  static final currentDate = DateTime.now();
-  static final periodStartDate = currentDate.subtract(
-    const Duration(days: currentCycleDay - 1),
-  );
-  static final nextPeriodDate = periodStartDate.add(
-    const Duration(days: cycleLengthDays),
-  );
-  static int get daysUntilNextPeriod =>
-      nextPeriodDate.difference(currentDate).inDays;
+  // Faz sınırları 28 günlük bir döngü baz alınarak tanımlandı (aşağıda).
+  // Gerçek kullanıcı döngüsü bundan farklı uzunluktaysa phaseForDay bu
+  // sınırları oranlayarak (örn. 21 günlük döngüde adet fazı 1-4 olur) uyarlar.
+  static const _referenceCycleLength = 28;
 
   static const phases = [
     CyclePhaseInfo(
@@ -86,64 +76,16 @@ class MockCycleData {
     ),
   ];
 
-  static CyclePhaseInfo get currentPhase {
+  // Kullanıcının gerçek döngü gününü (cycleProvider'dan) ve gerçek ortalama
+  // döngü uzunluğunu alıp hangi faza denk geldiğini döner. cycleLength 28'den
+  // farklıysa referans sınırlar (yukarıdaki phases) oranlanır.
+  static CyclePhaseInfo phaseForDay(int cycleDay, {int cycleLength = _referenceCycleLength}) {
+    final clampedDay = cycleDay.clamp(1, cycleLength);
     for (final phase in phases) {
-      if (currentCycleDay >= phase.dayRange.$1 &&
-          currentCycleDay <= phase.dayRange.$2) {
-        return phase;
-      }
+      final start = (phase.dayRange.$1 * cycleLength / _referenceCycleLength).round();
+      final end = (phase.dayRange.$2 * cycleLength / _referenceCycleLength).round();
+      if (clampedDay >= start && clampedDay <= end) return phase;
     }
     return phases.last;
   }
-
-  static double get cycleProgress => currentCycleDay / cycleLengthDays;
-
-  static List<DayInfo> get last7Days {
-    return List.generate(7, (i) {
-      final dayOffset = 6 - i;
-      final date = currentDate.subtract(Duration(days: dayOffset));
-      final cycleDay = currentCycleDay - dayOffset;
-      final adjustedDay = cycleDay > 0 ? cycleDay : cycleLengthDays + cycleDay;
-
-      CyclePhaseInfo phaseForDay = phases.last;
-      for (final phase in phases) {
-        if (adjustedDay >= phase.dayRange.$1 &&
-            adjustedDay <= phase.dayRange.$2) {
-          phaseForDay = phase;
-          break;
-        }
-      }
-
-      return DayInfo(
-        date: date,
-        cycleDay: adjustedDay,
-        phase: phaseForDay,
-        isToday: dayOffset == 0,
-      );
-    });
-  }
-
-  static const didYouKnow = [
-    'Ortalama bir kadın hayatında yaklaşık 450 kez adet görür.',
-    'Döngü uzunluğu 21-35 gün arasında değişebilir ve hepsi normaldir.',
-    'Egzersiz yapmak adet kramplarını azaltmaya yardımcı olabilir.',
-    'İlk adet genellikle 10-15 yaş arasında başlar.',
-    'Stres döngü düzenini etkileyebilir.',
-    'Adet sırasında vücut ısısı hafifçe düşer, ovülasyonda yükselir.',
-    'Yeterli uyku hormonal dengeyi korumaya yardımcı olur.',
-  ];
-}
-
-class DayInfo {
-  const DayInfo({
-    required this.date,
-    required this.cycleDay,
-    required this.phase,
-    required this.isToday,
-  });
-
-  final DateTime date;
-  final int cycleDay;
-  final CyclePhaseInfo phase;
-  final bool isToday;
 }

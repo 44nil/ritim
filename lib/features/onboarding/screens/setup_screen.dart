@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../legal/content/legal_content.dart';
+import '../../legal/screens/consent_gate_screen.dart';
+import '../../legal/screens/guardian_assist_gate_screen.dart';
+import '../../legal/state/onboarding_consent_provider.dart';
 
-class SetupScreen extends StatefulWidget {
+/// Kurulum sırasının adımları. Yaş ve rıza durumuna göre `guardian` adımı
+/// listeye dahil edilir ya da edilmez — bkz. `_SetupScreenState._stepKinds`.
+enum _StepKind { age, guardian, privacyNotice, consent, periodStarted, lastPeriodDate, cycleLength, name }
+
+class SetupScreen extends ConsumerStatefulWidget {
   const SetupScreen({super.key});
 
   @override
-  State<SetupScreen> createState() => _SetupScreenState();
+  ConsumerState<SetupScreen> createState() => _SetupScreenState();
 }
 
-class _SetupScreenState extends State<SetupScreen> {
+class _SetupScreenState extends ConsumerState<SetupScreen> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
-  static const _totalSteps = 5;
 
   // Kullanıcı verileri
   int _age = 14;
@@ -21,6 +30,28 @@ class _SetupScreenState extends State<SetupScreen> {
   DateTime _lastPeriod = DateTime.now().subtract(const Duration(days: 14));
   int _cycleLength = 28;
   final _nameController = TextEditingController();
+
+  // Yasal/rıza durumu
+  // 13 yaş altı için gösterilen ebeveyn kapısı adımının bu akışa dahil olup
+  // olmadığı — yalnızca Yaş adımından ayrılırken güncellenir, bu yüzden
+  // kullanıcı ileriki bir adımdayken PageView'in çocuk listesi altından
+  // değişmez (bkz. docs/legal-compliance-notes.md bölüm 7).
+  bool _includeGuardianStep = false;
+  bool? _guardianChoice;
+  bool _consentChecked = false;
+
+  List<_StepKind> get _stepKinds => [
+        _StepKind.age,
+        if (_includeGuardianStep) _StepKind.guardian,
+        _StepKind.privacyNotice,
+        _StepKind.consent,
+        _StepKind.periodStarted,
+        _StepKind.lastPeriodDate,
+        _StepKind.cycleLength,
+        _StepKind.name,
+      ];
+
+  int get _totalSteps => _stepKinds.length;
 
   @override
   void dispose() {
@@ -30,13 +61,22 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   void _next() {
+    final kind = _stepKinds[_currentStep];
+    if (kind == _StepKind.age) {
+      ref.read(onboardingConsentProvider.notifier).recordAge(_age);
+      setState(() => _includeGuardianStep = _age < 13);
+    }
+
     if (_currentStep < _totalSteps - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeOutCubic,
       );
     } else {
-      // TODO: Backend entegrasyonu — kullanıcı verilerini Supabase'e kaydet
+      // TODO: Backend entegrasyonu — kullanıcı verilerini VE rıza kaydını
+      // (onboardingConsentProvider: consentGivenAt, contentVersion,
+      // ageAtOnboarding, guardianAssisted) aynı Supabase kayıt çağrısıyla
+      // birlikte kaydet — rıza kaydı sonradan eklenmemeli.
       context.go('/cycle-tracking');
     }
   }
@@ -51,14 +91,68 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   bool get _canProceed {
-    switch (_currentStep) {
-      case 0: return true;
-      case 1: return _hasStarted != null;
-      case 2: return _hasStarted == true;
-      case 3: return true;
-      case 4: return _nameController.text.trim().isNotEmpty;
-      default: return true;
+    switch (_stepKinds[_currentStep]) {
+      case _StepKind.age: return true;
+      case _StepKind.guardian: return _guardianChoice != null;
+      case _StepKind.privacyNotice: return true;
+      case _StepKind.consent: return _consentChecked;
+      case _StepKind.periodStarted: return _hasStarted != null;
+      case _StepKind.lastPeriodDate: return _hasStarted == true;
+      case _StepKind.cycleLength: return true;
+      case _StepKind.name: return _nameController.text.trim().isNotEmpty;
     }
+  }
+
+  // Aydınlatma/rıza adımlarında üstteki "Atla" gizlenir — bu adımlar
+  // hassas veri toplanmadan önceki bilgilendirme/onay adımları olduğu için
+  // tek tıkla atlanabilir olmamalı.
+  bool get _canSkip {
+    switch (_stepKinds[_currentStep]) {
+      case _StepKind.guardian:
+      case _StepKind.privacyNotice:
+      case _StepKind.consent:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  List<Widget> _buildPages() {
+    return _stepKinds.map<Widget>((kind) {
+      switch (kind) {
+        case _StepKind.age:
+          return _AgePage(age: _age, onChanged: (v) => setState(() => _age = v));
+        case _StepKind.guardian:
+          return GuardianAssistGateStep(
+            choice: _guardianChoice,
+            onChanged: (v) {
+              setState(() => _guardianChoice = v);
+              ref.read(onboardingConsentProvider.notifier).recordGuardianChoice(v);
+            },
+          );
+        case _StepKind.privacyNotice:
+          return const _PrivacyNoticePage();
+        case _StepKind.consent:
+          return ConsentGateStep(
+            checked: _consentChecked,
+            onChanged: (v) {
+              setState(() => _consentChecked = v);
+              final notifier = ref.read(onboardingConsentProvider.notifier);
+              if (v) { notifier.giveConsent(); } else { notifier.revokeConsent(); }
+            },
+            onOpenPrivacyPolicy: () => context.pushNamed(RouteNames.privacyPolicy),
+            onOpenTerms: () => context.pushNamed(RouteNames.terms),
+          );
+        case _StepKind.periodStarted:
+          return _PeriodStartedPage(value: _hasStarted, onChanged: (v) => setState(() => _hasStarted = v));
+        case _StepKind.lastPeriodDate:
+          return _LastPeriodPage(date: _lastPeriod, onChanged: (v) => setState(() => _lastPeriod = v));
+        case _StepKind.cycleLength:
+          return _CycleLengthPage(length: _cycleLength, onChanged: (v) => setState(() => _cycleLength = v));
+        case _StepKind.name:
+          return _NamePage(controller: _nameController, onChanged: () => setState(() {}));
+      }
+    }).toList();
   }
 
   @override
@@ -109,13 +203,16 @@ class _SetupScreenState extends State<SetupScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  GestureDetector(
-                    onTap: () => context.go('/cycle-tracking'),
-                    child: Text('Atla', style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w500,
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                    )),
-                  ),
+                  if (_canSkip)
+                    GestureDetector(
+                      onTap: () => context.go('/cycle-tracking'),
+                      child: Text('Atla', style: TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                      )),
+                    )
+                  else
+                    const SizedBox(width: 36),
                 ],
               ),
             ),
@@ -126,14 +223,13 @@ class _SetupScreenState extends State<SetupScreen> {
               child: PageView(
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (i) => setState(() => _currentStep = i),
-                children: [
-                  _AgePage(age: _age, onChanged: (v) => setState(() => _age = v)),
-                  _PeriodStartedPage(value: _hasStarted, onChanged: (v) => setState(() => _hasStarted = v)),
-                  _LastPeriodPage(date: _lastPeriod, onChanged: (v) => setState(() => _lastPeriod = v)),
-                  _CycleLengthPage(length: _cycleLength, onChanged: (v) => setState(() => _cycleLength = v)),
-                  _NamePage(controller: _nameController, onChanged: () => setState(() {})),
-                ],
+                onPageChanged: (i) {
+                  setState(() => _currentStep = i);
+                  if (_stepKinds[i] == _StepKind.privacyNotice) {
+                    ref.read(onboardingConsentProvider.notifier).markPrivacyNoticeSeen();
+                  }
+                },
+                children: _buildPages(),
               ),
             ),
 
@@ -599,6 +695,63 @@ class _NamePage extends StatelessWidget {
             ),
           ),
           const Spacer(),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Sayfa: Aydınlatma Metni ────────────────────────────────────────────────
+
+/// Onboarding'e gömülü KVKK aydınlatma adımı. Rıza adımından önce gösterilir
+/// — hangi verinin, neden toplandığının açıklandığı, saf bilgilendirme
+/// adımıdır (KVKK Madde 10 aydınlatma yükümlülüğü, rızadan bağımsızdır).
+class _PrivacyNoticePage extends StatelessWidget {
+  const _PrivacyNoticePage();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 40),
+          Text('KURULUM', style: TextStyle(
+            fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 2,
+            color: AppColors.primary.withValues(alpha: 0.6),
+          )),
+          const SizedBox(height: 12),
+          const Text('Önce seni\nbilgilendirelim', style: TextStyle(
+            fontSize: 30, fontWeight: FontWeight.w800, height: 1.1,
+            color: AppColors.ink,
+          )),
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.warning.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.warning.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.info_outline_rounded, size: 16, color: AppColors.darkCard.withValues(alpha: 0.7)),
+                const SizedBox(width: 10),
+                Expanded(child: Text(
+                  kLegalDraftDisclaimer,
+                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.darkCard.withValues(alpha: 0.75), height: 1.4),
+                )),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            kKvkkAydinlatmaMetni,
+            style: TextStyle(fontSize: 13.5, height: 1.6, color: AppColors.darkCard.withValues(alpha: 0.8)),
+          ),
+          const SizedBox(height: 40),
         ],
       ),
     );

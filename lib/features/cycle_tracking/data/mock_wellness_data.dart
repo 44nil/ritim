@@ -56,7 +56,7 @@ class MockWellnessData {
     ),
   };
 
-  static PhaseWellness get current => _wellnessMap[MockCycleData.currentPhase.phase]!;
+  static PhaseWellness forPhase(CyclePhase phase) => _wellnessMap[phase]!;
 
   static int waterDrunk = 4;
 }

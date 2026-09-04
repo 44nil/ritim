@@ -7,14 +7,14 @@ import '../../../core/theme/app_text_styles.dart';
 import '../data/mock_cycle_data.dart';
 import '../data/mock_wellness_data.dart';
 
-class CycleTrackingScreen extends StatefulWidget {
+class CycleTrackingScreen extends ConsumerStatefulWidget {
   const CycleTrackingScreen({super.key});
 
   @override
-  State<CycleTrackingScreen> createState() => _CycleTrackingScreenState();
+  ConsumerState<CycleTrackingScreen> createState() => _CycleTrackingScreenState();
 }
 
-class _CycleTrackingScreenState extends State<CycleTrackingScreen>
+class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
     with TickerProviderStateMixin {
   late final AnimationController _animController;
   final _scrollController = ScrollController();
@@ -63,9 +63,8 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
 
   @override
   Widget build(BuildContext context) {
-    final phase = MockCycleData.currentPhase;
-
-    final cycle = ProviderScope.containerOf(context).read(cycleProvider);
+    final cycle = ref.watch(cycleProvider);
+    final phase = MockCycleData.phaseForDay(cycle.currentCycleDay, cycleLength: cycle.averageCycleLength);
 
     return Scaffold(
       backgroundColor: AppColors.surfaceVariantLight,
@@ -234,12 +233,12 @@ class _CycleTrackingScreenState extends State<CycleTrackingScreen>
 
                         // Su / Uyku
                         Row(children: [
-                          const Expanded(child: _WaterGauge()),
+                          Expanded(child: _WaterGauge(phase: phase.phase)),
                           const SizedBox(width: 16),
                           Expanded(child: _QuickStat(
                             icon: Icons.nightlight_outlined,
                             label: 'Uyku',
-                            value: MockWellnessData.current.sleepHours,
+                            value: MockWellnessData.forPhase(phase.phase).sleepHours,
                           )),
                         ]),
 
@@ -553,7 +552,8 @@ class _MoodPickerState extends State<_MoodPicker> {
 // ─── Su göstergesi — dolan kapsül + artı/eksi ──────────────────────────────
 
 class _WaterGauge extends StatefulWidget {
-  const _WaterGauge();
+  const _WaterGauge({required this.phase});
+  final CyclePhase phase;
 
   @override
   State<_WaterGauge> createState() => _WaterGaugeState();
@@ -562,13 +562,13 @@ class _WaterGauge extends StatefulWidget {
 class _WaterGaugeState extends State<_WaterGauge> {
   void _adjust(int delta) {
     setState(() {
-      MockWellnessData.waterDrunk = (MockWellnessData.waterDrunk + delta).clamp(0, MockWellnessData.current.waterGoal);
+      MockWellnessData.waterDrunk = (MockWellnessData.waterDrunk + delta).clamp(0, MockWellnessData.forPhase(widget.phase).waterGoal);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final goal = MockWellnessData.current.waterGoal;
+    final goal = MockWellnessData.forPhase(widget.phase).waterGoal;
     final drunk = MockWellnessData.waterDrunk;
     final ratio = goal == 0 ? 0.0 : (drunk / goal).clamp(0.0, 1.0);
 

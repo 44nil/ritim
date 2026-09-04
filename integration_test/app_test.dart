@@ -23,7 +23,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Döngüm'), findsOneWidget);
-    expect(find.text('Ovülasyon'), findsOneWidget);
+    // Faz kartı artık gerçek cycleProvider'dan besleniyor (bkz. mock_cycle_data.dart
+    // phaseForDay) — kayıt geçmişi olmayan taze bir kurulumda gün 1 = "Adet" fazı.
+    // Eskiden sabit/mock "Ovülasyon" (gün 14) bekleniyordu, artık öyle değil.
+    expect(find.text('Adet'), findsOneWidget);
 
     await tester.tap(find.text('Profil'));
     await tester.pumpAndSettle();

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/cycle_storage_service.dart';
 
 class DailyLog {
   const DailyLog({this.flow, this.mood, this.symptoms = const [], this.note, this.medications = const {}});
@@ -22,6 +23,18 @@ class DailyLog {
       medications: medications ?? this.medications,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'flow': flow, 'mood': mood, 'symptoms': symptoms, 'note': note, 'medications': medications,
+  };
+
+  factory DailyLog.fromJson(Map<String, dynamic> json) => DailyLog(
+    flow: json['flow'] as String?,
+    mood: json['mood'] as String?,
+    symptoms: (json['symptoms'] as List?)?.cast<String>() ?? const [],
+    note: json['note'] as String?,
+    medications: (json['medications'] as Map?)?.cast<String, int>() ?? const {},
+  );
 }
 
 class PeriodRecord {
@@ -33,6 +46,15 @@ class PeriodRecord {
   int get lengthDays => endDate != null
       ? endDate!.difference(startDate).inDays + 1
       : DateTime.now().difference(startDate).inDays + 1;
+
+  Map<String, dynamic> toJson() => {
+    'startDate': startDate.toIso8601String(), 'endDate': endDate?.toIso8601String(),
+  };
+
+  factory PeriodRecord.fromJson(Map<String, dynamic> json) => PeriodRecord(
+    startDate: DateTime.parse(json['startDate'] as String),
+    endDate: json['endDate'] != null ? DateTime.parse(json['endDate'] as String) : null,
+  );
 }
 
 class CycleState {
@@ -133,6 +155,20 @@ class CycleState {
   CycleState _withMedicationNames(List<String> names) {
     return CycleState(periods: periods, logs: logs, userName: userName, medicationNames: names);
   }
+
+  Map<String, dynamic> toJson() => {
+    'periods': periods.map((p) => p.toJson()).toList(),
+    'logs': logs.map((key, log) => MapEntry(key, log.toJson())),
+    'userName': userName,
+    'medicationNames': medicationNames,
+  };
+
+  factory CycleState.fromJson(Map<String, dynamic> json) => CycleState(
+    periods: (json['periods'] as List).map((p) => PeriodRecord.fromJson(p as Map<String, dynamic>)).toList(),
+    logs: (json['logs'] as Map<String, dynamic>).map((key, log) => MapEntry(key, DailyLog.fromJson(log as Map<String, dynamic>))),
+    userName: json['userName'] as String? ?? 'Ela',
+    medicationNames: (json['medicationNames'] as List?)?.cast<String>() ?? const [],
+  );
 }
 
 final cycleProvider = StateNotifierProvider<CycleNotifier, CycleState>((ref) {
@@ -140,13 +176,23 @@ final cycleProvider = StateNotifierProvider<CycleNotifier, CycleState>((ref) {
 });
 
 class CycleNotifier extends StateNotifier<CycleState> {
-  CycleNotifier() : super(CycleState(
-    periods: [
-      PeriodRecord(startDate: _d1, endDate: _d1e),
-      PeriodRecord(startDate: _d2, endDate: _d2e),
-      PeriodRecord(startDate: _d3, endDate: _d3e),
-    ],
-  ));
+  CycleNotifier() : super(const CycleState()) {
+    _hydrate();
+  }
+
+  // Uygulama açılışında cihazın güvenli depolamasından önceki kayıtları yükler.
+  Future<void> _hydrate() async {
+    final saved = await CycleStorageService.load();
+    if (saved != null && mounted) state = saved;
+  }
+
+  // Her state değişiminde otomatik olarak cihaza (şifreli) kaydeder —
+  // ayrı ayrı her metodun sonuna kaydetme çağrısı eklemek yerine.
+  @override
+  set state(CycleState value) {
+    super.state = value;
+    CycleStorageService.save(value);
+  }
 
   void startPeriod([DateTime? date]) {
     final start = date ?? DateTime.now();
@@ -213,12 +259,3 @@ class CycleNotifier extends StateNotifier<CycleState> {
     state = state._withLog(today, existing.copyWith(medications: meds));
   }
 }
-
-// Mock geçmiş döngü tarihleri
-final _now = DateTime.now();
-final _d3 = DateTime(_now.year, _now.month - 1, _now.day - 2);
-final _d3e = _d3.add(const Duration(days: 4));
-final _d2 = _d3.subtract(const Duration(days: 30));
-final _d2e = _d2.add(const Duration(days: 5));
-final _d1 = _d2.subtract(const Duration(days: 28));
-final _d1e = _d1.add(const Duration(days: 4));

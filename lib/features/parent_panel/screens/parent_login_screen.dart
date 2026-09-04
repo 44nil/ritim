@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
@@ -456,10 +457,13 @@ class _LinkSentView extends StatelessWidget {
         // TODO: Backend entegrasyonu — gerçek magic link akışında bu buton
         // kalkacak, kullanıcı e-postadaki bağlantıya tıklayınca panele girecek.
         // Backend olmadığı için şimdilik demo amaçlı doğrudan geçiş.
-        TextButton(
-          onPressed: () => context.goNamed(RouteNames.parentPanel),
-          child: const Text('Girişi tamamla (demo)'),
-        ),
+        // kDebugMode'a alındı: gerçek doğrulama yapmadan ebeveyn paneline
+        // giren bu buton release build'e gitmemeli.
+        if (kDebugMode)
+          TextButton(
+            onPressed: () => context.goNamed(RouteNames.parentPanel),
+            child: const Text('Girişi tamamla (demo)'),
+          ),
       ],
     );
   }

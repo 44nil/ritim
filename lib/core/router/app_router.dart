@@ -10,6 +10,8 @@ import '../../features/quiz/screens/quiz_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/parent_panel/screens/parent_login_screen.dart';
 import '../../features/parent_panel/screens/parent_panel_screen.dart';
+import '../../features/legal/content/legal_content.dart';
+import '../../features/legal/screens/legal_document_screen.dart';
 import 'route_names.dart';
 
 /// Uygulama navigasyonu — go_router ile tanımlı.
@@ -115,6 +117,32 @@ class AppRouter {
         path: RoutePaths.parentPanel,
         name: RouteNames.parentPanel,
         builder: (context, state) => const ParentPanelScreen(),
+      ),
+
+      // ─── Yasal metinler — bağımsız erişim (Profil, onboarding linkleri) ───
+      GoRoute(
+        path: RoutePaths.privacyNotice,
+        name: RouteNames.privacyNotice,
+        builder: (context, state) => const LegalDocumentScreen(
+          title: 'KVKK Aydınlatma Metni',
+          body: kKvkkAydinlatmaMetni,
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.privacyPolicy,
+        name: RouteNames.privacyPolicy,
+        builder: (context, state) => const LegalDocumentScreen(
+          title: 'Gizlilik Politikası',
+          body: kGizlilikPolitikasi,
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.terms,
+        name: RouteNames.terms,
+        builder: (context, state) => const LegalDocumentScreen(
+          title: 'Kullanım Şartları',
+          body: kKullanimSartlari,
+        ),
       ),
     ],
 

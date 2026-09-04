@@ -17,6 +17,11 @@ abstract class RouteNames {
   // Ebeveyn paneli (bağımsız akış)
   static const parentLogin = 'parent-login';
   static const parentPanel = 'parent-panel';
+
+  // Yasal metinler (Profil'den ve onboarding'den erişilir)
+  static const privacyNotice = 'legal-privacy-notice';
+  static const privacyPolicy = 'legal-privacy-policy';
+  static const terms = 'legal-terms';
 }
 
 /// Route path'leri — go_router için URI'lar.
@@ -30,4 +35,7 @@ abstract class RoutePaths {
   static const profile = '/profile';
   static const parentLogin = '/parent/login';
   static const parentPanel = '/parent/panel';
+  static const privacyNotice = '/legal/kvkk-aydinlatma';
+  static const privacyPolicy = '/legal/gizlilik-politikasi';
+  static const terms = '/legal/kullanim-sartlari';
 }
