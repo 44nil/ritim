@@ -258,7 +258,7 @@ class _RoleCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.85),
+          color: AppColors.cardTranslucent,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: color.withValues(alpha: 0.15), width: 1.5),
           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6))],
