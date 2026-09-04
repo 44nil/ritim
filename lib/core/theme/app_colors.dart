@@ -56,10 +56,11 @@ abstract class AppColors {
   // "Rice" (#FAF5EF) — kırık beyaz, saf beyazdan daha sıcak.
   static const cardCream = Color(0xFFFAF5EF);
   static const cardPink = Color(0xFFFCE8EF);
-  // Gradient'in üzerine oturan büyük kartlar için: tam opak yerine hafif
-  // saydam — arkadaki renk geçişi hafifçe sızsın, kart arka plana daha
-  // yumuşak kaynaşsın (tam opak + keskin gölge "çiğ/sert" duruyordu).
-  static Color get cardTranslucent => cardCream.withValues(alpha: 0.88);
+  // Gradient'in üzerine oturan büyük kartlar için: krem/bej tonu gradient'in
+  // renk ailesinde olmadığından (pembe/turuncu değil) her zaman "beyazımsı,
+  // ayrık" duruyordu — hero kartın zaten yaptığı gibi, gradient'in kendi
+  // rengini (sıcak turuncu) şeffaf kullanmak daha doğal kaynaşıyor.
+  static Color get cardTranslucent => warmOrange.withValues(alpha: 0.15);
 
   // ─── Hero header gradient (soft pastel, tab üstlerinde) ─────────────────
   static const heroPink = Color(0xFFF9C4D2);
