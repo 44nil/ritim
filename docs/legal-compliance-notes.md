@@ -141,9 +141,21 @@ Ayrıca backend aşamasında ele alınması gerekenler:
 
 ## 7. İnsan/avukat onayı gereken açık kararlar
 
-- [ ] Ebeveyn kapısı yaş eşiği (şu an: 13) — nihai risk toleransı kararı.
-- [ ] Yumuşak öneri mi (mevcut) yoksa zorunlu engel mi olmalı — ürün/hukuk
-      ortak kararı.
+- [x] Ebeveyn kapısı yaş eşiği ve yumuşak/zorunlu kararı — **ÇÖZÜLDÜ
+      (2026-09-04): 13 eşiği ve mevcut yumuşak/opsiyonel yaklaşım
+      korunuyor, değişiklik yok.** Gerekçe: KVKK'da sabit bir dijital rıza
+      yaşı yok (Medeni Kanun'un "ayırt etme gücü" ölçütüne bakıyor); local-
+      first mimaride şirket hiçbir veri toplamadığı için klasik "veli
+      onayı olmadan çocuktan veri toplama" riski zaten düşük; ve en
+      önemlisi, zorunlu bir engel tam da uygulamanın hedef kitlesini
+      (örn. okulda tek başına ilk adetini yaşayan 10 yaşındaki bir kız)
+      en çok ihtiyaç duyduğu anda dışarıda bırakırdı. Kullanıcı bunu
+      teyit etti — 10 yaşındaki bir kullanıcının "kendi başıma devam
+      etmek istiyorum" diyip uygulamayı kullanabilmesi kasıtlı bir ürün
+      kararı, kod tarafında zaten böyle çalışıyor (doğrulandı: `setup_
+      screen.dart`'taki `_age < 13` sadece ekranı gösterip göstermeme
+      kararı, `guardianAssisted` seçimi akışı bloklamıyor, sadece
+      kaydediliyor).
 - [x] Üç yasal metnin veri sorumlusu/iletişim bilgisi — dolduruldu
       (2026-09-04, aşağıya bkz.). **Ama** metnin içeriği (aydınlatma
       kapsamı, haklar bölümü, saklama süresi ifadeleri vb.) henüz bir
@@ -185,3 +197,6 @@ Ayrıca backend aşamasında ele alınması gerekenler:
   hem mikro istisna eşiğini karşıladığı için "ana faaliyet" sınıflandırması
   ne olursa olsun sonuç değişmiyor: VERBİS kaydı gerekmiyor. Ayrı bir
   avukat/mali müşavir tespitine gerek kalmadı.
+- 2026-09-04: Ebeveyn kapısı sorusu çözüldü — 13 yaş eşiği ve yumuşak/
+  opsiyonel yaklaşım (mevcut davranış) korunuyor, kod değişikliği yok.
+  Bkz. bölüm 7 için gerekçe.
