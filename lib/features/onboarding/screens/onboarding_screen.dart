@@ -150,6 +150,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(isLast ? 'Başlayalım' : 'İleri', style: const TextStyle(fontSize: 16)),
                         ),
                       ),
+                      TextButton(
+                        onPressed: () => context.push('/parent/scan'),
+                        child: Text(
+                          'Bir veli/vasi misiniz? QR ile bağlanın',
+                          style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
+                        ),
+                      ),
                     ],
                   ),
                 ),

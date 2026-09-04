@@ -14,8 +14,10 @@ abstract class RouteNames {
   static const quiz = 'quiz';
   static const profile = 'profile';
 
-  // Ebeveyn paneli (bağımsız akış)
-  static const parentLogin = 'parent-login';
+  // Ebeveyn paneli (bağımsız akış) — çocuk tarafı QR oluşturur,
+  // veli tarafı QR tarar, ikisi de aynı özet ekranında buluşur.
+  static const parentQr = 'parent-qr';
+  static const parentScan = 'parent-scan';
   static const parentPanel = 'parent-panel';
 
   // Yasal metinler (Profil'den ve onboarding'den erişilir)
@@ -33,7 +35,8 @@ abstract class RoutePaths {
   static const articles = '/articles';
   static const quiz = '/quiz';
   static const profile = '/profile';
-  static const parentLogin = '/parent/login';
+  static const parentQr = '/parent/qr';
+  static const parentScan = '/parent/scan';
   static const parentPanel = '/parent/panel';
   static const privacyNotice = '/legal/kvkk-aydinlatma';
   static const privacyPolicy = '/legal/gizlilik-politikasi';

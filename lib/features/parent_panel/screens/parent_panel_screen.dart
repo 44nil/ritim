@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import '../../../core/providers/cycle_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/clean_card.dart';
+import '../../../shared/widgets/screen_gradient_background.dart';
+import '../models/parent_summary.dart';
 
 const _included = [
   'Döngü ve adet takibi',
   'Yaşa uygun genel sağlık bilgileri (beslenme, uyku, hareket)',
   'Ruh hali ve günlük not tutma',
   'Kendi ilaç hatırlatıcısı — doz/tıbbi tavsiye içermez, sadece kişisel bir sayım',
-  'Uzman onaylı, genel bilgilendirme makaleleri',
 ];
 
 const _excluded = [
@@ -22,19 +21,23 @@ const _excluded = [
   'Verilerin üçüncü taraflarla paylaşılması',
 ];
 
-/// Ebeveyn paneli — güven merkezli tasarım: çocuğun kişisel kayıtları
-/// (ruh hali/semptom/not) YOK, sadece döngü genel bakışı ve uygulamanın
-/// içerik güvencesi gösteriliyor. Bkz. proje hafızası: mahremiyet çizgisi
-/// bilinçli bir ürün kararı, eksiklik değil.
-class ParentPanelScreen extends ConsumerWidget {
-  const ParentPanelScreen({super.key});
+/// Ebeveyn paneli — çocuğun QR kodunu tarayarak buraya ulaşılır (bkz.
+/// parent_scan_screen.dart). Güven merkezli tasarım: çocuğun kişisel
+/// kayıtları (ruh hali/semptom/not) YOK, sadece döngü genel bakışı ve
+/// uygulamanın içerik güvencesi gösteriliyor — canlı veri değil, QR
+/// tarandığı andaki bir özet (bkz. ParentSummary). Bkz. proje hafızası:
+/// mahremiyet çizgisi bilinçli bir ürün kararı, eksiklik değil.
+class ParentPanelScreen extends StatelessWidget {
+  const ParentPanelScreen({super.key, required this.summary});
+  final ParentSummary summary;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final cycle = ref.watch(cycleProvider);
+  Widget build(BuildContext context) {
+    final ageMinutes = DateTime.now().difference(summary.generatedAt).inMinutes;
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceVariantLight,
+      backgroundColor: AppColors.cardCream,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -44,21 +47,22 @@ class ParentPanelScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout_rounded),
-            onPressed: () => context.pop(),
-          ),
-        ],
       ),
-      body: SingleChildScrollView(
+      body: Stack(children: [
+        const ScreenGradientBackground(),
+        SafeArea(child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Merhaba, Ebeveyn', style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
           const SizedBox(height: 4),
           Text(
-            'Çocuğunuzun döngü takibini ve uygulamanın içerik güvencesini buradan görebilirsiniz.',
+            '${summary.userName} adlı çocuğunuzun döngü takibini ve uygulamanın içerik güvencesini buradan görebilirsiniz.',
             style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.4),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            ageMinutes < 1 ? 'Az önce tarandı' : '$ageMinutes dakika önce tarandı',
+            style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.35), fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 24),
 
@@ -71,16 +75,16 @@ class ParentPanelScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             _InfoRow(
               label: 'Son adet başlangıcı',
-              value: cycle.periods.isNotEmpty
-                  ? DateFormat('d MMMM yyyy', 'tr_TR').format(cycle.periods.last.startDate)
+              value: summary.lastPeriodStart != null
+                  ? DateFormat('d MMMM yyyy', 'tr_TR').format(summary.lastPeriodStart!)
                   : 'Henüz kayıt yok',
             ),
-            _InfoRow(label: 'Şu an', value: '${cycle.currentCycleDay}. gün'),
+            _InfoRow(label: 'Şu an', value: '${summary.currentCycleDay}. gün'),
             _InfoRow(
               label: 'Ortalama döngü uzunluğu',
-              value: cycle.canPredict ? '${cycle.averageCycleLength} gün' : 'Henüz yeterli veri yok',
+              value: summary.canPredict ? '${summary.averageCycleLength} gün' : 'Henüz yeterli veri yok',
             ),
-            _InfoRow(label: 'Kayıtlı döngü sayısı', value: '${cycle.periods.length}'),
+            _InfoRow(label: 'Kayıtlı döngü sayısı', value: '${summary.periodCount}'),
           ])),
           const SizedBox(height: 16),
 
@@ -114,7 +118,8 @@ class ParentPanelScreen extends ConsumerWidget {
             ]),
           ),
         ]),
-      ),
+        )),
+      ]),
     );
   }
 }

@@ -8,8 +8,10 @@ import '../../features/cycle_tracking/screens/cycle_tracking_screen.dart';
 import '../../features/articles/screens/articles_screen.dart';
 import '../../features/quiz/screens/quiz_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
-import '../../features/parent_panel/screens/parent_login_screen.dart';
+import '../../features/parent_panel/screens/parent_qr_screen.dart';
+import '../../features/parent_panel/screens/parent_scan_screen.dart';
 import '../../features/parent_panel/screens/parent_panel_screen.dart';
+import '../../features/parent_panel/models/parent_summary.dart';
 import '../../features/legal/content/legal_content.dart';
 import '../../features/legal/screens/legal_document_screen.dart';
 import 'route_names.dart';
@@ -20,7 +22,9 @@ import 'route_names.dart';
 ///  0. Splash → / (kalıcı veri yüklenene kadar bekler, sonra 1 ya da 2'ye yönlendirir)
 ///  1. Onboarding → /onboarding (ilk açılış / tamamlanmadıysa)
 ///  2. Ana uygulama → /cycle-tracking (4 sekmeli bottom nav shell)
-///  3. Ebeveyn paneli → /parent/login → /parent/panel (bağımsız akış)
+///  3. Ebeveyn paneli — hesap/şifre yok, bağımsız akış:
+///     çocuk /parent/qr'da QR gösterir, veli /parent/scan'de tarar,
+///     ikisi de /parent/panel'de (taranan özetle) buluşur.
 class AppRouter {
   AppRouter._();
 
@@ -105,16 +109,23 @@ class AppRouter {
         ],
       ),
 
-      // ─── Ebeveyn paneli — bağımsız akış ─────────────────────────────────
+      // ─── Ebeveyn paneli — bağımsız akış, hesap/şifre yok ────────────────
+      // Çocuk tarafı: Profil → "Ebeveyn Paneli" → QR oluştur.
+      // Veli tarafı: onboarding'deki "QR ile bağlanın" → QR tara → özet.
       GoRoute(
-        path: RoutePaths.parentLogin,
-        name: RouteNames.parentLogin,
-        builder: (context, state) => const ParentLoginScreen(),
+        path: RoutePaths.parentQr,
+        name: RouteNames.parentQr,
+        builder: (context, state) => const ParentQrScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.parentScan,
+        name: RouteNames.parentScan,
+        builder: (context, state) => const ParentScanScreen(),
       ),
       GoRoute(
         path: RoutePaths.parentPanel,
         name: RouteNames.parentPanel,
-        builder: (context, state) => const ParentPanelScreen(),
+        builder: (context, state) => ParentPanelScreen(summary: state.extra as ParentSummary),
       ),
 
       // ─── Yasal metinler — bağımsız erişim (Profil, onboarding linkleri) ───

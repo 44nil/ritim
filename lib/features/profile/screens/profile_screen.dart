@@ -113,7 +113,7 @@ class ProfileScreen extends ConsumerWidget {
 
                 // Ebeveyn paneli
                 CleanCard(
-                  onTap: () => context.pushNamed(RouteNames.parentLogin),
+                  onTap: () => context.pushNamed(RouteNames.parentQr),
                   padding: const EdgeInsets.all(16),
                   child: Row(children: [
                     Container(
@@ -124,7 +124,7 @@ class ProfileScreen extends ConsumerWidget {
                     const SizedBox(width: 12),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('Ebeveyn Paneli', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: 13)),
-                      Text('Ebeveyn girişi ile erişin', style: theme.textTheme.bodySmall?.copyWith(
+                      Text('Veline göstermek için QR oluştur', style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 11)),
                     ])),
                     Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),

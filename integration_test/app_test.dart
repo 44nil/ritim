@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:ritim/app.dart';
 
 void main() {
@@ -31,24 +31,15 @@ void main() {
     await tester.tap(find.text('Profil'));
     await tester.pumpAndSettle();
 
+    // Ebeveyn Paneli artık QR ile çalışıyor (eski e-posta/giriş akışı
+    // tamamen kaldırıldı, kamera gerektiren tarama kısmı burada test
+    // edilmiyor — bkz. ParentSummary encode/decode unit testi).
     await tester.ensureVisible(find.text('Ebeveyn Paneli'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Ebeveyn Paneli'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextFormField), 'veli@example.com');
-    await tester.tap(find.text('Giriş Bağlantısı Gönder'));
-    // pumpAndSettle burada sonsuza kadar bekler çünkü ekranda anlık olarak
-    // duracak (indeterminate) bir CircularProgressIndicator var — onun yerine
-    // sabit fake gecikmeyi (1200ms) aşacak kadar pump ediyoruz.
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 1300));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Girişi tamamla (demo)'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Döngü Genel Bakış'), findsOneWidget);
-    expect(find.text('Uygulamada Neler Var, Neler Yok'), findsOneWidget);
+    expect(find.text('Veliye Göster'), findsOneWidget);
+    expect(find.byType(QrImageView), findsOneWidget);
   });
 }
