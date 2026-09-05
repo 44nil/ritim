@@ -237,7 +237,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         // Ruh hali
                         Row(children: [
-                          Icon(Icons.mood_outlined, size: 18, color: AppColors.warmOrange),
+                          Icon(Icons.mood_outlined, size: 18, color: AppColors.ink.withValues(alpha: 0.5)),
                           const SizedBox(width: 8),
                           Text('Ruh Hali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
                         ]),
@@ -830,7 +830,7 @@ class _QuickLogAction extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Row(children: [
-        Icon(icon, size: 18, color: AppColors.warmOrange),
+        Icon(icon, size: 18, color: AppColors.ink.withValues(alpha: 0.5)),
         const SizedBox(width: 8),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
