@@ -10,6 +10,7 @@ import '../data/mock_cycle_data.dart';
 import '../data/mock_wellness_data.dart';
 import '../data/symptom_insights.dart';
 import '../../../shared/widgets/screen_gradient_background.dart';
+import '../../articles/data/article_data.dart';
 
 class CycleTrackingScreen extends ConsumerStatefulWidget {
   const CycleTrackingScreen({super.key});
@@ -188,6 +189,18 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 24),
 
+                  // Adet günüyse ya da yaklaşıyorsa okul çantası hatırlatıcısı
+                  // — okuma köşesindeki kontrol listesi makalesine götürür.
+                  // Kalıcı bir bildirim değil, sadece o an anlamlıysa görünen
+                  // küçük bir dokunuş.
+                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: _staggered(index: 1, child: _SchoolBagReminderCard()),
+                    ),
+                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
+                    const SizedBox(height: 24),
+
                   // Aylık takvim — geçmiş adet günleri ve tahmini günler.
                   // Ay adı + gezinme okları artık takvimin kendi küçük
                   // kontrolü (eskiden sayfanın en üstündeki büyük başlıktı).
@@ -325,6 +338,43 @@ class _SmallButton extends StatelessWidget {
           color: isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.softPink.withValues(alpha: 0.15),
         ),
         child: Icon(icon, size: 20, color: AppColors.ink.withValues(alpha: 0.5)),
+      ),
+    );
+  }
+}
+
+// Okul çantası hatırlatıcısı — Okuma köşesindeki kontrol listesi makalesine
+// kısayol. Sadece adet günü ya da yakınsa gösteriliyor (bkz. çağrı yeri).
+class _SchoolBagReminderCard extends StatelessWidget {
+  const _SchoolBagReminderCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final article = ArticleData.articles.firstWhere((a) => a.isChecklist);
+    return GestureDetector(
+      onTap: () => context.pushNamed(RouteNames.articleDetail, extra: article),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.cardTranslucent,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
+          ],
+        ),
+        child: Row(children: [
+          Container(
+            width: 40, height: 40,
+            decoration: BoxDecoration(color: AppColors.warmOrange.withValues(alpha: 0.15), shape: BoxShape.circle),
+            child: Icon(article.icon, size: 20, color: AppColors.ink.withValues(alpha: 0.7)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Okul çantan hazır mı?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink)),
+            Text('Kontrol listesine bak', style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.55))),
+          ])),
+          Icon(Icons.chevron_right_rounded, color: AppColors.ink.withValues(alpha: 0.3)),
+        ]),
       ),
     );
   }

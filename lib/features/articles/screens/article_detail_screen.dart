@@ -133,42 +133,70 @@ List<Widget> _buildSections(List<ArticleSection> sections, {bool isChecklist = f
   }).toList();
 }
 
-class _ChecklistRow extends StatelessWidget {
+// Tıklanınca "paketledim" gibi işaretlenen, animasyonlu bir satır — sadece
+// bu ekranda geçici bir durum (kaydedilmiyor), her ziyarette sıfırlanır.
+// Amaç kalıcı bir takip değil, okula çıkmadan önceki anlık bir kontrol hissi.
+class _ChecklistRow extends StatefulWidget {
   const _ChecklistRow({required this.tint, required this.heading, required this.text});
   final Color tint;
   final String heading;
   final String text;
 
   @override
+  State<_ChecklistRow> createState() => _ChecklistRowState();
+}
+
+class _ChecklistRowState extends State<_ChecklistRow> {
+  bool _checked = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(color: tint.withValues(alpha: 0.18), shape: BoxShape.circle),
-          alignment: Alignment.center,
-          child: Icon(Icons.check_rounded, size: 17, color: tint),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                heading,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                text,
-                style: TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.ink.withValues(alpha: 0.65)),
-              ),
-            ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => setState(() => _checked = !_checked),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutBack,
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: _checked ? widget.tint : widget.tint.withValues(alpha: 0.18),
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Icon(Icons.check_rounded, size: 17, color: _checked ? Colors.white : widget.tint),
           ),
-        ),
-      ],
+          const SizedBox(width: 14),
+          Expanded(
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 200),
+              opacity: _checked ? 0.5 : 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.heading,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.ink,
+                      decoration: _checked ? TextDecoration.lineThrough : TextDecoration.none,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.text,
+                    style: TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.ink.withValues(alpha: 0.65)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
