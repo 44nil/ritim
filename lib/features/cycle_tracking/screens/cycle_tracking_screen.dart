@@ -217,25 +217,10 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 28),
 
-                  // Belirti örüntün — kullanıcının kendi geçmiş kayıtlarının
-                  // özeti, genel bir tıbbi iddia değil (bkz. symptom_insights.dart).
-                  // Yeterli veri yoksa hiç gösterilmez.
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 2, child: _SymptomInsightsCard(cycle: cycle)),
-                  ),
-
-                  // Adet günüyse ya da yaklaşıyorsa okul çantası hatırlatıcısı
-                  // — okuma köşesindeki kontrol listesi makalesine götürür.
-                  // Kalıcı bir bildirim değil, sadece o an anlamlıysa görünen
-                  // küçük bir dokunuş.
-                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-                      child: _staggered(index: 2, child: _SchoolBagReminderCard()),
-                    ),
-
-                  // Bugünü kaydet — tek nötr panel, renk sadece hero'da
+                  // Bugünü kaydet — asıl günlük eylem, kullanıcı her gün
+                  // buraya bunun için geliyor; bu yüzden geriye dönük
+                  // içgörü/hatırlatıcı kartlarından önce, takvimin hemen
+                  // ardından gelir.
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Text('Bugünü Kaydet', style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
@@ -244,7 +229,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 3, child: Container(
+                    child: _staggered(index: 2, child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -307,6 +292,26 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       ]),
                     )),
                   ),
+                  const SizedBox(height: 28),
+
+                  // Belirti örüntün — kullanıcının kendi geçmiş kayıtlarının
+                  // özeti, genel bir tıbbi iddia değil (bkz. symptom_insights.dart).
+                  // Yeterli veri yoksa hiç gösterilmez. Eylem kartından sonra
+                  // gelir — bu daha "keşif amaçlı", ara sıra bakılan bir şey.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _staggered(index: 3, child: _SymptomInsightsCard(cycle: cycle)),
+                  ),
+
+                  // Adet günüyse ya da yaklaşıyorsa okul çantası hatırlatıcısı
+                  // — okuma köşesindeki kontrol listesi makalesine götürür.
+                  // Kalıcı bir bildirim değil, sadece o an anlamlıysa görünen
+                  // küçük bir dokunuş.
+                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                      child: _staggered(index: 3, child: _SchoolBagReminderCard()),
+                    ),
 
                   const SizedBox(height: 110),
                 ],
