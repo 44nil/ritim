@@ -78,7 +78,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
                           Color bg; Color textCol;
                           if (!_answered) {
-                            bg = AppColors.cardTranslucent;
+                            bg = Colors.white.withValues(alpha: 0.85);
                             textCol = AppColors.ink;
                           } else if (isCorrect) {
                             bg = const Color(0xFFD4EDDA);
@@ -92,16 +92,30 @@ class _QuizScreenState extends State<QuizScreen> {
                           }
 
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
+                            padding: const EdgeInsets.only(bottom: 10),
                             child: GestureDetector(
                               onTap: _answered ? null : () => setState(() { _selected = i; _answered = true; }),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                                decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(16)),
+                                decoration: BoxDecoration(
+                                  color: bg,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: _answered ? null : [
+                                    BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 3)),
+                                  ],
+                                ),
                                 child: Row(children: [
-                                  Text(String.fromCharCode(65 + i), style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink.withValues(alpha: 0.25))),
+                                  Container(
+                                    width: 26, height: 26,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.softPink.withValues(alpha: _answered ? 0.15 : 0.25),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(String.fromCharCode(65 + i), style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: AppColors.ink.withValues(alpha: 0.7))),
+                                  ),
                                   const SizedBox(width: 12),
-                                  Expanded(child: Text(e.value, style: TextStyle(fontSize: 14, color: textCol))),
+                                  Expanded(child: Text(e.value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textCol))),
                                   if (_answered && isCorrect) Icon(Icons.check_circle_rounded, color: const Color(0xFF28A745), size: 20),
                                   if (_answered && isSelected && !isCorrect) Icon(Icons.cancel_rounded, color: AppColors.softPink, size: 20),
                                 ]),
