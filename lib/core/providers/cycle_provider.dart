@@ -176,6 +176,20 @@ class CycleState {
   DailyLog? logForDate(DateTime date) => logs[_key(date)];
   DailyLog? get todayLog => logForDate(DateTime.now());
 
+  // Belirli bir tarihte, o tarihte en son başlamış adete göre kaçıncı döngü
+  // gününde olunduğunu döner. O tarihten önce hiç adet kaydı yoksa null
+  // döner — faz hesaplanamaz. `periods` her zaman başlangıç tarihine göre
+  // artan sırada tutulur (startPeriod sadece sona ekler).
+  int? cycleDayFor(DateTime date) {
+    PeriodRecord? active;
+    for (final p in periods) {
+      if (p.startDate.isAfter(date)) break;
+      active = p;
+    }
+    if (active == null) return null;
+    return date.difference(active.startDate).inDays + 1;
+  }
+
   // Kaç gündür art arda bir kayıt (ruh hali/semptom/not/ilaç/adet) girilmiş.
   // Bugün henüz kayıt yoksa dünden sayılır — gün bitmedi, seri henüz bozulmuş
   // sayılmaz.

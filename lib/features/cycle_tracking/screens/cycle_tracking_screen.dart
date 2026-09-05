@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../data/mock_cycle_data.dart';
 import '../data/mock_wellness_data.dart';
+import '../data/symptom_insights.dart';
 import '../../../shared/widgets/screen_gradient_background.dart';
 
 class CycleTrackingScreen extends ConsumerStatefulWidget {
@@ -215,6 +216,14 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 28),
 
+                  // Belirti örüntün — kullanıcının kendi geçmiş kayıtlarının
+                  // özeti, genel bir tıbbi iddia değil (bkz. symptom_insights.dart).
+                  // Yeterli veri yoksa hiç gösterilmez.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _staggered(index: 2, child: _SymptomInsightsCard(cycle: cycle)),
+                  ),
+
                   // Bugünü kaydet — tek nötr panel, renk sadece hero'da
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -224,7 +233,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 2, child: Container(
+                    child: _staggered(index: 3, child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -991,6 +1000,74 @@ class _LegendDot extends StatelessWidget {
       ),
       const SizedBox(width: 6),
       Text(label, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.5))),
+    ]);
+  }
+}
+
+// ─── Belirti örüntün ─────────────────────────────────────────────────────
+// Kullanıcının kendi geçmiş kayıtlarına bakarak her belirtinin en çok hangi
+// döngü fazında yaşandığını gösterir. Yeterli veri (bkz. symptom_insights.dart
+// minOccurrences) olmadan hiçbir şey göstermez — boş/yanıltıcı bir kart yok.
+class _SymptomInsightsCard extends StatelessWidget {
+  const _SymptomInsightsCard({required this.cycle});
+  final CycleState cycle;
+
+  static const _maxShown = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    final insights = symptomPhaseInsights(cycle).take(_maxShown).toList();
+    if (insights.isEmpty) return const SizedBox.shrink();
+
+    return Column(children: [
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.cardTranslucent,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
+          ],
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Icon(Icons.insights_rounded, size: 18, color: AppColors.ink.withValues(alpha: 0.5)),
+            const SizedBox(width: 8),
+            Text('Belirti Örüntün', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink)),
+          ]),
+          const SizedBox(height: 4),
+          Text(
+            'Kendi geçmiş kayıtlarına göre — bilimsel bir iddia değil, sadece senin verin.',
+            style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.4), height: 1.3),
+          ),
+          const SizedBox(height: 16),
+          ...insights.map((insight) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: _SymptomInsightRow(insight: insight),
+          )),
+        ]),
+      ),
+      const SizedBox(height: 28),
+    ]);
+  }
+}
+
+class _SymptomInsightRow extends StatelessWidget {
+  const _SymptomInsightRow({required this.insight});
+  final SymptomPhaseInsight insight;
+
+  @override
+  Widget build(BuildContext context) {
+    final phaseInfo = MockCycleData.phases.firstWhere((p) => p.phase == insight.dominantPhase);
+    return Row(children: [
+      Container(width: 8, height: 8, decoration: BoxDecoration(shape: BoxShape.circle, color: phaseInfo.color)),
+      const SizedBox(width: 10),
+      Expanded(child: Text(insight.symptom, style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: AppColors.ink))),
+      Text(
+        '${insight.dominantCount}/${insight.totalCount} kez ${phaseInfo.friendlyLabel ?? phaseInfo.label}',
+        style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.45)),
+      ),
     ]);
   }
 }
