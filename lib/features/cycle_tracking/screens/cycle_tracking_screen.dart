@@ -502,6 +502,11 @@ void _showMedications(BuildContext context, {DateTime? date}) {
 }
 
 void _sheet(BuildContext context, Widget Function(BuildContext) builder) {
+  // Önceki bir aksiyondan (ör. "Adetim Başladı") kalan bir SnackBar hâlâ
+  // ekrandaysa, floating SnackBar'ın kapladığı alan yeni sheet'in alt
+  // kısmındaki bir butonla çakışıp dokunuşu yutabiliyor — gerçek bir hataydı,
+  // hızlı art arda işlemde buton hiç tetiklenmeden kayıt sessizce kayboluyordu.
+  ScaffoldMessenger.of(context).clearSnackBars();
   showModalBottomSheet(
     context: context,
     backgroundColor: Theme.of(context).colorScheme.surface,
