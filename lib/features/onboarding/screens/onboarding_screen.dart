@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../shared/widgets/screen_gradient_background.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -14,9 +13,6 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  // "Bu telefonu kim kullanacak?" sorusu geçildi mi — eskiden bu seçim
-  // altta küçük, kolayca kaçırılan bir metin linkiydi, artık ilk soru bu.
-  bool _roleChosen = false;
 
   static const _pages = [
     _Page(icon: Icons.favorite_rounded, title: 'Ritim\'e\nHoş Geldin', body: 'Bedenini tanımana yardımcı olmak için buradayız.', color: AppColors.primary),
@@ -67,13 +63,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_roleChosen) {
-      return _RoleGateScreen(
-        onChild: () => setState(() => _roleChosen = true),
-        onParent: () => context.push('/parent/scan'),
-      );
-    }
-
     final isLast = _currentPage == _pages.length - 1;
 
     return Scaffold(
@@ -161,6 +150,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(isLast ? 'Başlayalım' : 'İleri', style: const TextStyle(fontSize: 16)),
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      // Ebeveyn/vasi kendi telefonundan bir çocuğun QR'ını okutmak
+                      // isterse — sessiz, keşfedilebilir bir link; ilk soru değil.
+                      TextButton(
+                        onPressed: () => context.push('/parent/scan'),
+                        child: Text(
+                          'Bir veli/vasi misiniz? QR ile bağlanın',
+                          style: TextStyle(fontSize: 12.5, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -178,106 +177,4 @@ class _Page {
   final IconData icon;
   final String title, body;
   final Color color;
-}
-
-// İlk soru: "Bu telefonu kim kullanacak?" — eskiden alttaki küçük, kolayca
-// kaçırılan bir metin linkiydi. Bir veli bu uygulamayı hiç çocuk kurulumuna
-// girmeden, ilk ekrandan net bir seçimle ayırt edebilmeli.
-class _RoleGateScreen extends StatelessWidget {
-  const _RoleGateScreen({required this.onChild, required this.onParent});
-  final VoidCallback onChild;
-  final VoidCallback onParent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.cardCream,
-      body: Stack(children: [
-        const ScreenGradientBackground(),
-        SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 24),
-              Container(
-                width: 88, height: 88,
-                decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.12), shape: BoxShape.circle),
-                child: Icon(Icons.favorite_rounded, size: 40, color: AppColors.primary),
-              ),
-              const SizedBox(height: 28),
-              Text(
-                'Bu telefonu\nkim kullanacak?',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w800, height: 1.1),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Ritim, hem gençler hem de veli/vasileri için — sana uygun akışı buradan seç.',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                ),
-              ),
-              const SizedBox(height: 32),
-              _RoleCard(
-                icon: Icons.favorite_rounded,
-                title: 'Ben kullanacağım',
-                subtitle: 'Döngünü takip et, kendi güvenli alanını kur',
-                color: AppColors.primary,
-                onTap: onChild,
-              ),
-              const SizedBox(height: 14),
-              _RoleCard(
-                icon: Icons.shield_rounded,
-                title: 'Bir veli/vasiyim',
-                subtitle: 'QR ile çocuğunun döngü özetini görüntüle',
-                color: AppColors.secondary,
-                onTap: onParent,
-              ),
-            ],
-          ),
-        ),
-        ),
-      ]),
-    );
-  }
-}
-
-class _RoleCard extends StatelessWidget {
-  const _RoleCard({required this.icon, required this.title, required this.subtitle, required this.color, required this.onTap});
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color color;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.cardTranslucent,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: color.withValues(alpha: 0.15), width: 1.5),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6))],
-        ),
-        child: Row(children: [
-          Container(
-            width: 52, height: 52,
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.12), shape: BoxShape.circle),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(width: 16),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink)),
-            const SizedBox(height: 3),
-            Text(subtitle, style: TextStyle(fontSize: 12.5, color: AppColors.ink.withValues(alpha: 0.5), height: 1.3)),
-          ])),
-          Icon(Icons.chevron_right_rounded, color: AppColors.ink.withValues(alpha: 0.25)),
-        ]),
-      ),
-    );
-  }
 }
