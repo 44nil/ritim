@@ -1004,10 +1004,14 @@ class _LegendDot extends StatelessWidget {
   }
 }
 
-// ─── Belirti örüntün ─────────────────────────────────────────────────────
+// ─── Kendi Ritmin ────────────────────────────────────────────────────────
 // Kullanıcının kendi geçmiş kayıtlarına bakarak her belirtinin en çok hangi
 // döngü fazında yaşandığını gösterir. Yeterli veri (bkz. symptom_insights.dart
 // minOccurrences) olmadan hiçbir şey göstermez — boş/yanıltıcı bir kart yok.
+// Tek istisna: hiç adet başlangıcı kaydedilmemişse (bu yüzden hiçbir belirti
+// bir faza bağlanamıyor) ama en az bir belirti girilmişse, sessizce hiçbir
+// şey göstermek yerine nedenini açıklayan küçük bir ipucu gösterilir —
+// yoksa kullanıcı "neden görmüyorum" diye anlayamaz.
 class _SymptomInsightsCard extends StatelessWidget {
   const _SymptomInsightsCard({required this.cycle});
   final CycleState cycle;
@@ -1017,7 +1021,9 @@ class _SymptomInsightsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final insights = symptomPhaseInsights(cycle).take(_maxShown).toList();
-    if (insights.isEmpty) return const SizedBox.shrink();
+    final hasAnySymptomLogged = cycle.logs.values.any((log) => log.symptoms.isNotEmpty);
+    final needsPeriodHint = insights.isEmpty && cycle.periods.isEmpty && hasAnySymptomLogged;
+    if (insights.isEmpty && !needsPeriodHint) return const SizedBox.shrink();
 
     return Column(children: [
       Container(
@@ -1034,18 +1040,22 @@ class _SymptomInsightsCard extends StatelessWidget {
           Row(children: [
             Icon(Icons.insights_rounded, size: 18, color: AppColors.ink.withValues(alpha: 0.5)),
             const SizedBox(width: 8),
-            Text('Belirti Örüntün', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink)),
+            Text('Kendi Ritmin', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink)),
           ]),
           const SizedBox(height: 4),
           Text(
-            'Kendi geçmiş kayıtlarına göre — bilimsel bir iddia değil, sadece senin verin.',
+            needsPeriodHint
+                ? 'Belirtilerini bir döngü fazına bağlayabilmemiz için önce "Adetim Başladı" ile bir kayıt oluşturman gerekiyor.'
+                : 'Kendi geçmiş kayıtlarına göre — bilimsel bir iddia değil, sadece senin verin.',
             style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.4), height: 1.3),
           ),
-          const SizedBox(height: 16),
-          ...insights.map((insight) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: _SymptomInsightRow(insight: insight),
-          )),
+          if (insights.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            ...insights.map((insight) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _SymptomInsightRow(insight: insight),
+            )),
+          ],
         ]),
       ),
       const SizedBox(height: 28),
