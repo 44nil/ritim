@@ -207,7 +207,11 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 1, child: _MonthCalendar(cycle: cycle, displayedMonth: _displayedMonth)),
+                    child: _staggered(index: 1, child: _MonthCalendar(
+                      cycle: cycle,
+                      displayedMonth: _displayedMonth,
+                      onDayTap: (date) => _showDayLog(context, date),
+                    )),
                   ),
                   const SizedBox(height: 28),
 
@@ -319,7 +323,9 @@ class _SmallButton extends StatelessWidget {
 
 // ─── Hızlı Aksiyonlar ───────────────────────────────────────────────────────
 
-void _showSymptoms(BuildContext context) {
+void _showSymptoms(BuildContext context, {DateTime? date}) {
+  final day = date ?? DateTime.now();
+  final isToday = _isSameDay(day, DateTime.now());
   final theme = Theme.of(context);
   final container = ProviderScope.containerOf(context);
   // selected, StatefulBuilder'ın DIŞINDA tanımlanmalı — içeride tanımlanırsa
@@ -332,8 +338,8 @@ void _showSymptoms(BuildContext context) {
     ('Bulantı', Icons.sick_outlined), ('Uykusuzluk', Icons.nightlight_outlined),
     ('Bel ağrısı', Icons.accessibility_new_rounded), ('İştahsızlık', Icons.no_food_outlined),
   ];
-  // Bugün zaten kayıtlı belirtiler varsa sheet açılınca önceden seçili görünsün.
-  final existingSymptoms = container.read(cycleProvider).todayLog?.symptoms ?? const [];
+  // O gün zaten kayıtlı belirtiler varsa sheet açılınca önceden seçili görünsün.
+  final existingSymptoms = container.read(cycleProvider).logForDate(day)?.symptoms ?? const [];
   final selected = <int>{
     for (var i = 0; i < symptoms.length; i++)
       if (existingSymptoms.contains(symptoms[i].$1)) i,
@@ -344,7 +350,7 @@ void _showSymptoms(BuildContext context) {
       const SizedBox(height: 24),
       Text('Belirtiler', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
       const SizedBox(height: 6),
-      Text('Bugün yaşadıklarını işaretle', style: theme.textTheme.bodySmall?.copyWith(
+      Text(isToday ? 'Bugün yaşadıklarını işaretle' : '${DateFormat('d MMMM', 'tr_TR').format(day)} için işaretle', style: theme.textTheme.bodySmall?.copyWith(
         color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
       const SizedBox(height: 20),
       Wrap(spacing: 8, runSpacing: 8, children: symptoms.asMap().entries.map((e) {
@@ -364,7 +370,7 @@ void _showSymptoms(BuildContext context) {
         onPressed: () {
           if (selected.isNotEmpty) {
             final names = selected.map((i) => symptoms[i].$1).toList();
-            container.read(cycleProvider.notifier).logSymptoms(names);
+            container.read(cycleProvider.notifier).logSymptoms(names, date: day);
           }
           Navigator.pop(ctx);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -377,24 +383,29 @@ void _showSymptoms(BuildContext context) {
   }));
 }
 
-void _showNote(BuildContext context) {
+void _showNote(BuildContext context, {DateTime? date}) {
+  final day = date ?? DateTime.now();
+  final isToday = _isSameDay(day, DateTime.now());
   final theme = Theme.of(context);
   final container = ProviderScope.containerOf(context);
-  final controller = TextEditingController();
+  final controller = TextEditingController(text: container.read(cycleProvider).logForDate(day)?.note);
   _sheet(context, (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
     _sheetHandle(context),
     const SizedBox(height: 24),
     Text('Günlük Not', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
-    const SizedBox(height: 20),
+    const SizedBox(height: 6),
+    Text(isToday ? 'Bugün için' : DateFormat('d MMMM', 'tr_TR').format(day), style: theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+    const SizedBox(height: 14),
     TextField(controller: controller, maxLines: 4, decoration: InputDecoration(
-      hintText: 'Bugün nasıl hissediyorum...', border: OutlineInputBorder(
+      hintText: 'Nasıl hissediyorum...', border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none), filled: true)),
     const SizedBox(height: 20),
     SizedBox(width: double.infinity, height: 50, child: ElevatedButton(
       onPressed: () {
         final text = controller.text.trim();
         if (text.isNotEmpty) {
-          container.read(cycleProvider.notifier).logNote(text);
+          container.read(cycleProvider.notifier).logNote(text, date: day);
         }
         Navigator.pop(ctx);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -406,20 +417,22 @@ void _showNote(BuildContext context) {
   ]));
 }
 
-// İlaçlarım — kullanıcının kendi yazdığı isim + bugün kaç kez alındığı sayacı.
+// İlaçlarım — kullanıcının kendi yazdığı isim + o gün kaç kez alındığı sayacı.
 // Kasıtlı olarak doz/mg gibi hiçbir tıbbi bilgi/öneri içermiyor, sadece kişisel bir sayım.
-void _showMedications(BuildContext context) {
+void _showMedications(BuildContext context, {DateTime? date}) {
+  final day = date ?? DateTime.now();
+  final isToday = _isSameDay(day, DateTime.now());
   final theme = Theme.of(context);
   final container = ProviderScope.containerOf(context);
   final controller = TextEditingController();
   _sheet(context, (ctx) => StatefulBuilder(builder: (ctx, setSt) {
     final cycle = container.read(cycleProvider);
     final names = cycle.medicationNames;
-    final counts = cycle.todayLog?.medications ?? const {};
+    final counts = cycle.logForDate(day)?.medications ?? const {};
 
     void adjust(String name, int delta) {
       final newCount = ((counts[name] ?? 0) + delta).clamp(0, 20);
-      container.read(cycleProvider.notifier).logMedicationCount(name, newCount);
+      container.read(cycleProvider.notifier).logMedicationCount(name, newCount, date: day);
       setSt(() {});
     }
 
@@ -436,8 +449,10 @@ void _showMedications(BuildContext context) {
       const SizedBox(height: 24),
       Text('İlaçlarım', style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface)),
       const SizedBox(height: 6),
-      Text('Kendi ilacını ekle, bugün kaç kez aldığını işaretle', style: theme.textTheme.bodySmall?.copyWith(
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.5))),
+      Text(
+        isToday ? 'Kendi ilacını ekle, bugün kaç kez aldığını işaretle' : 'Kendi ilacını ekle, ${DateFormat('d MMMM', 'tr_TR').format(day)} için kaç kez aldığını işaretle',
+        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
+      ),
       const SizedBox(height: 20),
       if (names.isEmpty)
         Padding(
@@ -493,6 +508,87 @@ void _sheet(BuildContext context, Widget Function(BuildContext) builder) {
 Widget _sheetHandle(BuildContext context) {
   return Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(
     color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2))));
+}
+
+bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+
+// Takvimde bugüne ya da geçmiş bir güne dokununca açılır — o günün ruh
+// hali/uyku/belirti/not/ilaç kaydını gösterir ve düzenlemeye izin verir.
+// Su göstergesi kasıtlı olarak burada yok: su, güne özel kalıcı bir veri
+// değil (bkz. MockWellnessData.waterDrunk), sadece "bugün" için anlamlı.
+void _showDayLog(BuildContext context, DateTime date) {
+  final theme = Theme.of(context);
+  final container = ProviderScope.containerOf(context);
+  final isToday = _isSameDay(date, DateTime.now());
+  final dateLabel = isToday ? 'Bugün' : DateFormat('d MMMM', 'tr_TR').format(date);
+
+  _sheet(context, (ctx) => StatefulBuilder(builder: (ctx, setSt) {
+    final log = container.read(cycleProvider).logForDate(date);
+    final sleepHours = log?.sleepHours;
+
+    void adjustSleep(double delta) {
+      final hours = (sleepHours ?? 7.5) + delta;
+      container.read(cycleProvider.notifier).logSleepHours(hours.clamp(0, 24), date: date);
+      setSt(() {});
+    }
+
+    return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sheetHandle(context),
+      const SizedBox(height: 24),
+      Center(child: Text(dateLabel, style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface))),
+      const SizedBox(height: 20),
+
+      Text('Ruh Hali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+      const SizedBox(height: 10),
+      _MoodPicker(
+        initialMood: log?.mood,
+        onSelected: (mood) {
+          container.read(cycleProvider.notifier).logMood(mood, date: date);
+          setSt(() {});
+        },
+      ),
+
+      _QuickLogDivider(),
+
+      Row(children: [
+        Icon(Icons.nightlight_outlined, size: 16, color: AppColors.softPink),
+        const SizedBox(width: 8),
+        Text('Uyku', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+        const Spacer(),
+        Text(sleepHours != null ? '${_SleepStepper._format(sleepHours)} saat' : '—', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface)),
+        const SizedBox(width: 10),
+        _StepperBtn(icon: Icons.remove_rounded, onTap: () => adjustSleep(-0.5)),
+        const SizedBox(width: 6),
+        _StepperBtn(icon: Icons.add_rounded, onTap: () => adjustSleep(0.5)),
+      ]),
+
+      _QuickLogDivider(),
+
+      Row(children: [
+        Expanded(child: _QuickLogAction(
+          icon: Icons.healing_outlined,
+          label: 'Belirti',
+          caption: (log?.symptoms.isNotEmpty ?? false) ? '${log!.symptoms.length} kayıtlı' : 'Kaydet',
+          onTap: () { Navigator.pop(ctx); _showSymptoms(context, date: date); },
+        )),
+        const SizedBox(width: 16),
+        Expanded(child: _QuickLogAction(
+          icon: Icons.sticky_note_2_outlined,
+          label: 'Günlük Not',
+          caption: (log?.note?.isNotEmpty ?? false) ? 'Yazıldı' : 'Yaz',
+          onTap: () { Navigator.pop(ctx); _showNote(context, date: date); },
+        )),
+      ]),
+      const SizedBox(height: 16),
+      _QuickLogAction(
+        icon: Icons.medication_outlined,
+        label: 'İlaçlarım',
+        caption: (log?.medications.isNotEmpty ?? false) ? 'İşaretlendi' : 'İşaretle',
+        onTap: () { Navigator.pop(ctx); _showMedications(context, date: date); },
+      ),
+      SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
+    ]);
+  }));
 }
 
 // ─── Ruh hali seçici — büyük animasyonlu gösterge + küçük seçim ikonları ───
@@ -748,9 +844,12 @@ class _QuickLogAction extends StatelessWidget {
 // ─── Aylık takvim ───────────────────────────────────────────────────────────
 
 class _MonthCalendar extends StatelessWidget {
-  const _MonthCalendar({required this.cycle, required this.displayedMonth});
+  const _MonthCalendar({required this.cycle, required this.displayedMonth, required this.onDayTap});
   final CycleState cycle;
   final DateTime displayedMonth;
+  // Sadece bugün ve geçmiş günler için çağrılır — henüz yaşanmamış bir
+  // günün kaydını tutmak anlamsız, bu yüzden gelecek günler tıklanamaz.
+  final ValueChanged<DateTime> onDayTap;
 
   @override
   Widget build(BuildContext context) {
@@ -795,7 +894,11 @@ class _MonthCalendar extends StatelessWidget {
               final isToday = date.year == today.year && date.month == today.month && date.day == today.day;
               final isPeriod = cycle.isPeriodDay(date);
               final isPredicted = !isPeriod && cycle.isPredictedPeriodDay(date);
-              return _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted);
+              final isTappable = !date.isAfter(today);
+              return GestureDetector(
+                onTap: isTappable ? () => onDayTap(date) : null,
+                child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted),
+              );
             },
           ),
           const SizedBox(height: 16),

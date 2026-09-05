@@ -382,29 +382,31 @@ class CycleNotifier extends StateNotifier<CycleState> {
     state = state._withLog(today, existing.copyWith(flow: flow));
   }
 
-  void logMood(String mood) {
-    final today = DateTime.now();
-    final existing = state.logForDate(today) ?? const DailyLog();
-    state = state._withLog(today, existing.copyWith(mood: mood));
+  // `date` verilmezse bugün varsayılır — takvimden geçmiş bir güne
+  // dokunulduğunda o günün kaydını düzenlemek için de kullanılır.
+  void logMood(String mood, {DateTime? date}) {
+    final day = date ?? DateTime.now();
+    final existing = state.logForDate(day) ?? const DailyLog();
+    state = state._withLog(day, existing.copyWith(mood: mood));
   }
 
-  // Bugün kaç saat uyuduğunu kaydeder — 0'ın altına inemez.
-  void logSleepHours(double hours) {
-    final today = DateTime.now();
-    final existing = state.logForDate(today) ?? const DailyLog();
-    state = state._withLog(today, existing.copyWith(sleepHours: hours.clamp(0, 24)));
+  // Kaç saat uyuduğunu kaydeder — 0'ın altına inemez.
+  void logSleepHours(double hours, {DateTime? date}) {
+    final day = date ?? DateTime.now();
+    final existing = state.logForDate(day) ?? const DailyLog();
+    state = state._withLog(day, existing.copyWith(sleepHours: hours.clamp(0, 24)));
   }
 
-  void logSymptoms(List<String> symptoms) {
-    final today = DateTime.now();
-    final existing = state.logForDate(today) ?? const DailyLog();
-    state = state._withLog(today, existing.copyWith(symptoms: symptoms));
+  void logSymptoms(List<String> symptoms, {DateTime? date}) {
+    final day = date ?? DateTime.now();
+    final existing = state.logForDate(day) ?? const DailyLog();
+    state = state._withLog(day, existing.copyWith(symptoms: symptoms));
   }
 
-  void logNote(String note) {
-    final today = DateTime.now();
-    final existing = state.logForDate(today) ?? const DailyLog();
-    state = state._withLog(today, existing.copyWith(note: note));
+  void logNote(String note, {DateTime? date}) {
+    final day = date ?? DateTime.now();
+    final existing = state.logForDate(day) ?? const DailyLog();
+    state = state._withLog(day, existing.copyWith(note: note));
   }
 
   // Kullanıcının kendi yazdığı ilaç ismini takip listesine ekler (zaten varsa dokunmaz).
@@ -413,12 +415,12 @@ class CycleNotifier extends StateNotifier<CycleState> {
     state = state._withMedicationNames([...state.medicationNames, name]);
   }
 
-  // Bugün için o ilacın kaç kez alındığını günceller. Doz/mg bilgisi tutulmaz.
-  void logMedicationCount(String name, int count) {
-    final today = DateTime.now();
-    final existing = state.logForDate(today) ?? const DailyLog();
+  // O gün için o ilacın kaç kez alındığını günceller. Doz/mg bilgisi tutulmaz.
+  void logMedicationCount(String name, int count, {DateTime? date}) {
+    final day = date ?? DateTime.now();
+    final existing = state.logForDate(day) ?? const DailyLog();
     final meds = Map<String, int>.from(existing.medications);
     if (count <= 0) { meds.remove(name); } else { meds[name] = count; }
-    state = state._withLog(today, existing.copyWith(medications: meds));
+    state = state._withLog(day, existing.copyWith(medications: meds));
   }
 }
