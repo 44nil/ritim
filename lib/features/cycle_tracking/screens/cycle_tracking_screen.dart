@@ -189,18 +189,6 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 24),
 
-                  // Adet günüyse ya da yaklaşıyorsa okul çantası hatırlatıcısı
-                  // — okuma köşesindeki kontrol listesi makalesine götürür.
-                  // Kalıcı bir bildirim değil, sadece o an anlamlıysa görünen
-                  // küçük bir dokunuş.
-                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: _staggered(index: 1, child: _SchoolBagReminderCard()),
-                    ),
-                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
-                    const SizedBox(height: 24),
-
                   // Aylık takvim — geçmiş adet günleri ve tahmini günler.
                   // Ay adı + gezinme okları artık takvimin kendi küçük
                   // kontrolü (eskiden sayfanın en üstündeki büyük başlıktı).
@@ -236,6 +224,16 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: _staggered(index: 2, child: _SymptomInsightsCard(cycle: cycle)),
                   ),
+
+                  // Adet günüyse ya da yaklaşıyorsa okul çantası hatırlatıcısı
+                  // — okuma köşesindeki kontrol listesi makalesine götürür.
+                  // Kalıcı bir bildirim değil, sadece o an anlamlıysa görünen
+                  // küçük bir dokunuş.
+                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                      child: _staggered(index: 2, child: _SchoolBagReminderCard()),
+                    ),
 
                   // Bugünü kaydet — tek nötr panel, renk sadece hero'da
                   Padding(
