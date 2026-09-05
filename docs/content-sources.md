@@ -20,7 +20,7 @@ doktora sorulur.
 
 | İddia | Nerede | Kaynak |
 |---|---|---|
-| Adölesanda (10-17 yaş) normal döngü uzunluğu 21-45 gündür; yetişkinlerde bu 21-35 güne daralır; ilk adetten sonraki ~3 yıl içinde döngü kademeli olarak yetişkin aralığına yaklaşır. | `lib/features/quiz/screens/quiz_screen.dart` (günün sorusu) | [ACOG & AAP Committee Opinion No. 651 — "Menstruation in Girls and Adolescents: Using the Menstrual Cycle as a Vital Sign" (2015)](https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2015/12/menstruation-in-girls-and-adolescents-using-the-menstrual-cycle-as-a-vital-sign) |
+| Adölesanda (10-17 yaş) normal döngü uzunluğu 21-45 gündür; yetişkinlerde bu 21-35 güne daralır; ilk adetten sonraki ~3 yıl içinde döngü kademeli olarak yetişkin aralığına yaklaşır. | `lib/features/quiz/data/quiz_data.dart` (soru 1) | [ACOG & AAP Committee Opinion No. 651 — "Menstruation in Girls and Adolescents: Using the Menstrual Cycle as a Vital Sign" (2015)](https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2015/12/menstruation-in-girls-and-adolescents-using-the-menstrual-cycle-as-a-vital-sign) |
 | Adölesanların ~%80'i ilk adetten sonraki 2-4 yıl boyunca düzensiz döngü yaşar; bu hipotalamus-hipofiz-over aksının olgunlaşmamış olmasından kaynaklanır ve normaldir. | Genel yaklaşım/ton (kaygı azaltma) için referans, henüz belirli bir ekranda alıntılanmıyor | Türkiye Klinikleri, "Adölesanlarda Menstrüasyon Bozuklukları" — [turkiyeklinikleri.com](https://www.turkiyeklinikleri.com/article/tr-adolesanlarda-menstruasyon-bozukluklari-97963.html); ACOG Committee Opinion No. 651 (yukarıdaki) |
 | 13-18 yaş için önerilen uyku süresi, döngü fazından bağımsız olarak 8-10 saattir. | `mock_wellness_data.dart` — tüm fazlarda `sleepHours` artık tek tip "8-10 saat" (önceden adet/luteal fazında 9-10, foliküler/ovülasyonda 8-9 olarak faza göre farklılaştırılmıştı — bu ayrımın hiçbir resmi kaynağı yoktu, düzeltildi). | [American Academy of Sleep Medicine, Teen Sleep Duration Health Advisory](https://aasm.org/advocacy/position-statements/teen-sleep-duration-health-advisory/) (AAP tarafından da destekleniyor) |
 | Adet döneminde demir kaybı olur; büyüme çağındaki genç kızlar zaten demir eksikliği riski taşır — demir açısından zengin gıdalar (ıspanak, mercimek, kırmızı et) ve C vitamini (emilimi artırır) önerilir. 14-18 yaş için günlük 15mg demir hedefleniyor. | `mock_wellness_data.dart` — adet fazı `nutrition` listesi | [Academy of Nutrition and Dietetics — "Give Your Teen's Iron a Boost"](https://www.eatright.org/health/essential-nutrients/minerals/give-your-teens-iron-a-boost); ayrıca bkz. ağır adet kanamasıyla demir eksikliği ilişkisini gösteren gözden geçirilmiş çalışmalar (PMC) |
@@ -107,6 +107,15 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
 
 ## Değişiklik günlüğü
 
+- 2026-09-05: Quiz sekmesi dezenfekte edildi — `quiz_screen.dart`'ta tek bir
+  `static const` soru vardı, "Sonraki Soru" butonu sadece cevap durumunu
+  sıfırlayıp aynı soruyu tekrar gösteriyordu (gerçek bir hataydı). Yeni
+  `lib/features/quiz/data/quiz_data.dart` dosyasında 6 sorudan oluşan gerçek
+  bir havuz oluşturuldu — hepsi makale içeriğiyle aynı, zaten doğrulanmış
+  iddialara dayanıyor (ACOG 651/760/PMS FAQ, AASM, eatright.org, McMaster
+  2023 — yeni bir iddia eklenmedi). Sahte "3 Günlük Seri"/"240 pt" kartı ve
+  dokununca hiçbir yere gitmeyen, sabit sahte ilerleme yüzdeli "Konu Bazlı"
+  quiz setleri kaldırıldı (gerçek bir ilerleme takibi altyapısı yok).
 - 2026-09-05: 4 bağımsız alt ajanla tüm 7 makale çapraz doğrulandı (bilimsel
   doğruluk + çocuk dili). Bir gerçek hata (demir karşılaştırması ters
   yöndeydi) ve bir kaynak yanlış eşleştirmesi (hormonlar makalesi) düzeltildi;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/screen_gradient_background.dart';
+import '../data/quiz_data.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -11,28 +12,29 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
+  // "Günün Sorusu" o gün için sabit bir soruyla başlar (tarihe göre seçilir),
+  // ama "Sonraki Soru" ile havuzdaki bir sonraki soruya geçilebilir — eskiden
+  // tek bir sabit soru vardı ve bu buton sadece cevap durumunu sıfırlayıp
+  // aynı soruyu tekrar gösteriyordu (gerçek bir hataydı).
+  late int _questionIndex = _dayOfYear(DateTime.now()) % QuizData.questions.length;
   int? _selected;
   bool _answered = false;
 
-  static const _quizSets = [
-    _QuizSet(title: 'Döngü Bilgisi', icon: Icons.autorenew_rounded, questionCount: 8, completed: 5),
-    _QuizSet(title: 'Mitleri Yık', icon: Icons.cancel_outlined, questionCount: 6, completed: 2),
-    _QuizSet(title: 'Beslenme', icon: Icons.restaurant_outlined, questionCount: 5, completed: 0),
-    _QuizSet(title: 'Duygular', icon: Icons.psychology_outlined, questionCount: 7, completed: 0),
-  ];
+  static int _dayOfYear(DateTime date) =>
+      date.difference(DateTime(date.year)).inDays;
 
-  static const _question = 'Aşağıdakilerden hangisi adet döngüsü hakkında doğrudur?';
-  static const _options = [
-    'Döngü her zaman tam 28 gün sürer',
-    'Senin yaşında 21-45 gün arası döngü süresi normaldir',
-    'Adet sadece 3 gün sürer',
-    'Egzersiz adet döneminde zararlıdır',
-  ];
-  static const _correct = 1;
-  static const _explanation = 'Senin yaşındaki (10-17) bir döngü için 21-45 gün arası tamamen normal — bu, yetişkinlerdeki aralıktan (21-35 gün) daha geniş. İlk adetten sonraki birkaç yıl içinde döngün kademeli olarak daha düzenli hale gelir. "28 gün" sadece bir ortalama, senin döngün farklı olabilir ve bu sorun değil.\n\nKaynak: ACOG & AAP Committee Opinion No. 651 (2015)';
+  void _nextQuestion() {
+    setState(() {
+      _questionIndex = (_questionIndex + 1) % QuizData.questions.length;
+      _selected = null;
+      _answered = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final q = QuizData.questions[_questionIndex];
+
     return Scaffold(
       backgroundColor: AppColors.cardCream,
       body: Stack(
@@ -51,34 +53,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   const SizedBox(height: 4),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text('bilgini sına, rozetler kazan.', style: AppTextStyles.accent(fontSize: 18, color: AppColors.softPink)),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Seri + puan
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Container(
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: AppColors.cardCream,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Row(children: [
-                        Container(
-                          width: 44, height: 44,
-                          decoration: BoxDecoration(color: AppColors.warmOrange.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(14)),
-                          child: Icon(Icons.local_fire_department_rounded, size: 24, color: AppColors.warmOrange),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('3 Günlük Seri', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink)),
-                          Text('Her gün çöz, serisini koru!', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
-                        ])),
-                        Text('240', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.warmOrange)),
-                        Text(' pt', style: TextStyle(fontSize: 12, color: AppColors.warmOrange.withValues(alpha: 0.6))),
-                      ]),
-                    ),
+                    child: Text('bilgini sına, döngünü anla.', style: AppTextStyles.accent(fontSize: 18, color: AppColors.softPink)),
                   ),
                   const SizedBox(height: 24),
 
@@ -92,18 +67,14 @@ class _QuizScreenState extends State<QuizScreen> {
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Row(children: [
-                          Text('Günün Sorusu', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.softPink)),
-                          const Spacer(),
-                          Text('+20 puan', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.35))),
-                        ]),
+                        Text('Günün Sorusu', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.softPink)),
                         const SizedBox(height: 14),
-                        Text(_question, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.4)),
+                        Text(q.question, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.4)),
                         const SizedBox(height: 18),
-                        ..._options.asMap().entries.map((e) {
+                        ...q.options.asMap().entries.map((e) {
                           final i = e.key;
                           final isSelected = _selected == i;
-                          final isCorrect = i == _correct;
+                          final isCorrect = i == q.correctIndex;
 
                           Color bg; Color textCol;
                           if (!_answered) {
@@ -152,10 +123,10 @@ class _QuizScreenState extends State<QuizScreen> {
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text('Açıklama', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.warmOrange)),
                           const SizedBox(height: 8),
-                          Text(_explanation, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
+                          Text(q.explanation, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
                           const SizedBox(height: 14),
                           GestureDetector(
-                            onTap: () => setState(() { _selected = null; _answered = false; }),
+                            onTap: _nextQuestion,
                             child: Container(
                               width: double.infinity, height: 48,
                               decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(24)),
@@ -167,54 +138,6 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 28),
-
-                  // Quiz setleri
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text('Konu Bazlı', style: AppTextStyles.heading(fontSize: 20, color: AppColors.ink)),
-                  ),
-                  const SizedBox(height: 14),
-
-                  ..._quizSets.map((s) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.cardPink,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(children: [
-                        Container(
-                          width: 44, height: 44,
-                          decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(14)),
-                          child: Icon(s.icon, size: 22, color: AppColors.ink.withValues(alpha: 0.6)),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(s.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                          const SizedBox(height: 6),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: s.completed / s.questionCount,
-                              backgroundColor: AppColors.softPink.withValues(alpha: 0.15),
-                              color: AppColors.softPink,
-                              minHeight: 4,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text('${s.completed}/${s.questionCount} tamamlandı', style: TextStyle(fontSize: 10, color: AppColors.ink.withValues(alpha: 0.35))),
-                        ])),
-                        Container(
-                          width: 36, height: 36,
-                          decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.ink),
-                          child: const Icon(Icons.arrow_forward_rounded, size: 18, color: Colors.white),
-                        ),
-                      ]),
-                    ),
-                  )),
-
                   const SizedBox(height: 110),
                 ],
               ),
@@ -224,11 +147,4 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
     );
   }
-}
-
-class _QuizSet {
-  const _QuizSet({required this.title, required this.icon, required this.questionCount, required this.completed});
-  final String title;
-  final IconData icon;
-  final int questionCount, completed;
 }
