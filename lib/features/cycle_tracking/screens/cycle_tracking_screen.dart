@@ -80,20 +80,32 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  // Büyük ay başlığı — aynı zamanda takvimin gezinme kontrolü
+                  // Sıcak karşılama — eskiden burada sayfanın ilk gördüğü şey
+                  // soğuk bir "Eylül 2026" ay başlığıydı; ay/takvim gezinmesi
+                  // artık aşağıda takvimin kendi küçük kontrolüne taşındı.
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(children: [
-                      Expanded(
-                        child: Text(
-                          DateFormat('MMMM yyyy', 'tr_TR').format(_displayedMonth),
-                          style: AppTextStyles.heading(fontSize: 28, color: AppColors.ink),
+                      Container(
+                        width: 44, height: 44,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.cardCream,
+                          border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 2),
                         ),
+                        child: Center(child: Text(
+                          cycle.userName.isNotEmpty ? cycle.userName[0].toUpperCase() : '?',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+                        )),
                       ),
-                      _CalendarNavButton(icon: Icons.chevron_left_rounded, onTap: () => _changeMonth(-1)),
-                      const SizedBox(width: 8),
-                      _CalendarNavButton(icon: Icons.chevron_right_rounded, onTap: () => _changeMonth(1)),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 12),
+                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(
+                          cycle.userName.isNotEmpty ? 'Merhaba, ${cycle.userName}' : 'Merhaba!',
+                          style: AppTextStyles.heading(fontSize: 22, color: AppColors.ink),
+                        ),
+                        Text('Bugün nasıl hissediyorsun?', style: AppTextStyles.accent(fontSize: 16, color: AppColors.softPink)),
+                      ])),
                       _SmallButton(icon: Icons.settings_outlined, onTap: () {}),
                     ]),
                   ),
@@ -173,7 +185,24 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 24),
 
-                  // Aylık takvim — geçmiş adet günleri ve tahmini günler
+                  // Aylık takvim — geçmiş adet günleri ve tahmini günler.
+                  // Ay adı + gezinme okları artık takvimin kendi küçük
+                  // kontrolü (eskiden sayfanın en üstündeki büyük başlıktı).
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Row(children: [
+                      Expanded(
+                        child: Text(
+                          DateFormat('MMMM yyyy', 'tr_TR').format(_displayedMonth),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink),
+                        ),
+                      ),
+                      _CalendarNavButton(icon: Icons.chevron_left_rounded, onTap: () => _changeMonth(-1)),
+                      const SizedBox(width: 8),
+                      _CalendarNavButton(icon: Icons.chevron_right_rounded, onTap: () => _changeMonth(1)),
+                    ]),
+                  ),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: _staggered(index: 1, child: _MonthCalendar(cycle: cycle, displayedMonth: _displayedMonth)),
