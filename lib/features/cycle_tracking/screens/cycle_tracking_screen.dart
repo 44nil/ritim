@@ -1011,12 +1011,12 @@ class _LegendDot extends StatelessWidget {
 
 // ─── Kendi Ritmin ────────────────────────────────────────────────────────
 // Kullanıcının kendi geçmiş kayıtlarına bakarak her belirtinin en çok hangi
-// döngü fazında yaşandığını gösterir. Yeterli veri (bkz. symptom_insights.dart
-// minOccurrences) olmadan hiçbir şey göstermez — boş/yanıltıcı bir kart yok.
-// Tek istisna: hiç adet başlangıcı kaydedilmemişse (bu yüzden hiçbir belirti
-// bir faza bağlanamıyor) ama en az bir belirti girilmişse, sessizce hiçbir
-// şey göstermek yerine nedenini açıklayan küçük bir ipucu gösterilir —
-// yoksa kullanıcı "neden görmüyorum" diye anlayamaz.
+// döngü fazında yaşandığını gösterir. Kart her zaman görünür — koşula bağlı
+// gizlemek kullanıcıda "neden hiç görünmüyor, bir şey mi bozuk" hissi
+// yaratıyordu (gerçek bir geri bildirimdi). Bunun yerine üç durumu var:
+// (1) yeterli veri varsa gerçek örüntü, (2) belirti var ama adet kaydı
+// yoksa bunu açıklayan bir ipucu, (3) hiçbiri yoksa neyin biriktiğini
+// açıklayan sakin bir bekleme metni.
 class _SymptomInsightsCard extends StatelessWidget {
   const _SymptomInsightsCard({required this.cycle});
   final CycleState cycle;
@@ -1028,7 +1028,15 @@ class _SymptomInsightsCard extends StatelessWidget {
     final insights = symptomPhaseInsights(cycle).take(_maxShown).toList();
     final hasAnySymptomLogged = cycle.logs.values.any((log) => log.symptoms.isNotEmpty);
     final needsPeriodHint = insights.isEmpty && cycle.periods.isEmpty && hasAnySymptomLogged;
-    if (insights.isEmpty && !needsPeriodHint) return const SizedBox.shrink();
+
+    final String caption;
+    if (insights.isNotEmpty) {
+      caption = 'Kendi geçmiş kayıtlarına göre — bilimsel bir iddia değil, sadece senin verin.';
+    } else if (needsPeriodHint) {
+      caption = 'Belirtilerini bir döngü fazına bağlayabilmemiz için önce "Adetim Başladı" ile bir kayıt oluşturman gerekiyor.';
+    } else {
+      caption = 'Adetini başlatıp aynı belirtiyi birkaç kez kaydettikçe, burada hangi dönemde yoğunlaştığını göreceksin.';
+    }
 
     return Column(children: [
       Container(
@@ -1048,12 +1056,7 @@ class _SymptomInsightsCard extends StatelessWidget {
             Text('Kendi Ritmin', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink)),
           ]),
           const SizedBox(height: 4),
-          Text(
-            needsPeriodHint
-                ? 'Belirtilerini bir döngü fazına bağlayabilmemiz için önce "Adetim Başladı" ile bir kayıt oluşturman gerekiyor.'
-                : 'Kendi geçmiş kayıtlarına göre — bilimsel bir iddia değil, sadece senin verin.',
-            style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.4), height: 1.3),
-          ),
+          Text(caption, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.4), height: 1.3)),
           if (insights.isNotEmpty) ...[
             const SizedBox(height: 16),
             ...insights.map((insight) => Padding(
