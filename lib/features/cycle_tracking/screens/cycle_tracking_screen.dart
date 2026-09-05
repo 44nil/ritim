@@ -654,7 +654,7 @@ class _MoodPickerState extends State<_MoodPicker> {
         ),
       ),
       const SizedBox(height: 6),
-      Text(_mood ?? 'Nasıl hissediyorsun?', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.5))),
+      Text(_mood ?? 'Nasıl hissediyorsun?', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.65))),
       const SizedBox(height: 14),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _moods.map((m) {
         final isSelected = _mood == m.$1;
@@ -734,7 +734,7 @@ class _WaterGaugeState extends State<_WaterGauge> {
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           RichText(text: TextSpan(children: [
             TextSpan(text: '$drunk/$goal', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink)),
-            TextSpan(text: ' bardak', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
+            TextSpan(text: ' bardak', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55))),
           ])),
           const SizedBox(height: 8),
           Row(children: [
@@ -816,7 +816,7 @@ class _SleepStepper extends ConsumerWidget {
       const SizedBox(height: 10),
       RichText(text: TextSpan(children: [
         TextSpan(text: hours != null ? _format(hours) : '—', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink)),
-        if (hours != null) TextSpan(text: ' saat', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
+        if (hours != null) TextSpan(text: ' saat', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55))),
       ])),
       const SizedBox(height: 8),
       Row(children: [
@@ -826,7 +826,7 @@ class _SleepStepper extends ConsumerWidget {
       ]),
       const SizedBox(height: 6),
       // 13-18 yaş için AASM/AAP önerisi — bkz. docs/content-sources.md.
-      Text('Önerilen: 8-10 saat', style: TextStyle(fontSize: 10, color: AppColors.ink.withValues(alpha: 0.35))),
+      Text('Önerilen: 8-10 saat', style: TextStyle(fontSize: 10, color: AppColors.ink.withValues(alpha: 0.5))),
     ]);
   }
 }
@@ -848,7 +848,7 @@ class _QuickLogAction extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
-          Text(caption, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
+          Text(caption, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.55))),
         ])),
       ]),
     );
@@ -1056,7 +1056,7 @@ class _SymptomInsightsCard extends StatelessWidget {
             Text('Kendi Ritmin', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink)),
           ]),
           const SizedBox(height: 4),
-          Text(caption, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.4), height: 1.3)),
+          Text(caption, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.55), height: 1.3)),
           if (insights.isNotEmpty) ...[
             const SizedBox(height: 16),
             ...insights.map((insight) => Padding(
@@ -1084,7 +1084,7 @@ class _SymptomInsightRow extends StatelessWidget {
       Expanded(child: Text(insight.symptom, style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: AppColors.ink))),
       Text(
         '${insight.dominantCount}/${insight.totalCount} kez ${phaseInfo.friendlyLabel ?? phaseInfo.label}',
-        style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.45)),
+        style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.6)),
       ),
     ]);
   }
