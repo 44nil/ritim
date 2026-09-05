@@ -21,6 +21,7 @@ class Article {
     required this.icon,
     required this.category,
     required this.body,
+    this.isChecklist = false,
   });
 
   final String title;
@@ -30,6 +31,10 @@ class Article {
   final IconData icon;
   final String category;
   final List<ArticleSection> body;
+  // Bir "adım listesi" değil de gerçek bir paket/kontrol listesiyse
+  // (ör. çantanda ne olmalı) numaralı kartlar yerine daha sade, işaretli
+  // bir kontrol listesi görünümü kullanılır — bkz. ArticleDetailScreen.
+  final bool isChecklist;
 }
 
 class ArticleData {
@@ -345,6 +350,7 @@ class ArticleData {
       level: 'Başlangıç',
       icon: Icons.backpack_outlined,
       category: 'Sağlık',
+      isChecklist: true,
       body: [
         ArticleSection(
           text:

@@ -80,7 +80,7 @@ class ArticleDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  ..._buildSections(article.body),
+                  ..._buildSections(article.body, isChecklist: article.isChecklist),
                 ],
               ),
             ),
@@ -91,10 +91,13 @@ class ArticleDetailScreen extends StatelessWidget {
   }
 }
 
-/// Başlıklı bölümler (adım listeleri) numaralı, renkli kartlara dönüşür;
-/// başlıksız bölümler (giriş/kapanış paragrafları) düz akan metin olarak
-/// kalır — kullanıcı "çok düz duruyor" geri bildirimi üzerine seçildi.
-List<Widget> _buildSections(List<ArticleSection> sections) {
+/// Başlıklı bölümler, makale türüne göre iki farklı görünümde gösterilir:
+/// adım listeleri numaralı, renkli kartlara (bkz. _StepCard); gerçek bir
+/// paket/kontrol listesi (isChecklist) ise daha sade, işaretli bir kontrol
+/// listesine (bkz. _ChecklistRow) dönüşür. Başlıksız bölümler (giriş/kapanış
+/// paragrafları) her iki türde de düz akan metin olarak kalır — kullanıcı
+/// "çok düz duruyor" geri bildirimi üzerine seçildi.
+List<Widget> _buildSections(List<ArticleSection> sections, {bool isChecklist = false}) {
   var stepIndex = 0;
   return sections.map((section) {
     if (section.heading == null) {
@@ -112,6 +115,12 @@ List<Widget> _buildSections(List<ArticleSection> sections) {
     }
     final tint = stepIndex.isEven ? AppColors.softPink : AppColors.warmOrange;
     stepIndex++;
+    if (isChecklist) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 18),
+        child: _ChecklistRow(tint: tint, heading: section.heading!, text: section.text),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: _StepCard(
@@ -122,6 +131,46 @@ List<Widget> _buildSections(List<ArticleSection> sections) {
       ),
     );
   }).toList();
+}
+
+class _ChecklistRow extends StatelessWidget {
+  const _ChecklistRow({required this.tint, required this.heading, required this.text});
+  final Color tint;
+  final String heading;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(color: tint.withValues(alpha: 0.18), shape: BoxShape.circle),
+          alignment: Alignment.center,
+          child: Icon(Icons.check_rounded, size: 17, color: tint),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                heading,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                text,
+                style: TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.ink.withValues(alpha: 0.65)),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _StepCard extends StatelessWidget {
