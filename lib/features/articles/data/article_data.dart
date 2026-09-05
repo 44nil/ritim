@@ -268,16 +268,16 @@ class ArticleData {
           text:
               'İnternette "döngü fazına göre spor yap" diye bir trend '
               'görmüş olabilirsin. Dürüst olalım: bu trend sosyal medyada '
-              'çok popüler ama bilimsel bir konsensüs değil.',
+              'çok popüler, ama bilim bunu henüz doğrulamıyor.',
         ),
         ArticleSection(
           heading: 'Bilim ne diyor',
           text:
-              'Kontrollü araştırmalar (2023\'te yapılan bir üniversite '
-              'çalışması dahil), döngünün hangi fazında olduğunun spor '
-              'gücünü ya da vücudun antrenmana uyum hızını ölçülebilir '
-              'şekilde etkilemediğini gösterdi. Yani "bu fazda güçlü '
-              'değilsin" gibi kesin iddialar bilimle desteklenmiyor.',
+              'Bilim insanları bunu gerçekten test etti (2023\'te yapılan '
+              'bir üniversite çalışması dahil) ve döngü fazının spor '
+              'gücünü ya da bedeninin antrenmana ne kadar iyi uyum '
+              'sağladığını değiştirdiğine dair bir kanıt bulamadılar. Yani '
+              '"bu fazda güçlü değilsin" gibi kesin iddialar doğru değil.',
         ),
         ArticleSection(
           heading: 'Peki gerçekten işe yarayan ne',
