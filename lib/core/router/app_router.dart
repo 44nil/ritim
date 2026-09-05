@@ -6,6 +6,8 @@ import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/onboarding/screens/setup_screen.dart';
 import '../../features/cycle_tracking/screens/cycle_tracking_screen.dart';
 import '../../features/articles/screens/articles_screen.dart';
+import '../../features/articles/screens/article_detail_screen.dart';
+import '../../features/articles/data/article_data.dart';
 import '../../features/quiz/screens/quiz_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/parent_panel/screens/parent_qr_screen.dart';
@@ -55,9 +57,8 @@ class AppRouter {
 
       // ─── Ana uygulama — StatefulShellRoute (bottom nav) ──────────────────
       StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) => HomeScaffold(
-          navigationShell: navigationShell,
-        ),
+        builder: (context, state, navigationShell) =>
+            HomeScaffold(navigationShell: navigationShell),
         branches: [
           // Sekme 0 — Döngü Takibi
           StatefulShellBranch(
@@ -109,6 +110,14 @@ class AppRouter {
         ],
       ),
 
+      // ─── Makale detayı — bağımsız erişim, Article nesnesi extra ile geçer ──
+      GoRoute(
+        path: RoutePaths.articleDetail,
+        name: RouteNames.articleDetail,
+        builder: (context, state) =>
+            ArticleDetailScreen(article: state.extra as Article),
+      ),
+
       // ─── Ebeveyn paneli — bağımsız akış, hesap/şifre yok ────────────────
       // Çocuk tarafı: Profil → "Ebeveyn Paneli" → QR oluştur.
       // Veli tarafı: onboarding'deki "QR ile bağlanın" → QR tara → özet.
@@ -125,7 +134,8 @@ class AppRouter {
       GoRoute(
         path: RoutePaths.parentPanel,
         name: RouteNames.parentPanel,
-        builder: (context, state) => ParentPanelScreen(summary: state.extra as ParentSummary),
+        builder: (context, state) =>
+            ParentPanelScreen(summary: state.extra as ParentSummary),
       ),
 
       // ─── Yasal metinler — bağımsız erişim (Profil, onboarding linkleri) ───

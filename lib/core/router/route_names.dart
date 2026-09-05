@@ -11,6 +11,7 @@ abstract class RouteNames {
   static const cycleTracking = 'cycle-tracking';
   static const qa = 'qa';
   static const articles = 'articles';
+  static const articleDetail = 'article-detail';
   static const quiz = 'quiz';
   static const profile = 'profile';
 
@@ -33,6 +34,7 @@ abstract class RoutePaths {
   static const cycleTracking = '/cycle-tracking';
   static const qa = '/qa';
   static const articles = '/articles';
+  static const articleDetail = '/articles/detail';
   static const quiz = '/quiz';
   static const profile = '/profile';
   static const parentQr = '/parent/qr';

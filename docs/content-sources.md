@@ -55,11 +55,26 @@ hissediyor", "hissediyorsan..." gibi olasılık dili kullanıyor, kesinlik
 iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
 ("yaşayabilirsin", "azalabilir"), değiştirilmedi.
 
+## Doğrulanmuş iddialar (devam) — 2026-09-05, makale gövdeleri
+
+| İddia | Nerede | Kaynak |
+|---|---|---|
+| Primer dismenore (adet krampı), pelvik patoloji olmadan yaşanan adet ağrısıdır ve adölesanlarda en sık görülen adet belirtisidir; NSAID'ler genelde adet başlamadan 1-2 gün önce başlanıp ilk 2-3 gün sürdürülür. | `lib/features/articles/data/article_data.dart` — "Adet Sancısıyla Başa Çıkmanın 5 Yolu" | [ACOG Committee Opinion No. 760 — Dysmenorrhea and Endometriosis in the Adolescent](https://journals.lww.com/greenjournal/fulltext/10.1097/aog.0000000000002978~acog-committee-opinion-no-760-dysmenorrhea-and) |
+| Sürekli, düşük seviyeli topikal ısı, adet ağrısında oral ibuprofene benzer ya da üstün bulunmuş; ısı + ibuprofen kombinasyonu tek başına ibuprofene göre ağrı kesilme süresini kısaltıyor. | Aynı makale | [ACOG — Dysmenorrhea: Painful Periods (FAQ)](https://www.acog.org/womens-health/faqs/dysmenorrhea-painful-periods); bkz. Pediatrics Nationwide özeti: [Improving Care for Adolescents and Young Women With Pelvic Pain](https://pediatricsnationwide.org/2019/03/21/improving-care-for-adolescents-and-young-women-with-pelvic-pain/) |
+| PMS, adetten önceki günlerde yaşanan fiziksel/duygusal değişikliklerin genel adıdır (mod değişimi, sinirlilik, kaygı, konsantrasyon güçlüğü, iştah/uyku değişiklikleri, şişkinlik). Adölesanlarda bu belirtileri normal duygusal gelişimden ayırt etmek güç olabilir. | `article_data.dart` — "PMS Nedir?" | [ACOG — Premenstrual Syndrome (PMS) FAQ](https://www.acog.org/womens-health/faqs/premenstrual-syndrome); [ACOG Clinical Practice Guideline — Management of Premenstrual Disorders (2023)](https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/12/management-of-premenstrual-disorders) |
+| Östrojen arttıkça serotonin üretimi de artma eğilimindedir (iyi hissetme ile ilişkilendirilir); progesteron ise monoamin oksidaz (MAO) aktivitesini artırarak serotonini azaltabilir. Ruh hali değişkenliği, hormonların mutlak seviyesinden çok ne kadar hızlı değiştiğiyle daha ilişkili görünüyor; bu etkileşim adölesan beyin gelişiminde de rol oynar. | `article_data.dart` — "Hormonlar ve Ruh Halin" | Genel nöroendokrin mekanizma özeti (drbrighten.com, genomind.com); adölesana özel: [Menstrual cycle and mental health in adolescents: a developmental neuroendocrine perspective — Neuropsychopharmacology (2025)](https://www.nature.com/articles/s41386-025-02184-2) — **not: ilk iki kaynak popüler sağlık siteleri, klinik otorite değil; iddia genel mekanizma düzeyinde tutuldu, kesin/tanısal dil kullanılmadı.** |
+| Ovülasyondan sonra yükselen progesteron vücut sıcaklığını ~0.4-1.0°F artırır; gece uykuya dalmak için gereken doğal soğuma ile bu artış çakışabilir, bazı kadınlarda luteal fazda uykuya dalma gecikmesi ve gece uyanmalarına yol açabilir. | `article_data.dart` — "Uyku ve Döngü İlişkisi" | 35 çalışmalık bir sistematik derlemenin özeti (bettersleep.com); mekanizma: [Menstrual Cycle Fluctuations of Progesterone and the Effect on Sleep Regulation — Restorative Medicine](https://restorativemedicine.org/journal/menstrual-cycle-fluctuations-progesterone-effect-sleep-regulation/) — **not: popüler özet kaynaklar kullanıldı, birincil literatür (PMC/APS makaleleri) yayından önce çapraz kontrol edilmeli.** |
+
 ## Doğrulanmamış / kaynağı olmayan içerik (yayından önce ele alınmalı)
 
-- `lib/features/articles/screens/articles_screen.dart` — makale başlıkları
-  var ama gövde metni henüz yazılmadı (`CLAUDE.md`: "No article detail
-  page"); metin yazıldığında her makale bu tabloya eklenmeli.
+- Yukarıdaki hormon/ruh hali ve uyku iddiaları ikincil (popüler sağlık
+  sitesi) kaynaklara dayanıyor — yayından önce PMC/APS gibi birincil
+  literatürle çapraz kontrol edilmeli, ardından gerçek bir uzman tarafından
+  son onaylanmalı (bkz. dosya başındaki genel not).
+- Makale gövdelerindeki ilaç/dozaj referansları (ör. ibuprofen zamanlaması)
+  kasıtlı olarak "bir yetişkine/eczacıya danış" çerçevesinde tutuldu, doğrudan
+  dozaj talimatı verilmedi — bu çerçeve korunmalı, ileride değiştirilirse
+  tekrar gözden geçirilmeli.
 
 ## Kaldırılan içerik
 
@@ -84,6 +99,16 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
   tüm fazlar için tek tip "8-10 saat"e (AASM/AAP) düzeltildi. Faza göre
   değişen egzersiz önerilerinin dayandığı "cycle syncing" çerçevesinin
   kontrollü araştırmalarla çürütüldüğü tespit edildi.
+- 2026-09-05: Makale gövdeleri yazıldı (`article_data.dart`, 7 makale) ve
+  gerçek navigasyona bağlandı (`ArticleDetailScreen`) — daha önce sadece
+  başlık/alt başlık gösterip hiçbir yere gitmeyen "Okumaya Başla" ve makale
+  satırları artık gerçek, kaynaklı içerik açıyor. Kramp/ısı tedavisi (ACOG
+  760 + FAQ), PMS tanımı (ACOG FAQ + 2023 kılavuzu), hormon-ruh hali
+  mekanizması ve luteal faz uyku mekanizması yeni kaynaklandı — hormon/uyku
+  iddiaları ikincil kaynaklara dayanıyor, yayından önce birincil literatürle
+  çapraz kontrol + gerçek uzman onayı gerekiyor. "Hareket ve Döngü"
+  makalesi, daha önce çürütülen "cycle syncing" çerçevesini makale içinde
+  açıkça yanlışlıyor.
 - 2026-09-04: "Cycle syncing" çerçevesi kararı uygulandı — foliküler ve
   ovülasyon fazlarındaki `tip`/`bodyInfo`/`selfCare` metinleri (ve ilgili
   `sleepTip`) kesinlik iddiasından olasılık diline çevrildi, faza göre
