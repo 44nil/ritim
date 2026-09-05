@@ -49,7 +49,7 @@ class ArticleDetailScreen extends StatelessWidget {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.softPink.withValues(alpha: 0.2),
+                          color: Colors.white.withValues(alpha: 0.55),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -57,7 +57,7 @@ class ArticleDetailScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.warmOrange,
+                            color: AppColors.ink.withValues(alpha: 0.75),
                           ),
                         ),
                       ),
