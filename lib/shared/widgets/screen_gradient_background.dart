@@ -16,8 +16,8 @@ class ScreenGradientBackground extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter, end: Alignment.bottomCenter,
-              colors: [AppColors.heroPink, AppColors.heroPeach, AppColors.cardCream],
-              stops: [0.0, 0.4, 1.0],
+              colors: [AppColors.heroPink, AppColors.heroPeach, AppColors.heroPeach],
+              stops: [0.0, 0.45, 1.0],
             ),
           ),
         ),
