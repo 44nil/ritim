@@ -77,6 +77,12 @@ class _ScanIntroScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.cardCream,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: AppColors.ink),
+      ),
       body: Stack(children: [
         const ScreenGradientBackground(),
         SafeArea(child: Padding(
@@ -84,7 +90,7 @@ class _ScanIntroScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
               Container(
                 width: 88, height: 88,
                 decoration: BoxDecoration(color: AppColors.secondary.withValues(alpha: 0.12), shape: BoxShape.circle),
