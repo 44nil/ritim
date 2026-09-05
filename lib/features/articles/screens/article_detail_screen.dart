@@ -80,21 +80,110 @@ class ArticleDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  ...article.body.map(
-                    (paragraph) => Padding(
-                      padding: const EdgeInsets.only(bottom: 18),
-                      child: Text(
-                        paragraph,
-                        style: TextStyle(
-                          fontSize: 15,
-                          height: 1.6,
-                          color: AppColors.ink.withValues(alpha: 0.75),
-                        ),
-                      ),
-                    ),
-                  ),
+                  ..._buildSections(article.body),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Başlıklı bölümler (adım listeleri) numaralı, renkli kartlara dönüşür;
+/// başlıksız bölümler (giriş/kapanış paragrafları) düz akan metin olarak
+/// kalır — kullanıcı "çok düz duruyor" geri bildirimi üzerine seçildi.
+List<Widget> _buildSections(List<ArticleSection> sections) {
+  var stepIndex = 0;
+  return sections.map((section) {
+    if (section.heading == null) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 18),
+        child: Text(
+          section.text,
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.6,
+            color: AppColors.ink.withValues(alpha: 0.75),
+          ),
+        ),
+      );
+    }
+    final tint = stepIndex.isEven ? AppColors.softPink : AppColors.warmOrange;
+    stepIndex++;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: _StepCard(
+        number: stepIndex,
+        tint: tint,
+        heading: section.heading!,
+        text: section.text,
+      ),
+    );
+  }).toList();
+}
+
+class _StepCard extends StatelessWidget {
+  const _StepCard({
+    required this.number,
+    required this.tint,
+    required this.heading,
+    required this.text,
+  });
+  final int number;
+  final Color tint;
+  final String heading;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: tint.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(color: tint, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: Text(
+                  '$number',
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  heading,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.55,
+              color: AppColors.ink.withValues(alpha: 0.7),
             ),
           ),
         ],

@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+/// Bir makale gövdesinin tek bir bölümü. `heading` doluysa (ör. adım
+/// listelerinde) bu bölüm ayrı bir başlık altında gösterilir; boşsa düz bir
+/// paragraf olarak akar.
+class ArticleSection {
+  const ArticleSection({this.heading, required this.text});
+  final String? heading;
+  final String text;
+}
+
 /// Bir makalenin başlığı, listedeki kısa tanıtımı VE gerçek gövde metni.
 /// Gövdedeki her iddia docs/content-sources.md'de kaynağıyla izleniyor —
 /// yayından önce gerçek bir uzman tarafından son onay bekliyor.
@@ -20,7 +29,7 @@ class Article {
   final String level;
   final IconData icon;
   final String category;
-  final List<String> body;
+  final List<ArticleSection> body;
 }
 
 class ArticleData {
@@ -35,25 +44,42 @@ class ArticleData {
     icon: Icons.menu_book_rounded,
     category: 'Döngü',
     body: [
-      'Adet döngüsü sadece kanama günlerinden ibaret değil — aslında bedeninin '
-          'ay boyunca sessizce çalıştığı, dört evreden oluşan bir döngü. Adet '
-          'günü sadece bu döngünün gözle görülen kısmı.',
-      'Bu yaşlarda döngün henüz "kendi ritmini" arıyor. Yetişkin bir kadında '
-          'döngü genelde 21-35 gün sürerken, adölesan dönemde (10-17 yaş) bu '
-          'aralık 21-45 güne kadar çıkabilir — ve bu tamamen normal. Vücudun '
-          'ilk adetten sonraki birkaç yıl içinde kademeli olarak kendi düzenini '
-          'buluyor, yani bu ay ile geçen ay farklı sürse bile kaygılanmana '
-          'gerek yok.',
-      'Döngü kabaca dört evreye ayrılır: Adet (kanamanın olduğu günler), '
-          'Foliküler (adetin bitip yeni bir yumurtanın olgunlaştığı dönem), '
-          'Ovülasyon (yumurtlamanın gerçekleştiği kısa pencere) ve Luteal '
-          '(ovülasyondan sonraki, bir sonraki adete kadar olan dönem). Ritim\'in '
-          'sana her gün farklı bir faz göstermesinin sebebi bu.',
-      'Döngünü kaydetmek bir "doğru cevap" bulmak için değil — kendi '
-          'örüntünü tanımak için. Hangi günlerde nasıl hissettiğini fark etmek, '
-          'zamanla bedenini daha iyi anlamana yardımcı olur.',
-      'Burada yargılanmadan, kendi hızında öğrenebilirsin. Her bedenin '
-          'hikâyesi biraz farklı — ve bu tamamen senin hikâyen.',
+      ArticleSection(
+        text:
+            'Adet döngüsü sadece kanama günlerinden ibaret değil. Bedenin '
+            'aslında ay boyunca sessizce çalışıyor — adet günü bunun sadece '
+            'gözle görülen kısmı.',
+      ),
+      ArticleSection(
+        heading: 'Döngü süresi kişiden kişiye değişir',
+        text:
+            'Bu yaşlarda döngün henüz kendi ritmini arıyor. Yetişkinlerde '
+            'döngü genelde 21-35 gün sürer, ama senin yaşında (10-17) bu '
+            '21-45 güne kadar çıkabilir — bu tamamen normal. Bedenin ilk '
+            'adetten sonraki birkaç yıl içinde kendi düzenini buluyor. Bu ay '
+            'ile geçen ay farklı sürse bile kaygılanmana gerek yok.',
+      ),
+      ArticleSection(
+        heading: 'Döngünün 4 evresi',
+        text:
+            'Adet (kanamanın olduğu günler) → Toparlanma Dönemi (adet bitip '
+            'bedenin yeniden enerji topladığı dönem) → Zirve Dönemi (kısa bir '
+            'yumurtlama penceresi) → Sakinleşme Dönemi (bir sonraki adete '
+            'kadar olan dönem). Ritim\'in sana her gün farklı bir faz '
+            'göstermesinin sebebi bu.',
+      ),
+      ArticleSection(
+        heading: 'Neden kaydediyoruz?',
+        text:
+            'Döngünü kaydetmek "doğru cevap" bulmak için değil — kendi '
+            'örüntünü tanımak için. Hangi günlerde nasıl hissettiğini fark '
+            'etmek, zamanla bedenini daha iyi anlamana yardımcı olur.',
+      ),
+      ArticleSection(
+        text:
+            'Burada yargılanmadan, kendi hızında öğrenebilirsin. Her bedenin '
+            'hikâyesi biraz farklı — ve bu tamamen senin hikâyen.',
+      ),
     ],
   );
 
@@ -66,28 +92,48 @@ class ArticleData {
       icon: Icons.favorite_outline_rounded,
       category: 'Sağlık',
       body: [
-        'Adet krampları (dismenore), genç kızlar arasında en sık yaşanan adet '
-            'belirtisi. Yaşadığın kramplar rahim kaslarının kanamayı '
-            'kolaylaştırmak için kasılmasından kaynaklanıyor — yani "bir şey ters '
-            'gidiyor" anlamına gelmiyor, çok yaygın bir durum.',
-        '1. Sıcak uygulama: Karnına veya beline sıcak su torbası/ısı yastığı '
-            'koymak, araştırmalarda ağrı kesici hap kadar etkili bulunmuş — '
-            'ikisini birlikte kullanmak rahatlamayı daha da hızlandırabiliyor.',
-        '2. Hafif hareket: Yürüyüş, esneme ya da hafif germe hareketleri '
-            'bazı kızlarda kramp şiddetini azaltabiliyor. Kendini zorlamana '
-            'gerek yok, bedenin ne kadarını istiyorsa o kadarı yeterli.',
-        '3. Ağrı kesiciler: İbuprofen gibi ilaçlar dismenorede yaygın olarak '
-            'kullanılıyor ve doktorlar genelde adet başlamadan 1-2 gün önce '
-            'başlanıp ilk birkaç gün sürdürülmesini öneriyor. Ama bu bir yetişkin '
-            'kararı — hangi ilacı, ne zaman, ne kadar alman gerektiğini mutlaka '
-            'bir ebeveynine veya eczacına sor.',
-        '4. Dinlenme ve sıcak içecekler: Bedenine izin ver. Sıcak bir çay, '
-            'rahat bir pozisyon ve biraz dinlenme çoğu zaman yardımcı oluyor.',
-        '5. Ne zaman bir yetişkinle konuşmalısın: Kramplar okulu, uykunu ya '
-            'da günlük hayatını gerçekten engelliyorsa, ya da ağrı kesicilere '
-            'rağmen geçmiyorsa — bu "dayanman gereken" bir şey değil. Güvendiğin '
-            'bir yetişkine söyle, bir doktora görünmek tamamen normal ve doğru '
-            'bir adım.',
+        ArticleSection(
+          text:
+              'Adet krampı, genç kızlarda en sık yaşanan adet belirtisi '
+              '(doktorlar buna "dismenore" der). Kramplar rahim kaslarının '
+              'kanamayı kolaylaştırmak için kasılmasından kaynaklanır — yani '
+              '"bir şey ters gidiyor" anlamına gelmez, çok yaygındır.',
+        ),
+        ArticleSection(
+          heading: 'Sıcak uygulama',
+          text:
+              'Karnına veya beline sıcak su torbası koymak, araştırmalarda '
+              'ağrı kesici hap kadar etkili bulunmuş — ikisini birlikte '
+              'kullanmak rahatlamayı daha da hızlandırabiliyor.',
+        ),
+        ArticleSection(
+          heading: 'Hafif hareket',
+          text:
+              'Yürüyüş, esneme ya da hafif germe hareketleri bazı kızlarda '
+              'kramp şiddetini azaltabiliyor. Kendini zorlamana gerek yok, '
+              'bedenin ne kadarını istiyorsa o kadarı yeterli.',
+        ),
+        ArticleSection(
+          heading: 'Ağrı kesiciler',
+          text:
+              'İbuprofen gibi ilaçlar yaygın olarak kullanılıyor. Ama bu bir '
+              'yetişkin kararı — hangi ilacı, ne zaman, ne kadar alman '
+              'gerektiğini mutlaka bir ebeveynine veya eczacına sor.',
+        ),
+        ArticleSection(
+          heading: 'Dinlenme ve sıcak içecekler',
+          text:
+              'Bedenine izin ver. Sıcak bir çay, rahat bir pozisyon ve biraz '
+              'dinlenme çoğu zaman yardımcı oluyor.',
+        ),
+        ArticleSection(
+          heading: 'Ne zaman bir yetişkinle konuşmalısın',
+          text:
+              'Kramplar okulunu ya da günlük hayatını gerçekten '
+              'engelliyorsa, ya da ağrı kesicilere rağmen geçmiyorsa — bu '
+              '"dayanman gereken" bir şey değil. Güvendiğin bir yetişkine '
+              'söyle, bir doktora görünmek tamamen normal ve doğru bir adım.',
+        ),
       ],
     ),
     Article(
@@ -98,25 +144,41 @@ class ArticleData {
       icon: Icons.psychology_outlined,
       category: 'Duygular',
       body: [
-        'Döngün boyunca östrojen ve progesteron adlı iki hormonun seviyesi '
-            'sürekli değişiyor — ve bu değişim gerçekten ruh haline yansıyabilir. '
-            'Yani "aşırı tepki veriyorsun" değil, bedeninde gerçek bir biyolojik '
-            'süreç yaşanıyor.',
-        'Östrojen yükseldiğinde, beyninde mutluluk hissiyle ilişkili bir '
-            'kimyasal olan serotonin de artma eğiliminde — bu yüzden döngünün '
-            'bazı dönemlerinde kendini daha enerjik ve iyi hissedebilirsin.',
-        'Adetten önceki (luteal) dönemde ise progesteron artıyor ve bu, '
-            'serotonini azaltıcı yönde etkileyebiliyor — bazı kızlar bu '
-            'günlerde kendini daha hassas, sinirli ya da düşük enerjili '
-            'hissedebiliyor. Araştırmalar aslında hormonların "seviyesinden" '
-            'çok, ne kadar hızlı değiştiğinin ruh hali üzerinde daha belirleyici '
-            'olabileceğini gösteriyor.',
-        'Ergenlik döneminde bu hormonlar zaten yeni yeni devreye giriyor, bu '
-            'yüzden duyguların bazen olduğundan daha yoğun hissedilmesi normal '
-            '— beynin de bu değişimlere alışıyor.',
-        'Bunu bilmek, kendine karşı biraz daha nazik olmana yardımcı olabilir: '
-            'her mod değişimi hormonlarla açıklanmaz ama hormonların gerçek bir '
-            'payı var — ve bu senin suçun değil.',
+        ArticleSection(
+          text:
+              'Döngün boyunca östrojen ve progesteron adlı iki hormonun '
+              'seviyesi sürekli değişiyor — ve bu değişim gerçekten ruh '
+              'haline yansıyabilir. Yani "aşırı tepki veriyorsun" değil, '
+              'bedeninde gerçek bir biyolojik süreç yaşanıyor.',
+        ),
+        ArticleSection(
+          heading: 'Neden bazen enerjik hissediyorsun',
+          text:
+              'Östrojen yükseldiğinde, beyninde mutluluk hissiyle ilişkili '
+              'bir kimyasal olan serotonin de artma eğiliminde — bu yüzden '
+              'döngünün bazı dönemlerinde kendini daha enerjik ve iyi '
+              'hissedebilirsin.',
+        ),
+        ArticleSection(
+          heading: 'Neden bazen daha hassas hissediyorsun',
+          text:
+              'Adetten önceki dönemde progesteron artıyor ve bu, serotonini '
+              'azaltabiliyor — bazı kızlar bu günlerde kendini daha hassas '
+              'ya da sinirli hissedebiliyor. Asıl belirleyici olan, '
+              'hormonun ne kadar olduğu değil, ne kadar hızlı değiştiği.',
+        ),
+        ArticleSection(
+          text:
+              'Ergenlik döneminde bu hormonlar zaten yeni yeni devreye '
+              'giriyor, bu yüzden duyguların bazen olduğundan daha yoğun '
+              'hissedilmesi normal — beynin de bu değişimlere alışıyor.',
+        ),
+        ArticleSection(
+          text:
+              'Bunu bilmek, kendine karşı biraz daha nazik olmana yardımcı '
+              'olabilir: her mod değişimi hormonlarla açıklanmaz ama '
+              'hormonların gerçek bir payı var — ve bu senin suçun değil.',
+        ),
       ],
     ),
     Article(
@@ -127,21 +189,34 @@ class ArticleData {
       icon: Icons.restaurant_outlined,
       category: 'Beslenme',
       body: [
-        'Adet sırasında kan kaybıyla birlikte demir de kaybedilir — ve zaten '
-            'büyüme çağında olduğun için bedeninin demire ihtiyacı yetişkinlere '
-            'göre daha fazla. 14-18 yaş için önerilen günlük demir miktarı '
-            'yaklaşık 15mg.',
-        'Demirden zengin besinler (ıspanak, mercimek, kırmızı et gibi) ve '
-            'yanında C vitamini içeren bir şey (portakal, biber gibi) yemek, '
-            'demirin emilimini artırıyor — yani ikisini birlikte tüketmek daha '
-            'etkili.',
-        'Magnezyum (badem, muz, avokado gibi besinlerde bulunur) bazı '
-            'araştırmalarda adet öncesi şişkinlik gibi fiziksel belirtilerde '
-            'yardımcı bulunmuş. Ama dürüst olmak gerekirse, ruh hali üzerindeki '
-            'etkisiyle ilgili kanıtlar henüz yeterince net değil — bu yüzden '
-            '"magnezyum modunu düzeltir" gibi kesin bir söz veremeyiz.',
-        'Genel olarak aşırı bir diyete ihtiyacın yok. Dengeli beslenmek, '
-            'döngünün her evresinde bedenini destekler.',
+        ArticleSection(
+          heading: 'Demir neden önemli',
+          text:
+              'Adet sırasında kan kaybıyla birlikte demir de kaybedilir — ve '
+              'zaten büyüme çağında olduğun için bedeninin demire ihtiyacı '
+              'yetişkinlere göre daha fazla (14-18 yaş için günde ~15mg).',
+        ),
+        ArticleSection(
+          heading: 'Hangi besinler yardımcı olur',
+          text:
+              'Demirden zengin besinler (ıspanak, mercimek, kırmızı et gibi) '
+              've yanında C vitamini içeren bir şey (portakal, biber gibi) '
+              'yemek, demirin emilimini artırıyor — ikisini birlikte '
+              'tüketmek daha etkili.',
+        ),
+        ArticleSection(
+          heading: 'Magnezyum hakkında dürüst olalım',
+          text:
+              'Magnezyum (badem, muz, avokado gibi besinlerde bulunur) bazı '
+              'araştırmalarda adet öncesi şişkinlikte yardımcı bulunmuş. Ama '
+              'ruh hali üzerindeki etkisiyle ilgili kanıtlar henüz yeterince '
+              'net değil — "magnezyum modunu düzeltir" diyemeyiz.',
+        ),
+        ArticleSection(
+          text:
+              'Genel olarak aşırı bir diyete ihtiyacın yok. Dengeli '
+              'beslenmek, döngünün her evresinde bedenini destekler.',
+        ),
       ],
     ),
     Article(
@@ -152,20 +227,33 @@ class ArticleData {
       icon: Icons.nightlight_outlined,
       category: 'Sağlık',
       body: [
-        'Senin yaşındaki gençler için önerilen uyku süresi, döngünün hangi '
-            'evresinde olduğundan bağımsız olarak günde 8-10 saat.',
-        'Ama bazı kızlar adetten hemen önceki günlerde uykuya dalmakta biraz '
-            'daha zorlanabiliyor. Bunun olası bir sebebi: ovülasyondan sonra '
-            'yükselen progesteron, vücut sıcaklığını hafifçe artırıyor. Bedenin '
-            'derin uykuya geçmek için geceleri doğal olarak soğuması '
-            'gerektiğinden, bu küçük sıcaklık artışı uykuya dalmayı '
-            'zorlaştırabiliyor ya da gece uyanmalarına yol açabiliyor.',
-        'Bu, herkeste ya da her ay aynı şekilde yaşanmıyor — sadece "bazı '
-            'geceler neden daha zor" sorusuna bir açıklama. Endişelenmene '
-            'gerek yok.',
-        'Yardımcı olabilecek küçük şeyler: düzenli bir uyku saatine sadık '
-            'kalmak, odanı serin tutmak ve yatmadan önce ekrandan biraz uzak '
-            'durmak.',
+        ArticleSection(
+          text:
+              'Senin yaşındaki gençler için önerilen uyku süresi, döngünün '
+              'hangi evresinde olduğundan bağımsız olarak günde 8-10 saat.',
+        ),
+        ArticleSection(
+          heading: 'Adetten önce neden zorlanabilirsin',
+          text:
+              'Bazı kızlar adetten hemen önceki günlerde uykuya dalmakta '
+              'biraz daha zorlanabiliyor. Olası bir sebep: yükselen '
+              'progesteron vücut sıcaklığını hafifçe artırıyor. Beden derin '
+              'uykuya geçmek için geceleri doğal olarak soğuması '
+              'gerektiğinden, bu küçük artış uykuya dalmayı '
+              'zorlaştırabiliyor.',
+        ),
+        ArticleSection(
+          text:
+              'Bu, herkeste ya da her ay aynı şekilde yaşanmıyor — sadece '
+              '"bazı geceler neden daha zor" sorusuna bir açıklama. '
+              'Endişelenmene gerek yok.',
+        ),
+        ArticleSection(
+          heading: 'Yardımcı olabilecek küçük şeyler',
+          text:
+              'Düzenli bir uyku saatine sadık kalmak, odanı serin tutmak ve '
+              'yatmadan önce ekrandan biraz uzak durmak.',
+        ),
       ],
     ),
     Article(
@@ -176,22 +264,33 @@ class ArticleData {
       icon: Icons.self_improvement_outlined,
       category: 'Egzersiz',
       body: [
-        'İnternette "döngü fazına göre spor yap" diye bir trend görmüş '
-            'olabilirsin — foliküler fazda ağır antrenman, luteal fazda hafif '
-            'egzersiz gibi. Dürüst olalım: bu trend sosyal medyada çok popüler '
-            'ama bilimsel bir konsensüs değil.',
-        'Kontrollü araştırmalar (2023\'te yapılan bir üniversite çalışması '
-            'dahil), döngü fazının kas gücü performansını ya da antrenmana '
-            'vücudun uyum sağlama hızını ölçülebilir şekilde etkilemediğini '
-            'gösterdi. Yani "bu fazda güçlü değilsin" gibi kesin iddialar '
-            'bilimle desteklenmiyor.',
-        'Ama gerçekten desteklenen bir şey var: adet günlerinde hafif hareket '
-            '— yürüyüş, esneme, yoga gibi — kramp şiddetini azaltmaya yardımcı '
-            'olabiliyor.',
-        'Sonuç olarak: "doğru gün" diye bir baskı yapmana gerek yok. Bedenin '
-            'o gün nasıl hissediyorsa öyle hareket et — bazı günler enerjik, '
-            'bazı günler yavaş olman tamamen normal, bunun "bilimsel bir '
-            'kuralı" yok.',
+        ArticleSection(
+          text:
+              'İnternette "döngü fazına göre spor yap" diye bir trend '
+              'görmüş olabilirsin. Dürüst olalım: bu trend sosyal medyada '
+              'çok popüler ama bilimsel bir konsensüs değil.',
+        ),
+        ArticleSection(
+          heading: 'Bilim ne diyor',
+          text:
+              'Kontrollü araştırmalar (2023\'te yapılan bir üniversite '
+              'çalışması dahil), döngünün hangi fazında olduğunun spor '
+              'gücünü ya da vücudun antrenmana uyum hızını ölçülebilir '
+              'şekilde etkilemediğini gösterdi. Yani "bu fazda güçlü '
+              'değilsin" gibi kesin iddialar bilimle desteklenmiyor.',
+        ),
+        ArticleSection(
+          heading: 'Peki gerçekten işe yarayan ne',
+          text:
+              'Adet günlerinde hafif hareket — yürüyüş, esneme, yoga gibi — '
+              'kramp şiddetini azaltmaya yardımcı olabiliyor.',
+        ),
+        ArticleSection(
+          text:
+              'Sonuç: "doğru gün" diye bir baskı yapmana gerek yok. Bedenin '
+              'o gün nasıl hissediyorsa öyle hareket et — bazı günler '
+              'enerjik, bazı günler yavaş olman tamamen normal.',
+        ),
       ],
     ),
     Article(
@@ -202,22 +301,39 @@ class ArticleData {
       icon: Icons.info_outline_rounded,
       category: 'Döngü',
       body: [
-        'PMS (adet öncesi sendrom), adetten önceki günlerde bazı kızların '
-            'yaşadığı fiziksel ve duygusal değişikliklerin genel adı.',
-        'Yaygın belirtiler arasında ani mod değişimleri, sinirlilik, '
-            'kaygı, konsantrasyon güçlüğü, iştah değişiklikleri, uyku sorunları '
-            've şişkinlik hissi sayılabilir.',
-        'Bu belirtiler çok yaygın ve normal — özellikle bedenin henüz kendi '
-            'ritmini öğrendiği bu yaşlarda, ergenlik döneminin doğal duygusal '
-            'iniş çıkışlarından ayırt etmek bazen zor olabilir.',
-        'Eğer bu belirtiler okulunu, arkadaşlıklarını ya da günlük hayatını '
-            'ciddi şekilde etkiliyorsa — bu "sadece katlanman gereken" bir şey '
-            'değil. Güvendiğin bir yetişkine ya da doktora anlatmak, ne '
-            'yaşadığını anlamlandırmana yardımcı olabilir.',
-        'Döngünü kaydetmek (tam da Ritim\'de yaptığın gibi) hangi günlerde '
-            'nasıl hissettiğini fark etmene yardımcı olur — bu, hem kendini '
-            'anlaman hem de gerekirse bir yetişkinle konuşurken örüntünü '
-            'göstermen için değerli bir bilgi.',
+        ArticleSection(
+          text:
+              'PMS (adet öncesi sendrom), adetten önceki günlerde bazı '
+              'kızların yaşadığı fiziksel ve duygusal değişikliklerin genel '
+              'adı.',
+        ),
+        ArticleSection(
+          heading: 'Yaygın belirtiler',
+          text:
+              'Ani mod değişimleri, sinirlilik, kaygı, konsantrasyon '
+              'güçlüğü, iştah değişiklikleri, uyku sorunları ve şişkinlik '
+              'hissi.',
+        ),
+        ArticleSection(
+          text:
+              'Bu belirtiler çok yaygın ve normal — özellikle bedenin henüz '
+              'kendi ritmini öğrendiği bu yaşlarda, ergenliğin doğal '
+              'duygusal iniş çıkışlarından ayırt etmek bazen zor olabilir.',
+        ),
+        ArticleSection(
+          heading: 'Ne zaman bir yetişkinle konuşmalısın',
+          text:
+              'Bu belirtiler okulunu, arkadaşlıklarını ya da günlük '
+              'hayatını ciddi şekilde etkiliyorsa — bu "sadece katlanman '
+              'gereken" bir şey değil. Güvendiğin bir yetişkine ya da '
+              'doktora anlatmak, ne yaşadığını anlamlandırmana yardımcı '
+              'olabilir.',
+        ),
+        ArticleSection(
+          text:
+              'Döngünü kaydetmek (tam da Ritim\'de yaptığın gibi) hangi '
+              'günlerde nasıl hissettiğini fark etmene yardımcı olur.',
+        ),
       ],
     ),
   ];
