@@ -60,7 +60,13 @@ abstract class AppColors {
   // renk ailesinde olmadığından (pembe/turuncu değil) her zaman "beyazımsı,
   // ayrık" duruyordu — hero kartın zaten yaptığı gibi, gradient'in kendi
   // rengini (sıcak turuncu) şeffaf kullanmak daha doğal kaynaşıyor.
-  static Color get cardTranslucent => warmOrange.withValues(alpha: 0.15);
+  // Eskiden gerçekten şeffaftı (warmOrange %15 opaklık) — arkasındaki
+  // gradient'e göre bazen "çok belirgin değil, okunmuyor" oluyordu (kart
+  // sınırı, gradient'in hangi renginin arkasında olduğuna göre neredeyse
+  // kayboluyordu). warmOrange'ı beyazla harmanlayıp OPAK bir renk üretiyoruz
+  // — sıcak ton kimliği korunuyor ama kart artık gradient'ten bağımsız,
+  // her zaman aynı, net bir zemin.
+  static Color get cardTranslucent => Color.alphaBlend(warmOrange.withValues(alpha: 0.15), Colors.white);
 
   // ─── Hero header gradient (soft pastel, tab üstlerinde) ─────────────────
   static const heroPink = Color(0xFFF9C4D2);
