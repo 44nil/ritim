@@ -66,7 +66,7 @@ class ArticleDetailScreen extends StatelessWidget {
                         article.readTime,
                         style: TextStyle(
                           fontSize: 12.5,
-                          color: AppColors.ink.withValues(alpha: 0.4),
+                          color: AppColors.ink.withValues(alpha: 0.55),
                         ),
                       ),
                     ],

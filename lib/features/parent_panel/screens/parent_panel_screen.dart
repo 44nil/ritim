@@ -62,7 +62,7 @@ class ParentPanelScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             ageMinutes < 1 ? 'Az önce tarandı' : '$ageMinutes dakika önce tarandı',
-            style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.35), fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.55), fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 24),
 

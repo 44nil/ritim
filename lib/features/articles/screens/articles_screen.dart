@@ -159,7 +159,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                   _featured.readTime,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: AppColors.ink.withValues(alpha: 0.4),
+                                    color: AppColors.ink.withValues(alpha: 0.55),
                                   ),
                                 ),
                                 const Spacer(),

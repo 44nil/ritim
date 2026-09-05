@@ -101,7 +101,7 @@ class ProfileScreen extends ConsumerWidget {
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('Ebeveyn Paneli', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600, fontSize: 13)),
                       Text('Veline göstermek için QR oluştur', style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 11)),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.55), fontSize: 11)),
                     ])),
                     Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
                   ]),
@@ -164,7 +164,7 @@ class _StatMini extends StatelessWidget {
         Icon(icon, size: 20, color: color),
         const SizedBox(height: 6),
         Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
-        Text(label, style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.4))),
+        Text(label, style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurface.withValues(alpha: 0.55))),
       ]),
     ));
   }
@@ -181,7 +181,7 @@ class _SettingsGroup extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(padding: const EdgeInsets.only(left: 4, bottom: 8),
         child: Text(title, style: theme.textTheme.labelLarge?.copyWith(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontWeight: FontWeight.w600))),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.55), fontWeight: FontWeight.w600))),
       CleanCard(
         padding: EdgeInsets.zero,
         child: Column(children: items.asMap().entries.map((e) => Column(children: [
@@ -217,7 +217,7 @@ class _SettingsRow extends StatelessWidget {
         const SizedBox(width: 14),
         Expanded(child: Text(label, style: theme.textTheme.bodyMedium?.copyWith(fontSize: 14, color: color, fontWeight: color != null ? FontWeight.w600 : null))),
         if (trailing != null) DefaultTextStyle(
-          style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
+          style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.55)),
           child: trailing!),
         const SizedBox(width: 4),
         if (showChevron)

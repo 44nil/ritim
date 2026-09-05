@@ -50,7 +50,7 @@ class _CycleSettingsScreenState extends ConsumerState<CycleSettingsScreen> {
                   isMeasured
                       ? 'Bu, kayıtlarından hesaplanan gerçek bir ortalama — elle değiştirilemez.'
                       : 'Henüz yeterli kayıt yok, bu senin verdiğin bir tahmin. Değiştirebilirsin.',
-                  style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4)),
+                  style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55)),
                 ),
                 const SizedBox(height: 16),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [

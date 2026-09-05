@@ -155,7 +155,7 @@ class _NotificationCard extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink)),
-            Text(subtitle, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.4))),
+            Text(subtitle, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.55))),
           ])),
           Switch(value: value, onChanged: onChanged, activeThumbColor: AppColors.softPink),
         ]),

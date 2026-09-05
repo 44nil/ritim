@@ -108,7 +108,7 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
                           ]),
                         ),
                         const SizedBox(height: 12),
-                        Text('$_secondsLeft saniye sonra kaybolur', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.4))),
+                        Text('$_secondsLeft saniye sonra kaybolur', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55))),
                       ])
                     : Column(mainAxisSize: MainAxisSize.min, children: [
                         Icon(Icons.timer_off_outlined, size: 40, color: AppColors.ink.withValues(alpha: 0.3)),
