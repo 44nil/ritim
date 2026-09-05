@@ -105,6 +105,17 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
   (gerçek olmayan uzman onayı izlenimi veriyordu). Gerçek, onaylı içerik
   hazır olana kadar dürüst bir bekleme ekranı gösteriliyor.
 
+## Klinik olmayan, pratik tavsiye içeriği
+
+- "Okul Çantanda Ne Olmalı?" ve "Okulda Kazara Olursa Ne Yaparım?"
+  makaleleri (`article_data.dart`) hiçbir tıbbi/bilimsel iddia içermiyor —
+  genel kabul görmüş, sağlık eğitiminde standart olan pratik tavsiyeler
+  (yedek ped bulundurma, okul hemşiresinden yardım isteme vb.). Bu yüzden
+  yukarıdaki kaynak doğrulama tablosuna girmiyorlar, doktor onayı
+  gerektirmiyorlar — ama içerik yine de kullanıcı tarafından istendi,
+  kasıtlı olarak tampon değil sadece ped öneriyor (genç/deneyimsiz
+  kullanıcılar için daha basit ve TSS riski gibi endişeler taşımıyor).
+
 ## Değişiklik günlüğü
 
 - 2026-09-05: Quiz sekmesi dezenfekte edildi — `quiz_screen.dart`'ta tek bir

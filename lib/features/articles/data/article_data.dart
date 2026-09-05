@@ -338,6 +338,93 @@ class ArticleData {
         ),
       ],
     ),
+    Article(
+      title: 'Okul Çantanda Ne Olmalı?',
+      subtitle: 'Hazırlıklı olmak seni rahatlatır',
+      readTime: '3 dk',
+      level: 'Başlangıç',
+      icon: Icons.backpack_outlined,
+      category: 'Sağlık',
+      body: [
+        ArticleSection(
+          text:
+              'Adetin ne zaman başlayacağını bazen tam olarak bilemezsin, '
+              'özellikle döngün henüz düzene oturmadıysa. Çantanda birkaç '
+              'küçük şey bulundurmak, "ya okulda başlarsa" endişesini büyük '
+              'ölçüde azaltır.',
+        ),
+        ArticleSection(
+          heading: 'Yedek ped',
+          text:
+              'Adet olmasan bile çantanda her zaman bir tane bulunsun. '
+              'İhtiyacın olmasa bile, bir arkadaşının ihtiyacı olabilir — '
+              'birbirinize göz kulak olmak güzel bir şey.',
+        ),
+        ArticleSection(
+          heading: 'Yedek iç çamaşırı',
+          text:
+              'Katlanmış bir tane çantanda dursun. Kullanmasan da orada '
+              'olması içini rahatlatır.',
+        ),
+        ArticleSection(
+          heading: 'Islak mendil',
+          text:
+              'Tuvalette su olmayabilir ya da yetmeyebilir. Küçük bir paket '
+              'ıslak mendil işini görür.',
+        ),
+        ArticleSection(
+          text:
+              'Bunları bir kere hazırlayıp çantanda unutabilirsin — her '
+              'seferinde yeniden düşünmene gerek kalmaz. Hazırlıklı olmak, '
+              'endişelenmekten çok daha iyi bir seçim.',
+        ),
+      ],
+    ),
+    Article(
+      title: 'Okulda Kazara Olursa Ne Yaparım?',
+      subtitle: 'Herkesin başına gelebilir, panik yapma',
+      readTime: '3 dk',
+      level: 'Başlangıç',
+      icon: Icons.favorite_border_rounded,
+      category: 'Sağlık',
+      body: [
+        ArticleSection(
+          text:
+              'Adet lekesi okulda fark edilirse dünyanın sonu değil — bu, '
+              'adet gören hemen hemen her kızın başına en az bir kez gelen '
+              'bir şey. Kimse bunu senin sandığın kadar fark etmez ya da '
+              'takmaz.',
+        ),
+        ArticleSection(
+          heading: 'Önce kendine sakin ol',
+          text:
+              'Derin bir nefes al. Bu an geçecek ve birkaç dakika içinde '
+              'çözülebilecek bir şey — panik yapmana gerek yok.',
+        ),
+        ArticleSection(
+          heading: 'Ne yapmalısın',
+          text:
+              'Tuvalete git. Çantanda yedek ped ve iç çamaşırı varsa '
+              'değiştir.',
+        ),
+        ArticleSection(
+          heading: 'Yedek yoksa kimden yardım isteyebilirsin',
+          text:
+              'Okul hemşiresi tam da bunun için orada — çekinmeden gidebilirsin. '
+              'Güvendiğin bir öğretmen ya da yakın bir arkadaşından da ped '
+              'isteyebilirsin. Bunu istemek utanılacak bir şey değil, '
+              'gayet normal bir yardımlaşma.',
+        ),
+        ArticleSection(
+          heading: 'Unutma',
+          text:
+              'Bu senin suçun değil ve bedeninin doğal bir işlevi. '
+              'Yaşandığında hissettiğin utanç, olayın kendisinden çok '
+              'daha büyük hissettirir — ama gerçekte kimse bunu senin kadar '
+              'önemsemiyor.',
+        ),
+      ],
+    ),
   ];
 
   static List<Article> get all => [featured, ...articles];
