@@ -72,7 +72,7 @@ class ArticleData {
         heading: 'Neden kaydediyoruz?',
         text:
             'Döngünü kaydetmek "doğru cevap" bulmak için değil — kendi '
-            'örüntünü tanımak için. Hangi günlerde nasıl hissettiğini fark '
+            'düzenini tanımak için. Hangi günlerde nasıl hissettiğini fark '
             'etmek, zamanla bedenini daha iyi anlamana yardımcı olur.',
       ),
       ArticleSection(
@@ -155,23 +155,23 @@ class ArticleData {
           heading: 'Neden bazen enerjik hissediyorsun',
           text:
               'Östrojen yükseldiğinde, beyninde mutluluk hissiyle ilişkili '
-              'bir kimyasal olan serotonin de artma eğiliminde — bu yüzden '
-              'döngünün bazı dönemlerinde kendini daha enerjik ve iyi '
-              'hissedebilirsin.',
+              'bir kimyasal olan serotonin de genellikle artıyor — bu '
+              'yüzden döngünün bazı dönemlerinde kendini daha enerjik ve '
+              'iyi hissedebilirsin.',
         ),
         ArticleSection(
           heading: 'Neden bazen daha hassas hissediyorsun',
           text:
               'Adetten önceki dönemde progesteron artıyor ve bu, serotonini '
               'azaltabiliyor — bazı kızlar bu günlerde kendini daha hassas '
-              'ya da sinirli hissedebiliyor. Asıl belirleyici olan, '
-              'hormonun ne kadar olduğu değil, ne kadar hızlı değiştiği.',
+              'ya da sinirli hissedebiliyor. Buradaki asıl mesele hormon '
+              'miktarı değil, o hormonun ne kadar hızlı yükselip alçaldığı.',
         ),
         ArticleSection(
           text:
               'Ergenlik döneminde bu hormonlar zaten yeni yeni devreye '
-              'giriyor, bu yüzden duyguların bazen olduğundan daha yoğun '
-              'hissedilmesi normal — beynin de bu değişimlere alışıyor.',
+              'giriyor, bu yüzden bazen duygularını olduğundan daha yoğun '
+              'hissetmen normal — beynin de bu değişime alışıyor.',
         ),
         ArticleSection(
           text:
@@ -192,17 +192,19 @@ class ArticleData {
         ArticleSection(
           heading: 'Demir neden önemli',
           text:
-              'Adet sırasında kan kaybıyla birlikte demir de kaybedilir — ve '
-              'zaten büyüme çağında olduğun için bedeninin demire ihtiyacı '
-              'yetişkinlere göre daha fazla (14-18 yaş için günde ~15mg).',
+              'Adet sırasında kan kaybıyla birlikte demir de kaybedilir. '
+              'Sen de büyüme çağında olduğun için demire normalden daha çok '
+              'ihtiyacın var — 14-18 yaş kızlar için önerilen günlük miktar '
+              '~15mg, henüz adet görmeyen çocuklara göre neredeyse iki kat '
+              'fazla.',
         ),
         ArticleSection(
           heading: 'Hangi besinler yardımcı olur',
           text:
               'Demirden zengin besinler (ıspanak, mercimek, kırmızı et gibi) '
               've yanında C vitamini içeren bir şey (portakal, biber gibi) '
-              'yemek, demirin emilimini artırıyor — ikisini birlikte '
-              'tüketmek daha etkili.',
+              'yemek, vücudunun demiri daha kolay kullanmasını sağlıyor. '
+              'İkisini birlikte tüketmek daha etkili.',
         ),
         ArticleSection(
           heading: 'Magnezyum hakkında dürüst olalım',
@@ -229,17 +231,17 @@ class ArticleData {
       body: [
         ArticleSection(
           text:
-              'Senin yaşındaki gençler için önerilen uyku süresi, döngünün '
-              'hangi evresinde olduğundan bağımsız olarak günde 8-10 saat.',
+              'Döngünün hangi gününde olursan ol, senin yaşındaki gençler '
+              'için önerilen uyku süresi günde 8-10 saat.',
         ),
         ArticleSection(
           heading: 'Adetten önce neden zorlanabilirsin',
           text:
               'Bazı kızlar adetten hemen önceki günlerde uykuya dalmakta '
               'biraz daha zorlanabiliyor. Olası bir sebep: yükselen '
-              'progesteron vücut sıcaklığını hafifçe artırıyor. Beden derin '
-              'uykuya geçmek için geceleri doğal olarak soğuması '
-              'gerektiğinden, bu küçük artış uykuya dalmayı '
+              'progesteron vücut sıcaklığını hafifçe artırıyor. Vücudun '
+              'derin uykuya geçebilmesi için geceleri biraz soğuması '
+              'gerekiyor — bu küçük sıcaklık artışı da uykuya dalmayı biraz '
               'zorlaştırabiliyor.',
         ),
         ArticleSection(
@@ -273,11 +275,11 @@ class ArticleData {
         ArticleSection(
           heading: 'Bilim ne diyor',
           text:
-              'Bilim insanları bunu gerçekten test etti (2023\'te yapılan '
-              'bir üniversite çalışması dahil) ve döngü fazının spor '
-              'gücünü ya da bedeninin antrenmana ne kadar iyi uyum '
-              'sağladığını değiştirdiğine dair bir kanıt bulamadılar. Yani '
-              '"bu fazda güçlü değilsin" gibi kesin iddialar doğru değil.',
+              'Bilim insanları bunu gerçekten test etti — 2023\'te bir '
+              'üniversite bile bu konuyu araştırdı. Sonuç: döngü fazı ne '
+              'spor gücünü ne de bedeninin antrenmana verdiği tepkiyi '
+              'değiştiriyormuş. Yani "bu fazda güçlü değilsin" gibi kesin '
+              'iddialar doğru değil.',
         ),
         ArticleSection(
           heading: 'Peki gerçekten işe yarayan ne',
@@ -316,8 +318,8 @@ class ArticleData {
         ),
         ArticleSection(
           text:
-              'Bu belirtiler çok yaygın ve normal — özellikle bedenin henüz '
-              'kendi ritmini öğrendiği bu yaşlarda, ergenliğin doğal '
+              'Bu belirtiler çok yaygın ve normal. Bu yaşlarda bedenin '
+              'henüz kendi ritmini öğrendiği için, PMS\'i ergenliğin doğal '
               'duygusal iniş çıkışlarından ayırt etmek bazen zor olabilir.',
         ),
         ArticleSection(

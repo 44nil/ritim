@@ -62,19 +62,36 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
 | Primer dismenore (adet krampı), pelvik patoloji olmadan yaşanan adet ağrısıdır ve adölesanlarda en sık görülen adet belirtisidir; NSAID'ler genelde adet başlamadan 1-2 gün önce başlanıp ilk 2-3 gün sürdürülür. | `lib/features/articles/data/article_data.dart` — "Adet Sancısıyla Başa Çıkmanın 5 Yolu" | [ACOG Committee Opinion No. 760 — Dysmenorrhea and Endometriosis in the Adolescent](https://journals.lww.com/greenjournal/fulltext/10.1097/aog.0000000000002978~acog-committee-opinion-no-760-dysmenorrhea-and) |
 | Sürekli, düşük seviyeli topikal ısı, adet ağrısında oral ibuprofene benzer ya da üstün bulunmuş; ısı + ibuprofen kombinasyonu tek başına ibuprofene göre ağrı kesilme süresini kısaltıyor. | Aynı makale | [ACOG — Dysmenorrhea: Painful Periods (FAQ)](https://www.acog.org/womens-health/faqs/dysmenorrhea-painful-periods); bkz. Pediatrics Nationwide özeti: [Improving Care for Adolescents and Young Women With Pelvic Pain](https://pediatricsnationwide.org/2019/03/21/improving-care-for-adolescents-and-young-women-with-pelvic-pain/) |
 | PMS, adetten önceki günlerde yaşanan fiziksel/duygusal değişikliklerin genel adıdır (mod değişimi, sinirlilik, kaygı, konsantrasyon güçlüğü, iştah/uyku değişiklikleri, şişkinlik). Adölesanlarda bu belirtileri normal duygusal gelişimden ayırt etmek güç olabilir. | `article_data.dart` — "PMS Nedir?" | [ACOG — Premenstrual Syndrome (PMS) FAQ](https://www.acog.org/womens-health/faqs/premenstrual-syndrome); [ACOG Clinical Practice Guideline — Management of Premenstrual Disorders (2023)](https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/12/management-of-premenstrual-disorders) |
-| Östrojen arttıkça serotonin üretimi de artma eğilimindedir (iyi hissetme ile ilişkilendirilir); progesteron ise monoamin oksidaz (MAO) aktivitesini artırarak serotonini azaltabilir. Ruh hali değişkenliği, hormonların mutlak seviyesinden çok ne kadar hızlı değiştiğiyle daha ilişkili görünüyor; bu etkileşim adölesan beyin gelişiminde de rol oynar. | `article_data.dart` — "Hormonlar ve Ruh Halin" | Genel nöroendokrin mekanizma özeti (drbrighten.com, genomind.com); adölesana özel: [Menstrual cycle and mental health in adolescents: a developmental neuroendocrine perspective — Neuropsychopharmacology (2025)](https://www.nature.com/articles/s41386-025-02184-2) — **not: ilk iki kaynak popüler sağlık siteleri, klinik otorite değil; iddia genel mekanizma düzeyinde tutuldu, kesin/tanısal dil kullanılmadı.** |
-| Ovülasyondan sonra yükselen progesteron vücut sıcaklığını ~0.4-1.0°F artırır; gece uykuya dalmak için gereken doğal soğuma ile bu artış çakışabilir, bazı kadınlarda luteal fazda uykuya dalma gecikmesi ve gece uyanmalarına yol açabilir. | `article_data.dart` — "Uyku ve Döngü İlişkisi" | 35 çalışmalık bir sistematik derlemenin özeti (bettersleep.com); mekanizma: [Menstrual Cycle Fluctuations of Progesterone and the Effect on Sleep Regulation — Restorative Medicine](https://restorativemedicine.org/journal/menstrual-cycle-fluctuations-progesterone-effect-sleep-regulation/) — **not: popüler özet kaynaklar kullanıldı, birincil literatür (PMC/APS makaleleri) yayından önce çapraz kontrol edilmeli.** |
+| Östrojen arttıkça serotonin üretimi de artma eğilimindedir (iyi hissetme ile ilişkilendirilir); progesteron ise monoamin oksidaz (MAO) aktivitesini artırarak serotonini azaltabilir. Ruh hali değişkenliği, hormonların mutlak seviyesinden çok ne kadar hızlı değiştiğiyle daha ilişkili görünüyor. | `article_data.dart` — "Hormonlar ve Ruh Halin" | Mekanizma birincil literatürle doğrulandı: [Rapkin & Akopians — Pathophysiology of premenstrual syndrome and premenstrual dysphoric disorder, Menopause International (2012)](https://journals.sagepub.com/doi/10.1258/mi.2012.012014); hormon seviyesinden çok değişim hızının belirleyici olduğu bulgusu: [Schmidt et al. — PMDD Symptoms Following Ovarian Suppression: Triggered by Change in Ovarian Steroid Levels But Not Continuous Stable Levels, Am J Psychiatry (2017)](https://ajp.psychiatryonline.org/doi/10.1176/appi.ajp.2017.16101113). |
+| Ovülasyondan sonra yükselen progesteron vücut sıcaklığını hafifçe artırır; gece uykuya dalmak için gereken doğal soğuma ile bu artış çakışabilir, bazı kadınlarda uykuya dalma gecikmesine yol açabilir. | `article_data.dart` — "Uyku ve Döngü İlişkisi" | Birincil literatürle doğrulandı: [Neurobiological and Hormonal Mechanisms Regulating Women's Sleep — Frontiers in Neuroscience (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7840832/) — not: kaynağa göre etki tek başına progesterondan çok östrojenle birlikte (sinerjik) olabilir; makale zaten "olası bir sebep"/"hafifçe" gibi temkinli dil kullanıyor, bu kalibrasyon korundu. |
+
+## Düzeltilen hatalar — 2026-09-05, 4 alt ajanla çapraz doğrulama sonrası
+
+- **Demir karşılaştırması yanlış yöndeydi**: "Döngüne Göre Beslenme" makalesi
+  14-18 yaş kızların demir ihtiyacının (15mg/gün) "yetişkinlere göre daha
+  fazla" olduğunu söylüyordu. Bu yanlış — adet gören yetişkin kadınlar
+  (19-50 yaş) günde 18mg'a ihtiyaç duyuyor, yani gençlerden DAHA FAZLA, daha
+  az değil. Doğru karşılaştırma, henüz adet görmeyen çocuklara (8mg) göre —
+  gençlerin ihtiyacı onlara göre neredeyse iki kat fazla. Metin buna göre
+  düzeltildi. Kaynak: [NIH ODS — Iron Fact Sheet](https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/) RDA tablosu.
+- **Hormonlar makalesindeki kaynak yanlış eşleştirilmişti**: Serotonin/MAO
+  mekanizması için "Menstrual cycle and mental health in adolescents"
+  (Nayman & Klusmann, Neuropsychopharmacology 2025) referans gösterilmişti,
+  ama bu makale kortiko-limbik beyin gelişimi üzerine bir perspektif yazısı
+  — spesifik olarak serotonin/MAO mekanizmasından bahsetmiyor. Yukarıdaki
+  tabloda doğru birincil kaynaklarla (Rapkin & Akopians 2012, Schmidt et al.
+  2017) değiştirildi.
 
 ## Doğrulanmamış / kaynağı olmayan içerik (yayından önce ele alınmalı)
 
-- Yukarıdaki hormon/ruh hali ve uyku iddiaları ikincil (popüler sağlık
-  sitesi) kaynaklara dayanıyor — yayından önce PMC/APS gibi birincil
-  literatürle çapraz kontrol edilmeli, ardından gerçek bir uzman tarafından
-  son onaylanmalı (bkz. dosya başındaki genel not).
 - Makale gövdelerindeki ilaç/dozaj referansları (ör. ibuprofen zamanlaması)
   kasıtlı olarak "bir yetişkine/eczacıya danış" çerçevesinde tutuldu, doğrudan
   dozaj talimatı verilmedi — bu çerçeve korunmalı, ileride değiştirilirse
-  tekrar gözden geçirilmeli.
+  tekrar gözden geçirilmeli. 4 bağımsız alt ajanla yapılan çapraz doğrulamada
+  bu çerçevenin hiçbir makalede ihlal edilmediği teyit edildi (2026-09-05).
+- Yukarıdaki tüm iddialar artık birincil literatürle doğrulandı, ama bu
+  dosya başındaki genel not hâlâ geçerli: yayından önce gerçek bir
+  doktor/uzman tarafından son onay gerekiyor.
 
 ## Kaldırılan içerik
 
@@ -90,6 +107,14 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
 
 ## Değişiklik günlüğü
 
+- 2026-09-05: 4 bağımsız alt ajanla tüm 7 makale çapraz doğrulandı (bilimsel
+  doğruluk + çocuk dili). Bir gerçek hata (demir karşılaştırması ters
+  yöndeydi) ve bir kaynak yanlış eşleştirmesi (hormonlar makalesi) düzeltildi;
+  hormon ve uyku makalelerinin ikincil-kaynak uyarısı, bulunan birincil
+  literatürle (Rapkin & Akopians 2012, Schmidt et al. 2017, Frontiers in
+  Neuroscience 2021) kaldırıldı. Ayrıca 6 cümlede dil sadeleştirmesi yapıldı
+  (çifte olumsuzlama, edilgen çatı, "eğiliminde"/"bağımsız olarak" gibi
+  resmi kelimeler).
 - 2026-09-04: İlk sürüm. Quiz sorusundaki döngü uzunluğu iddiası (21-35 gün)
   adölesana özel değildi, ACOG/AAP Committee Opinion No. 651'e göre
   21-45 güne düzeltildi.
