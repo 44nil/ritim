@@ -14,6 +14,9 @@ abstract class RouteNames {
   static const articleDetail = 'article-detail';
   static const quiz = 'quiz';
   static const profile = 'profile';
+  static const editProfile = 'edit-profile';
+  static const notifications = 'notifications';
+  static const cycleSettings = 'cycle-settings';
 
   // Ebeveyn paneli (bağımsız akış) — çocuk tarafı QR oluşturur,
   // veli tarafı QR tarar, ikisi de aynı özet ekranında buluşur.
@@ -37,6 +40,9 @@ abstract class RoutePaths {
   static const articleDetail = '/articles/detail';
   static const quiz = '/quiz';
   static const profile = '/profile';
+  static const editProfile = '/profile/edit';
+  static const notifications = '/profile/notifications';
+  static const cycleSettings = '/cycle-tracking/settings';
   static const parentQr = '/parent/qr';
   static const parentScan = '/parent/scan';
   static const parentPanel = '/parent/panel';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/providers/cycle_provider.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../core/theme/app_colors.dart';
 
 // Kalıcı depodan önceki kayıtların yüklenmesini bekleyip, kullanıcıyı
@@ -26,8 +27,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> _redirect() async {
     await ref.read(cycleProvider.notifier).ready;
     if (!mounted) return;
-    final hasCompletedOnboarding = ref.read(cycleProvider).hasCompletedOnboarding;
-    context.go(hasCompletedOnboarding ? '/cycle-tracking' : '/onboarding');
+    final cycle = ref.read(cycleProvider);
+    // Tahmini adet tarihi son açılıştan beri değişmiş olabilir (yeni kayıt,
+    // yeni döngü) — açılışta yeniden planlamak bunu güncel tutar.
+    if (cycle.periodReminderEnabled) {
+      NotificationService.reschedulePeriodReminder(cycle, enabled: true, daysBefore: cycle.periodReminderDaysBefore);
+    }
+    context.go(cycle.hasCompletedOnboarding ? '/cycle-tracking' : '/onboarding');
   }
 
   @override

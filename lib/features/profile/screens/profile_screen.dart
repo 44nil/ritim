@@ -60,8 +60,8 @@ class ProfileScreen extends ConsumerWidget {
 
                 // Ayarlar
                 _SettingsGroup(title: 'Hesap', items: [
-                  _SettingsRow(icon: Icons.person_outline_rounded, label: 'Profili Düzenle', onTap: () {}),
-                  _SettingsRow(icon: Icons.notifications_none_rounded, label: 'Bildirimler', onTap: () {}),
+                  _SettingsRow(icon: Icons.person_outline_rounded, label: 'Profili Düzenle', onTap: () => context.pushNamed(RouteNames.editProfile)),
+                  _SettingsRow(icon: Icons.notifications_none_rounded, label: 'Bildirimler', onTap: () => context.pushNamed(RouteNames.notifications)),
                   _SettingsRow(icon: Icons.lock_outline_rounded, label: 'Gizlilik', onTap: () => context.pushNamed(RouteNames.privacyPolicy)),
                 ]),
                 const SizedBox(height: 12),
@@ -72,7 +72,9 @@ class ProfileScreen extends ConsumerWidget {
                     trailing: Text(isDark ? 'Koyu' : 'Açık'),
                     onTap: () => ref.read(themeModeProvider.notifier).state = isDark ? ThemeMode.light : ThemeMode.dark,
                   ),
-                  _SettingsRow(icon: Icons.language_rounded, label: 'Dil', trailing: const Text('Türkçe'), onTap: () {}),
+                  // onTap yok — henüz çok dillilik desteklenmiyor, bu satır
+                  // sadece bilgi amaçlı (yanlış gezinme çağrışımı yapmasın diye).
+                  _SettingsRow(icon: Icons.language_rounded, label: 'Dil', trailing: const Text('Türkçe')),
                 ]),
                 const SizedBox(height: 12),
                 _SettingsGroup(title: 'Veri', items: [
@@ -193,19 +195,22 @@ class _SettingsGroup extends StatelessWidget {
 }
 
 class _SettingsRow extends StatelessWidget {
-  const _SettingsRow({required this.icon, required this.label, required this.onTap, this.trailing, this.color});
+  const _SettingsRow({required this.icon, required this.label, this.onTap, this.trailing, this.color});
   final IconData icon;
   final String label;
-  final VoidCallback onTap;
+  // Null bırakılırsa satır sadece bilgi amaçlıdır — dokunma efekti ve
+  // "buraya gidilir" çağrışımı yapan ok ikonu olmadan gösterilir (ör. tek
+  // desteklenen dili gösteren "Dil" satırı, henüz çok dillilik yok).
+  final VoidCallback? onTap;
   final Widget? trailing;
-  // Belirtilirse (ör. yıkıcı bir eylem için) satırı bu renkte vurgular ve
-  // gezinme çağrışımı yapan ok ikonunu gizler — bu bir sayfaya gitmiyor.
+  // Belirtilirse (ör. yıkıcı bir eylem için) satırı bu renkte vurgular.
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return InkWell(onTap: onTap, child: Padding(
+    final showChevron = onTap != null && color == null;
+    final row = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       child: Row(children: [
         Icon(icon, size: 20, color: color ?? theme.colorScheme.onSurface.withValues(alpha: 0.5)),
@@ -215,9 +220,10 @@ class _SettingsRow extends StatelessWidget {
           style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.4)),
           child: trailing!),
         const SizedBox(width: 4),
-        if (color == null)
+        if (showChevron)
           Icon(Icons.chevron_right_rounded, size: 18, color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
       ]),
-    ));
+    );
+    return onTap != null ? InkWell(onTap: onTap, child: row) : row;
   }
 }

@@ -10,6 +10,9 @@ import '../../features/articles/screens/article_detail_screen.dart';
 import '../../features/articles/data/article_data.dart';
 import '../../features/quiz/screens/quiz_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
+import '../../features/profile/screens/edit_profile_screen.dart';
+import '../../features/profile/screens/notifications_screen.dart';
+import '../../features/cycle_tracking/screens/cycle_settings_screen.dart';
 import '../../features/parent_panel/screens/parent_qr_screen.dart';
 import '../../features/parent_panel/screens/parent_scan_screen.dart';
 import '../../features/parent_panel/screens/parent_panel_screen.dart';
@@ -108,6 +111,23 @@ class AppRouter {
             ],
           ),
         ],
+      ),
+
+      // ─── Profil alt ekranları — bağımsız erişim ────────────────────────
+      GoRoute(
+        path: RoutePaths.editProfile,
+        name: RouteNames.editProfile,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.notifications,
+        name: RouteNames.notifications,
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.cycleSettings,
+        name: RouteNames.cycleSettings,
+        builder: (context, state) => const CycleSettingsScreen(),
       ),
 
       // ─── Makale detayı — bağımsız erişim, Article nesnesi extra ile geçer ──

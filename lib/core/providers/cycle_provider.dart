@@ -69,6 +69,11 @@ class CycleState {
     this.medicationNames = const [],
     this.reportedCycleLength,
     this.hasCompletedOnboarding = false,
+    this.dailyReminderEnabled = false,
+    this.dailyReminderHour = 20,
+    this.dailyReminderMinute = 0,
+    this.periodReminderEnabled = false,
+    this.periodReminderDaysBefore = 2,
   });
 
   final List<PeriodRecord> periods;
@@ -85,6 +90,13 @@ class CycleState {
   // edip tamamlamış kullanıcıyı direkt Döngüm'e yönlendiriyoruz — yoksa
   // veri kalıcı olsa bile her açılışta baştan onboarding görünür.
   final bool hasCompletedOnboarding;
+  // Bildirim tercihleri — sunucu yok, tamamen cihaz üstü zamanlanan yerel
+  // bildirimler (bkz. core/services/notification_service.dart).
+  final bool dailyReminderEnabled;
+  final int dailyReminderHour;
+  final int dailyReminderMinute;
+  final bool periodReminderEnabled;
+  final int periodReminderDaysBefore;
 
   static String _key(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
@@ -187,6 +199,11 @@ class CycleState {
     List<String>? medicationNames,
     int? reportedCycleLength,
     bool? hasCompletedOnboarding,
+    bool? dailyReminderEnabled,
+    int? dailyReminderHour,
+    int? dailyReminderMinute,
+    bool? periodReminderEnabled,
+    int? periodReminderDaysBefore,
   }) {
     return CycleState(
       periods: periods ?? this.periods,
@@ -195,6 +212,11 @@ class CycleState {
       medicationNames: medicationNames ?? this.medicationNames,
       reportedCycleLength: reportedCycleLength ?? this.reportedCycleLength,
       hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+      dailyReminderEnabled: dailyReminderEnabled ?? this.dailyReminderEnabled,
+      dailyReminderHour: dailyReminderHour ?? this.dailyReminderHour,
+      dailyReminderMinute: dailyReminderMinute ?? this.dailyReminderMinute,
+      periodReminderEnabled: periodReminderEnabled ?? this.periodReminderEnabled,
+      periodReminderDaysBefore: periodReminderDaysBefore ?? this.periodReminderDaysBefore,
     );
   }
 
@@ -215,6 +237,11 @@ class CycleState {
     'medicationNames': medicationNames,
     'reportedCycleLength': reportedCycleLength,
     'hasCompletedOnboarding': hasCompletedOnboarding,
+    'dailyReminderEnabled': dailyReminderEnabled,
+    'dailyReminderHour': dailyReminderHour,
+    'dailyReminderMinute': dailyReminderMinute,
+    'periodReminderEnabled': periodReminderEnabled,
+    'periodReminderDaysBefore': periodReminderDaysBefore,
   };
 
   factory CycleState.fromJson(Map<String, dynamic> json) => CycleState(
@@ -224,6 +251,11 @@ class CycleState {
     medicationNames: (json['medicationNames'] as List?)?.cast<String>() ?? const [],
     reportedCycleLength: json['reportedCycleLength'] as int?,
     hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ?? false,
+    dailyReminderEnabled: json['dailyReminderEnabled'] as bool? ?? false,
+    dailyReminderHour: json['dailyReminderHour'] as int? ?? 20,
+    dailyReminderMinute: json['dailyReminderMinute'] as int? ?? 0,
+    periodReminderEnabled: json['periodReminderEnabled'] as bool? ?? false,
+    periodReminderDaysBefore: json['periodReminderDaysBefore'] as int? ?? 2,
   );
 }
 
@@ -321,6 +353,27 @@ class CycleNotifier extends StateNotifier<CycleState> {
   void setUserName(String name) {
     if (name.isEmpty) return;
     state = state.copyWith(userName: name);
+  }
+
+  // Kullanıcı, döngüsünün genelde kaç gün sürdüğünü sonradan da
+  // güncelleyebilir (onboarding'de verdiği ilk tahmin değişmiş olabilir).
+  void setReportedCycleLength(int days) {
+    state = state.copyWith(reportedCycleLength: days);
+  }
+
+  void setDailyReminder({required bool enabled, int? hour, int? minute}) {
+    state = state.copyWith(
+      dailyReminderEnabled: enabled,
+      dailyReminderHour: hour,
+      dailyReminderMinute: minute,
+    );
+  }
+
+  void setPeriodReminder({required bool enabled, int? daysBefore}) {
+    state = state.copyWith(
+      periodReminderEnabled: enabled,
+      periodReminderDaysBefore: daysBefore,
+    );
   }
 
   void logFlow(String flow) {

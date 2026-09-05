@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/providers/cycle_provider.dart';
+import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../data/mock_cycle_data.dart';
@@ -106,7 +108,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         ),
                         Text('Bugün nasıl hissediyorsun?', style: AppTextStyles.accent(fontSize: 16, color: AppColors.softPink)),
                       ])),
-                      _SmallButton(icon: Icons.settings_outlined, onTap: () {}),
+                      _SmallButton(icon: Icons.settings_outlined, onTap: () => context.pushNamed(RouteNames.cycleSettings)),
                     ]),
                   ),
                   const SizedBox(height: 20),
