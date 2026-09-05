@@ -214,7 +214,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: AppColors.cardCream,
+                            color: AppColors.cardTranslucent,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -255,7 +255,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: AppColors.ink.withValues(
-                                          alpha: 0.4,
+                                          alpha: 0.55,
                                         ),
                                       ),
                                       maxLines: 1,
@@ -278,7 +278,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                           style: TextStyle(
                                             fontSize: 10,
                                             color: AppColors.ink.withValues(
-                                              alpha: 0.3,
+                                              alpha: 0.55,
                                             ),
                                           ),
                                         ),
