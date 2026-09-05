@@ -61,12 +61,12 @@ abstract class AppColors {
   // ayrık" duruyordu — hero kartın zaten yaptığı gibi, gradient'in kendi
   // rengini (sıcak turuncu) şeffaf kullanmak daha doğal kaynaşıyor.
   // Eskiden gerçekten şeffaftı (warmOrange %15 opaklık) — arkasındaki
-  // gradient'e göre bazen "çok belirgin değil, okunmuyor" oluyordu (kart
-  // sınırı, gradient'in hangi renginin arkasında olduğuna göre neredeyse
-  // kayboluyordu). warmOrange'ı beyazla harmanlayıp OPAK bir renk üretiyoruz
-  // — sıcak ton kimliği korunuyor ama kart artık gradient'ten bağımsız,
-  // her zaman aynı, net bir zemin.
-  static Color get cardTranslucent => Color.alphaBlend(warmOrange.withValues(alpha: 0.15), Colors.white);
+  // gradient'e göre bazen "çok belirgin değil, okunmuyor" oluyordu. Sonra
+  // warmOrange'ı beyazla harmanlayıp opak yaptık ama bu sefer "çok beyaz"
+  // oldu. Kullanıcının seçtiği Misty Rose (#FFE4E1) — marka paletiyle aynı
+  // pembe ailesinden, opak, ama beyaza kaçmayan bir orta nokta.
+  static const mistyRose = Color(0xFFFFE4E1);
+  static Color get cardTranslucent => mistyRose;
 
   // ─── Hero header gradient (soft pastel, tab üstlerinde) ─────────────────
   static const heroPink = Color(0xFFF9C4D2);
