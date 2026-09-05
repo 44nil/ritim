@@ -799,10 +799,10 @@ class _MonthCalendar extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          Row(children: [
+          Wrap(spacing: 18, runSpacing: 6, children: [
             _LegendDot(color: AppColors.phaseMenstruation, filled: true, label: 'Adet günü'),
-            const SizedBox(width: 18),
             _LegendDot(color: AppColors.phaseMenstruation, filled: false, label: 'Tahmini'),
+            _LegendDot(color: AppColors.softPink.withValues(alpha: 0.4), filled: true, label: 'Bugün'),
           ]),
         ],
       ),
