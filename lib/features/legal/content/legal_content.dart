@@ -13,10 +13,10 @@ const kLegalDraftDisclaimer =
     'TASLAK — bu metin yayına alınmadan önce hukuki inceleme gerektirir.';
 
 /// Rıza kaydında hangi metin versiyonuna onay verildiğini işaretlemek için.
-const kLegalContentVersion = 'v2-2026-09-04';
+const kLegalContentVersion = 'v3-2026-09-07';
 
 const kKvkkAydinlatmaMetni = '''
-Veri sorumlusu: Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık
+Veri sorumlusu: Eduxperts Eğitim Teknoloji Danışmanlık
 Ticaret Limited Şirketi (Girne Mah., 09100 Efeler/Aydın,
 info@eduxperts.com.tr)
 
@@ -63,7 +63,7 @@ Bu Gizlilik Politikası, Ritim uygulamasının kişisel verilerini nasıl ele
 aldığını açıklar.
 
 Veri sorumlusu
-Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
+Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
 Şirketi
 Girne Mah., 09100 Efeler/Aydın
 E-posta: info@eduxperts.com.tr
@@ -93,7 +93,7 @@ KVKK kapsamında bilgi alma, düzeltme, silme ve itiraz haklarına sahipsiniz.
 Başvuru yöntemi, sunucu altyapısı devreye girdiğinde burada belirtilecektir.
 
 İletişim
-Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
+Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
 Şirketi
 Girne Mah., 09100 Efeler/Aydın
 E-posta: info@eduxperts.com.tr
@@ -127,7 +127,7 @@ eklendiğinde) güncellenebilir. Güncel sürüm her zaman uygulama içinden
 erişilebilir olacaktır.
 
 İletişim
-Esra Nil Doğan Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
+Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
 Şirketi
 Girne Mah., 09100 Efeler/Aydın
 E-posta: info@eduxperts.com.tr
