@@ -54,12 +54,12 @@ class _CycleSettingsScreenState extends ConsumerState<CycleSettingsScreen> {
                 ),
                 const SizedBox(height: 16),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  if (!isMeasured) _StepBtn(icon: Icons.remove_rounded, onTap: () => setState(() => _length = (_length - 1).clamp(21, 45))),
+                  if (!isMeasured) _StepBtn(icon: Icons.remove_rounded, semanticLabel: 'Azalt', onTap: () => setState(() => _length = (_length - 1).clamp(21, 45))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text('${isMeasured ? cycle.averageCycleLength : _length} gün', style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
                   ),
-                  if (!isMeasured) _StepBtn(icon: Icons.add_rounded, onTap: () => setState(() => _length = (_length + 1).clamp(21, 45))),
+                  if (!isMeasured) _StepBtn(icon: Icons.add_rounded, semanticLabel: 'Artır', onTap: () => setState(() => _length = (_length + 1).clamp(21, 45))),
                 ]),
               ]),
             ),
@@ -84,19 +84,20 @@ class _CycleSettingsScreenState extends ConsumerState<CycleSettingsScreen> {
 }
 
 class _StepBtn extends StatelessWidget {
-  const _StepBtn({required this.icon, required this.onTap});
+  const _StepBtn({required this.icon, required this.onTap, required this.semanticLabel});
   final IconData icon;
   final VoidCallback onTap;
+  final String semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(button: true, label: semanticLabel, child: GestureDetector(
       onTap: onTap,
       child: Container(
         width: 36, height: 36,
         decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.softPink.withValues(alpha: 0.2)),
         child: Icon(icon, size: 20, color: AppColors.softPink),
       ),
-    );
+    ));
   }
 }

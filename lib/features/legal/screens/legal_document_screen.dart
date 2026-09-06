@@ -24,6 +24,7 @@ class LegalDocumentScreen extends StatelessWidget {
         title: Text(title, style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
+          tooltip: 'Geri',
           onPressed: () => context.pop(),
         ),
       ),

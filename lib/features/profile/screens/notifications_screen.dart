@@ -117,12 +117,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               value: cycle.periodReminderEnabled,
               onChanged: cycle.canPredict ? _togglePeriod : null,
               trailing: (cycle.periodReminderEnabled && cycle.canPredict) ? Row(mainAxisSize: MainAxisSize.min, children: [
-                _StepBtn(icon: Icons.remove_rounded, onTap: () => _adjustPeriodDays(-1)),
+                _StepBtn(icon: Icons.remove_rounded, semanticLabel: 'Azalt', onTap: () => _adjustPeriodDays(-1)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text('${cycle.periodReminderDaysBefore} gün önce', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
                 ),
-                _StepBtn(icon: Icons.add_rounded, onTap: () => _adjustPeriodDays(1)),
+                _StepBtn(icon: Icons.add_rounded, semanticLabel: 'Artır', onTap: () => _adjustPeriodDays(1)),
               ]) : null,
             ),
           ]),
@@ -169,19 +169,20 @@ class _NotificationCard extends StatelessWidget {
 }
 
 class _StepBtn extends StatelessWidget {
-  const _StepBtn({required this.icon, required this.onTap});
+  const _StepBtn({required this.icon, required this.onTap, required this.semanticLabel});
   final IconData icon;
   final VoidCallback onTap;
+  final String semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(button: true, label: semanticLabel, child: GestureDetector(
       onTap: onTap,
       child: Container(
         width: 26, height: 26,
         decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.softPink.withValues(alpha: 0.2)),
         child: Icon(icon, size: 15, color: AppColors.softPink),
       ),
-    );
+    ));
   }
 }

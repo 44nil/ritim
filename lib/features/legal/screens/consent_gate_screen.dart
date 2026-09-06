@@ -41,7 +41,9 @@ class ConsentGateStep extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
           ),
           const SizedBox(height: 32),
-          GestureDetector(
+          Semantics(
+            checked: checked,
+            child: GestureDetector(
             onTap: () => onChanged(!checked),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -84,7 +86,7 @@ class ConsentGateStep extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+          )),
           const SizedBox(height: 16),
           Wrap(
             spacing: 4,

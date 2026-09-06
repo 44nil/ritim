@@ -111,7 +111,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         ),
                         Text('Bugün nasıl hissediyorsun?', style: AppTextStyles.accent(fontSize: 16, color: AppColors.softPink)),
                       ])),
-                      _SmallButton(icon: Icons.settings_outlined, onTap: () => context.pushNamed(RouteNames.cycleSettings)),
+                      _SmallButton(icon: Icons.settings_outlined, semanticLabel: 'Ayarlar', onTap: () => context.pushNamed(RouteNames.cycleSettings)),
                     ]),
                   ),
                   const SizedBox(height: 20),
@@ -222,9 +222,9 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink),
                         ),
                       ),
-                      _CalendarNavButton(icon: Icons.chevron_left_rounded, onTap: () => _changeMonth(-1)),
+                      _CalendarNavButton(icon: Icons.chevron_left_rounded, semanticLabel: 'Önceki ay', onTap: () => _changeMonth(-1)),
                       const SizedBox(width: 8),
-                      _CalendarNavButton(icon: Icons.chevron_right_rounded, onTap: () => _changeMonth(1)),
+                      _CalendarNavButton(icon: Icons.chevron_right_rounded, semanticLabel: 'Sonraki ay', onTap: () => _changeMonth(1)),
                     ]),
                   ),
                   const SizedBox(height: 10),
@@ -346,14 +346,15 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
 }
 
 class _SmallButton extends StatelessWidget {
-  const _SmallButton({required this.icon, required this.onTap});
+  const _SmallButton({required this.icon, required this.onTap, required this.semanticLabel});
   final IconData icon;
   final VoidCallback onTap;
+  final String semanticLabel;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
+    return Semantics(button: true, label: semanticLabel, child: GestureDetector(
       onTap: onTap,
       child: Container(
         width: 40, height: 40,
@@ -363,7 +364,7 @@ class _SmallButton extends StatelessWidget {
         ),
         child: Icon(icon, size: 20, color: AppColors.ink.withValues(alpha: 0.5)),
       ),
-    );
+    ));
   }
 }
 
@@ -1002,20 +1003,21 @@ class _MonthCalendar extends StatelessWidget {
 }
 
 class _CalendarNavButton extends StatelessWidget {
-  const _CalendarNavButton({required this.icon, required this.onTap});
+  const _CalendarNavButton({required this.icon, required this.onTap, required this.semanticLabel});
   final IconData icon;
   final VoidCallback onTap;
+  final String semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(button: true, label: semanticLabel, child: GestureDetector(
       onTap: onTap,
       child: Container(
         width: 30, height: 30,
         decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.softPink.withValues(alpha: 0.12)),
         child: Icon(icon, size: 18, color: AppColors.ink.withValues(alpha: 0.6)),
       ),
-    );
+    ));
   }
 }
 

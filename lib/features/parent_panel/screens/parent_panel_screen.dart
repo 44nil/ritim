@@ -45,6 +45,7 @@ class ParentPanelScreen extends StatelessWidget {
         title: Text('Ebeveyn Paneli', style: AppTextStyles.heading(fontSize: 20, color: AppColors.ink)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
+          tooltip: 'Geri',
           onPressed: () => context.pop(),
         ),
       ),

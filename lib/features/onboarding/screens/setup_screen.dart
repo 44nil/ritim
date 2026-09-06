@@ -184,7 +184,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               child: Row(
                 children: [
                   if (_currentStep > 0)
-                    GestureDetector(
+                    Semantics(button: true, label: 'Geri', child: GestureDetector(
                       onTap: _back,
                       child: Container(
                         width: 36, height: 36,
@@ -194,7 +194,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                         ),
                         child: const Icon(Icons.arrow_back_rounded, size: 18, color: AppColors.ink),
                       ),
-                    )
+                    ))
                   else
                     const SizedBox(width: 36),
                   const SizedBox(width: 12),
@@ -254,20 +254,24 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   ),
                   const Spacer(),
                   // İleri butonu
-                  GestureDetector(
-                    onTap: _canProceed ? _next : null,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 60, height: 60,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _canProceed
-                            ? AppColors.primary
-                            : AppColors.primary.withValues(alpha: 0.2),
-                      ),
-                      child: Icon(
-                        _currentStep == _totalSteps - 1 ? Icons.check_rounded : Icons.arrow_forward_rounded,
-                        color: Colors.white, size: 24,
+                  Semantics(
+                    button: true,
+                    label: _currentStep == _totalSteps - 1 ? 'Tamamla' : 'İleri',
+                    child: GestureDetector(
+                      onTap: _canProceed ? _next : null,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 60, height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _canProceed
+                              ? AppColors.primary
+                              : AppColors.primary.withValues(alpha: 0.2),
+                        ),
+                        child: Icon(
+                          _currentStep == _totalSteps - 1 ? Icons.check_rounded : Icons.arrow_forward_rounded,
+                          color: Colors.white, size: 24,
+                        ),
                       ),
                     ),
                   ),
