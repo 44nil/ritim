@@ -118,12 +118,15 @@ class CycleState {
 
   // Ortalama döngü süresi. Aynı gün içinde art arda başlat/bitir/başlat gibi
   // gerçek olmayan (0 gün ve altı) döngüler ortalamayı bozmasın diye filtrelenir.
+  // Sonuç ACOG 651'in normal döngü aralığına (21-45 gün) sıkıştırılır — bu
+  // olmadan çok kısa (ör. 1-2 gün) bir ortalama, phaseForDay'in oranlama
+  // hesabını bozup 1. günü yanlışlıkla "Zirve Dönemi"ne denk getirebiliyordu.
   int get averageCycleLength {
     final lengths = cycleLengths.where((l) => l > 0).toList();
-    if (lengths.isNotEmpty) {
-      return (lengths.reduce((a, b) => a + b) / lengths.length).round();
-    }
-    return reportedCycleLength ?? 28;
+    final raw = lengths.isNotEmpty
+        ? (lengths.reduce((a, b) => a + b) / lengths.length).round()
+        : reportedCycleLength ?? 28;
+    return raw.clamp(21, 45);
   }
 
   // Ortalama adet süresi
