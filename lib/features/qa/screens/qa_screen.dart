@@ -17,6 +17,7 @@ class QaScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.cardCream,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const ScreenGradientBackground(),
           SafeArea(

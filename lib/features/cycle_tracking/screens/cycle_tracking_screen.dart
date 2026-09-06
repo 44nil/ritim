@@ -75,6 +75,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
     return Scaffold(
       backgroundColor: AppColors.cardCream,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const ScreenGradientBackground(),
           SafeArea(

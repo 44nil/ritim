@@ -23,6 +23,7 @@ class ProfileScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.cardCream,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const ScreenGradientBackground(),
           SafeArea(

@@ -65,7 +65,7 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
         iconTheme: IconThemeData(color: AppColors.ink),
         title: Text('Veliye Göster', style: AppTextStyles.heading(fontSize: 20, color: AppColors.ink)),
       ),
-      body: Stack(children: [
+      body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
         SafeArea(child: Padding(
           padding: const EdgeInsets.all(24),

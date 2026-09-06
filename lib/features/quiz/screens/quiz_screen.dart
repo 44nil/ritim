@@ -38,6 +38,7 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       backgroundColor: AppColors.cardCream,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const ScreenGradientBackground(),
           SafeArea(

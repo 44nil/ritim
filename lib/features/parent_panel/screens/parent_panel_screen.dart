@@ -48,7 +48,7 @@ class ParentPanelScreen extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
       ),
-      body: Stack(children: [
+      body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
         SafeArea(child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),

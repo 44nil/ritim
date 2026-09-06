@@ -19,6 +19,7 @@ class ArticleDetailScreen extends StatelessWidget {
         iconTheme: IconThemeData(color: AppColors.ink),
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const ScreenGradientBackground(),
           SafeArea(

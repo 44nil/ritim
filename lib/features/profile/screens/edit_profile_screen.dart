@@ -38,7 +38,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         elevation: 0,
         iconTheme: IconThemeData(color: AppColors.ink),
       ),
-      body: Stack(children: [
+      body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
         SafeArea(child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),

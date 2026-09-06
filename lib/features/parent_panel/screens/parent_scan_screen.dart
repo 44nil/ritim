@@ -49,7 +49,7 @@ class _ParentScanScreenState extends State<ParentScanScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('QR Tara', style: TextStyle(color: Colors.white)),
       ),
-      body: Stack(children: [
+      body: Stack(fit: StackFit.expand, children: [
         MobileScanner(onDetect: _onDetect),
         Positioned(
           left: 0, right: 0, bottom: 40,
@@ -83,7 +83,7 @@ class _ScanIntroScreen extends StatelessWidget {
         elevation: 0,
         iconTheme: IconThemeData(color: AppColors.ink),
       ),
-      body: Stack(children: [
+      body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
         SafeArea(child: Padding(
           padding: const EdgeInsets.all(28),

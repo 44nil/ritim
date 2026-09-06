@@ -41,6 +41,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
     return Scaffold(
       backgroundColor: AppColors.cardCream,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const ScreenGradientBackground(),
           SafeArea(
