@@ -759,9 +759,25 @@ class _PrivacyNoticePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
+          // Kurulum ekranında tüm KVKK metnini (şirket adresi dahil) doğrudan
+          // basmak yerine kısa bir özet + tam metne link gösteriyoruz — bu,
+          // Gizlilik Politikası/Kullanım Şartları'nın consent adımında zaten
+          // kullandığı link deseniyle tutarlı, ayrıca adres bilgisini her
+          // kurulumda zorunlu görünür kılmıyor.
           Text(
-            kKvkkAydinlatmaMetni,
+            'Yaşını, döngü bilgilerini ve istersen ruh hali/belirti notlarını, '
+            'döngünü takip edebilmen ve yaşına uygun genel bilgi sunabilmemiz '
+            'için kullanıyoruz. Hiçbir bilgi cihazından dışarı çıkmıyor, '
+            'satılmıyor ya da paylaşılmıyor.',
             style: TextStyle(fontSize: 13.5, height: 1.6, color: AppColors.inkOn(context).withValues(alpha: 0.8)),
+          ),
+          const SizedBox(height: 14),
+          GestureDetector(
+            onTap: () => context.pushNamed(RouteNames.privacyNotice),
+            child: Text(
+              'Tam KVKK Aydınlatma Metnini Oku',
+              style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppColors.primary, decoration: TextDecoration.underline),
+            ),
           ),
           const SizedBox(height: 40),
         ],
