@@ -34,15 +34,15 @@ class GuardianAssistGateStep extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Bir yetişkinle\nmi devam\nedelim?', style: TextStyle(
+          Text('Bir yetişkinle\nmi devam\nedelim?', style: TextStyle(
             fontSize: 30, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const SizedBox(height: 12),
           Text(
             'Bu yaşta bir ebeveyn ya da vasinin seninle kurulumu tamamlaması '
             'önerilir. İstersen tek başına da devam edebilirsin.',
-            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
           ),
           const SizedBox(height: 40),
           _ChoiceCard(
@@ -95,12 +95,12 @@ class _ChoiceCard extends StatelessWidget {
                 children: [
                   Text(label, style: TextStyle(
                     fontSize: 16, fontWeight: FontWeight.w600,
-                    color: AppColors.darkCard,
+                    color: AppColors.inkOn(context),
                   )),
                   if (description != null) ...[
                     const SizedBox(height: 4),
                     Text(description!, style: TextStyle(
-                      fontSize: 12.5, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.3,
+                      fontSize: 12.5, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.3,
                     )),
                   ],
                 ],
@@ -112,7 +112,7 @@ class _ChoiceCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isSelected ? AppColors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.darkCard.withValues(alpha: 0.2),
+                  color: isSelected ? AppColors.primary : AppColors.inkOn(context).withValues(alpha: 0.2),
                   width: 2,
                 ),
               ),

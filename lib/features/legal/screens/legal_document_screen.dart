@@ -20,8 +20,8 @@ class LegalDocumentScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
-        title: Text(title, style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
+        title: Text(title, style: AppTextStyles.heading(fontSize: 18, color: AppColors.inkOn(context))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           tooltip: 'Geri',
@@ -38,7 +38,7 @@ class LegalDocumentScreen extends StatelessWidget {
               const SizedBox(height: 20),
               Text(
                 body,
-                style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.ink.withValues(alpha: 0.85)),
+                style: TextStyle(fontSize: 14, height: 1.6, color: AppColors.inkOn(context).withValues(alpha: 0.85)),
               ),
             ],
           ),
@@ -63,12 +63,12 @@ class _DraftBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline_rounded, size: 18, color: AppColors.ink.withValues(alpha: 0.7)),
+          Icon(Icons.info_outline_rounded, size: 18, color: AppColors.inkOn(context).withValues(alpha: 0.7)),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               kLegalDraftDisclaimer,
-              style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.75), height: 1.4),
+              style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.75), height: 1.4),
             ),
           ),
         ],

@@ -68,6 +68,18 @@ abstract class AppColors {
   static const mistyRose = Color(0xFFFFE4E1);
   static Color get cardTranslucent => mistyRose;
 
+  // ─── Karanlık moda duyarlı erişimciler ────────────────────────────────
+  // ink/cardCream/cardTranslucent/cardPink hepsi "nötr metin/kart" ailesi —
+  // koyu temada tek tek isDark kontrolü tekrarlamak yerine buradan çözülür.
+  static Color inkOn(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? onSurfaceDark : ink;
+  static Color cardOn(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? surfaceVariantDark : cardCream;
+  static Color translucentOn(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? surfaceVariantDark : cardTranslucent;
+  static Color cardPinkOn(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? surfaceVariantDark : cardPink;
+
   // ─── Hero header gradient (soft pastel, tab üstlerinde) ─────────────────
   static const heroPink = Color(0xFFF9C4D2);
   static const heroPeach = Color(0xFFFDD6A8);

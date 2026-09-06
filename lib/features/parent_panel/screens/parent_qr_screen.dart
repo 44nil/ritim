@@ -57,13 +57,13 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
-        title: Text('Veliye Göster', style: AppTextStyles.heading(fontSize: 20, color: AppColors.ink)),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
+        title: Text('Veliye Göster', style: AppTextStyles.heading(fontSize: 20, color: AppColors.inkOn(context))),
       ),
       body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
@@ -76,7 +76,7 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
               'uygulaması bu kodu tanımaz, sadece uygulamanın kendi tarayıcısı '
               'çalışır). Ruh hali, semptom ya da notların bu kodda hiç yer '
               'almaz, sadece döngü genel bakışı paylaşılır.',
-              style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5),
+              style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5),
             ),
             const SizedBox(height: 28),
             Expanded(
@@ -86,7 +86,7 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: AppColors.cardCream,
+                            color: AppColors.cardOn(context),
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 20, offset: const Offset(0, 6)),
@@ -104,20 +104,20 @@ class _ParentQrScreenState extends ConsumerState<ParentQrScreen> {
                           child: Row(mainAxisSize: MainAxisSize.min, children: [
                             Icon(Icons.info_outline_rounded, size: 14, color: AppColors.warmOrange),
                             const SizedBox(width: 6),
-                            Text('Kamera değil, uygulamadaki "QR Tara"', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.7))),
+                            Text('Kamera değil, uygulamadaki "QR Tara"', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.7))),
                           ]),
                         ),
                         const SizedBox(height: 12),
-                        Text('$_secondsLeft saniye sonra kaybolur', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55))),
+                        Text('$_secondsLeft saniye sonra kaybolur', style: TextStyle(fontSize: 12, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
                       ])
                     : Column(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.timer_off_outlined, size: 40, color: AppColors.ink.withValues(alpha: 0.3)),
+                        Icon(Icons.timer_off_outlined, size: 40, color: AppColors.inkOn(context).withValues(alpha: 0.3)),
                         const SizedBox(height: 12),
-                        Text('Kodun süresi doldu', style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
+                        Text('Kodun süresi doldu', style: AppTextStyles.heading(fontSize: 18, color: AppColors.inkOn(context))),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _generate,
-                          style: ElevatedButton.styleFrom(backgroundColor: AppColors.ink, foregroundColor: Colors.white),
+                          style: ElevatedButton.styleFrom(backgroundColor: AppColors.inkOn(context), foregroundColor: Colors.white),
                           child: const Text('Yeni Kod Oluştur'),
                         ),
                       ]),

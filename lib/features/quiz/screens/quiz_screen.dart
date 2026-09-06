@@ -36,7 +36,7 @@ class _QuizScreenState extends State<QuizScreen> {
     final q = QuizData.questions[_questionIndex];
 
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -49,7 +49,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text('Öğren &\nTest Et', style: AppTextStyles.heading(fontSize: 32, color: AppColors.ink)),
+                    child: Text('Öğren &\nTest Et', style: AppTextStyles.heading(fontSize: 32, color: AppColors.inkOn(context))),
                   ),
                   const SizedBox(height: 4),
                   Padding(
@@ -70,7 +70,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text('Günün Sorusu', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.softPink)),
                         const SizedBox(height: 14),
-                        Text(q.question, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink, height: 1.4)),
+                        Text(q.question, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.inkOn(context), height: 1.4)),
                         const SizedBox(height: 18),
                         ...q.options.asMap().entries.map((e) {
                           final i = e.key;
@@ -80,16 +80,16 @@ class _QuizScreenState extends State<QuizScreen> {
                           Color bg; Color textCol;
                           if (!_answered) {
                             bg = Colors.white.withValues(alpha: 0.85);
-                            textCol = AppColors.ink;
+                            textCol = AppColors.inkOn(context);
                           } else if (isCorrect) {
                             bg = const Color(0xFFD4EDDA);
                             textCol = const Color(0xFF155724);
                           } else if (isSelected) {
-                            bg = AppColors.cardPink;
-                            textCol = AppColors.ink.withValues(alpha: 0.5);
+                            bg = AppColors.cardPinkOn(context);
+                            textCol = AppColors.inkOn(context).withValues(alpha: 0.5);
                           } else {
-                            bg = AppColors.cardCream.withValues(alpha: 0.5);
-                            textCol = AppColors.ink.withValues(alpha: 0.3);
+                            bg = AppColors.cardOn(context).withValues(alpha: 0.5);
+                            textCol = AppColors.inkOn(context).withValues(alpha: 0.3);
                           }
 
                           return Padding(
@@ -113,7 +113,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                       color: AppColors.softPink.withValues(alpha: _answered ? 0.15 : 0.25),
                                     ),
                                     alignment: Alignment.center,
-                                    child: Text(String.fromCharCode(65 + i), style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: AppColors.ink.withValues(alpha: 0.7))),
+                                    child: Text(String.fromCharCode(65 + i), style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: AppColors.inkOn(context).withValues(alpha: 0.7))),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(child: Text(e.value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textCol))),
@@ -134,17 +134,17 @@ class _QuizScreenState extends State<QuizScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Container(
                         padding: const EdgeInsets.all(18),
-                        decoration: BoxDecoration(color: AppColors.cardCream, borderRadius: BorderRadius.circular(20)),
+                        decoration: BoxDecoration(color: AppColors.cardOn(context), borderRadius: BorderRadius.circular(20)),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text('Açıklama', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.warmOrange)),
                           const SizedBox(height: 8),
-                          Text(q.explanation, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
+                          Text(q.explanation, style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5)),
                           const SizedBox(height: 14),
                           GestureDetector(
                             onTap: _nextQuestion,
                             child: Container(
                               width: double.infinity, height: 48,
-                              decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(24)),
+                              decoration: BoxDecoration(color: AppColors.inkOn(context), borderRadius: BorderRadius.circular(24)),
                               alignment: Alignment.center,
                               child: Text('Sonraki Soru', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
                             ),

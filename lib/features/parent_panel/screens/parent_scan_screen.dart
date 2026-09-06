@@ -76,12 +76,12 @@ class _ScanIntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
       ),
       body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
@@ -116,7 +116,7 @@ class _ScanIntroScreen extends StatelessWidget {
                 height: 54,
                 child: ElevatedButton(
                   onPressed: onStart,
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.ink, foregroundColor: Colors.white),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.inkOn(context), foregroundColor: Colors.white),
                   child: const Text('Taramaya Başla', style: TextStyle(fontSize: 16)),
                 ),
               ),

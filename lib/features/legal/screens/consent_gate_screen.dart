@@ -31,14 +31,14 @@ class ConsentGateStep extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Son bir şey:\nrızan', style: TextStyle(
+          Text('Son bir şey:\nrızan', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const SizedBox(height: 12),
           Text(
             'Devam etmeden önce, verilerinin nasıl kullanıldığını onaylaman gerekiyor.',
-            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
           ),
           const SizedBox(height: 32),
           Semantics(
@@ -66,7 +66,7 @@ class ConsentGateStep extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: checked ? AppColors.primary : Colors.transparent,
                       border: Border.all(
-                        color: checked ? AppColors.primary : AppColors.darkCard.withValues(alpha: 0.3),
+                        color: checked ? AppColors.primary : AppColors.inkOn(context).withValues(alpha: 0.3),
                         width: 2,
                       ),
                     ),
@@ -80,7 +80,7 @@ class ConsentGateStep extends StatelessWidget {
                       'Regl döngüm, ruh halim ve belirtilerimle ilgili bilgilerin '
                       'KVKK Aydınlatma Metni\'nde açıklanan şekilde Ritim tarafından '
                       'işlenmesini kabul ediyorum.',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.darkCard, height: 1.4),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.inkOn(context), height: 1.4),
                     ),
                   ),
                 ],
@@ -92,7 +92,7 @@ class ConsentGateStep extends StatelessWidget {
             spacing: 4,
             children: [
               _LinkText(label: 'Gizlilik Politikası', onTap: onOpenPrivacyPolicy),
-              Text('ve', style: TextStyle(fontSize: 13, color: AppColors.darkCard.withValues(alpha: 0.5))),
+              Text('ve', style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
               _LinkText(label: 'Kullanım Şartları', onTap: onOpenTerms),
             ],
           ),

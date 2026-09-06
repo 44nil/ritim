@@ -39,7 +39,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -56,7 +56,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                       'Okuma\nKöşesi',
                       style: AppTextStyles.heading(
                         fontSize: 32,
-                        color: AppColors.ink,
+                        color: AppColors.inkOn(context),
                       ),
                     ),
                   ),
@@ -92,7 +92,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: isActive
-                                    ? AppColors.ink
+                                    ? AppColors.inkOn(context)
                                     : Colors.white.withValues(alpha: 0.7),
                                 borderRadius: BorderRadius.circular(24),
                               ),
@@ -103,7 +103,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                   fontWeight: FontWeight.w600,
                                   color: isActive
                                       ? Colors.white
-                                      : AppColors.ink.withValues(alpha: 0.5),
+                                      : AppColors.inkOn(context).withValues(alpha: 0.5),
                                 ),
                               ),
                             ),
@@ -133,7 +133,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.ink.withValues(alpha: 0.5),
+                                color: AppColors.inkOn(context).withValues(alpha: 0.5),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -141,7 +141,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                               _featured.title,
                               style: AppTextStyles.heading(
                                 fontSize: 22,
-                                color: AppColors.ink,
+                                color: AppColors.inkOn(context),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -149,7 +149,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                               _featured.subtitle,
                               style: TextStyle(
                                 fontSize: 13,
-                                color: AppColors.ink.withValues(alpha: 0.5),
+                                color: AppColors.inkOn(context).withValues(alpha: 0.5),
                                 height: 1.5,
                               ),
                             ),
@@ -160,7 +160,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                   _featured.readTime,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: AppColors.ink.withValues(alpha: 0.55),
+                                    color: AppColors.inkOn(context).withValues(alpha: 0.55),
                                   ),
                                 ),
                                 const Spacer(),
@@ -170,7 +170,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                     horizontal: 20,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.ink,
+                                    color: AppColors.inkOn(context),
                                     borderRadius: BorderRadius.circular(22),
                                   ),
                                   alignment: Alignment.center,
@@ -198,7 +198,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                       'Tüm Makaleler',
                       style: AppTextStyles.heading(
                         fontSize: 20,
-                        color: AppColors.ink,
+                        color: AppColors.inkOn(context),
                       ),
                     ),
                   ),
@@ -215,7 +215,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: AppColors.cardTranslucent,
+                            color: AppColors.translucentOn(context),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -232,7 +232,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                 child: Icon(
                                   a.icon,
                                   size: 24,
-                                  color: AppColors.ink.withValues(alpha: 0.6),
+                                  color: AppColors.inkOn(context).withValues(alpha: 0.6),
                                 ),
                               ),
                               const SizedBox(width: 14),
@@ -245,7 +245,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.ink,
+                                        color: AppColors.inkOn(context),
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -255,7 +255,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                       a.subtitle,
                                       style: TextStyle(
                                         fontSize: 11,
-                                        color: AppColors.ink.withValues(
+                                        color: AppColors.inkOn(context).withValues(
                                           alpha: 0.55,
                                         ),
                                       ),
@@ -278,7 +278,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                           a.readTime,
                                           style: TextStyle(
                                             fontSize: 10,
-                                            color: AppColors.ink.withValues(
+                                            color: AppColors.inkOn(context).withValues(
                                               alpha: 0.55,
                                             ),
                                           ),
@@ -293,7 +293,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                                 height: 36,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: AppColors.ink,
+                                  color: AppColors.inkOn(context),
                                 ),
                                 child: const Icon(
                                   Icons.arrow_forward_rounded,

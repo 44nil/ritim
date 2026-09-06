@@ -39,7 +39,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       body: Center(
         child: Icon(Icons.favorite_rounded, color: AppColors.softPink.withValues(alpha: 0.5), size: 48),
       ),

@@ -25,39 +25,39 @@ class _CycleSettingsScreenState extends ConsumerState<CycleSettingsScreen> {
     final isMeasured = cycle.canPredict;
 
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
       ),
       body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
         SafeArea(child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Döngü\nAyarları', style: AppTextStyles.heading(fontSize: 28, color: AppColors.ink)),
+            Text('Döngü\nAyarları', style: AppTextStyles.heading(fontSize: 28, color: AppColors.inkOn(context))),
             const SizedBox(height: 24),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.85), borderRadius: BorderRadius.circular(20)),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Ortalama döngü uzunluğu', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+                Text('Ortalama döngü uzunluğu', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.6))),
                 const SizedBox(height: 4),
                 Text(
                   isMeasured
                       ? 'Bu, kayıtlarından hesaplanan gerçek bir ortalama — elle değiştirilemez.'
                       : 'Henüz yeterli kayıt yok, bu senin verdiğin bir tahmin. Değiştirebilirsin.',
-                  style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55)),
+                  style: TextStyle(fontSize: 12, color: AppColors.inkOn(context).withValues(alpha: 0.55)),
                 ),
                 const SizedBox(height: 16),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   if (!isMeasured) _StepBtn(icon: Icons.remove_rounded, semanticLabel: 'Azalt', onTap: () => setState(() => _length = (_length - 1).clamp(21, 45))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('${isMeasured ? cycle.averageCycleLength : _length} gün', style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
+                    child: Text('${isMeasured ? cycle.averageCycleLength : _length} gün', style: AppTextStyles.heading(fontSize: 24, color: AppColors.inkOn(context))),
                   ),
                   if (!isMeasured) _StepBtn(icon: Icons.add_rounded, semanticLabel: 'Artır', onTap: () => setState(() => _length = (_length + 1).clamp(21, 45))),
                 ]),
@@ -72,7 +72,7 @@ class _CycleSettingsScreenState extends ConsumerState<CycleSettingsScreen> {
                     ref.read(cycleProvider.notifier).setReportedCycleLength(_length);
                     Navigator.of(context).pop();
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.ink, foregroundColor: Colors.white),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.inkOn(context), foregroundColor: Colors.white),
                   child: const Text('Kaydet', style: TextStyle(fontSize: 16)),
                 ),
               ),

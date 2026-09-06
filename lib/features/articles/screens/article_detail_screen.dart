@@ -11,12 +11,12 @@ class ArticleDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -38,7 +38,7 @@ class ArticleDetailScreen extends StatelessWidget {
                     child: Icon(
                       article.icon,
                       size: 28,
-                      color: AppColors.ink.withValues(alpha: 0.7),
+                      color: AppColors.inkOn(context).withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -58,7 +58,7 @@ class ArticleDetailScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.ink.withValues(alpha: 0.75),
+                            color: AppColors.inkOn(context).withValues(alpha: 0.75),
                           ),
                         ),
                       ),
@@ -67,7 +67,7 @@ class ArticleDetailScreen extends StatelessWidget {
                         article.readTime,
                         style: TextStyle(
                           fontSize: 12.5,
-                          color: AppColors.ink.withValues(alpha: 0.55),
+                          color: AppColors.inkOn(context).withValues(alpha: 0.55),
                         ),
                       ),
                     ],
@@ -77,11 +77,11 @@ class ArticleDetailScreen extends StatelessWidget {
                     article.title,
                     style: AppTextStyles.heading(
                       fontSize: 26,
-                      color: AppColors.ink,
+                      color: AppColors.inkOn(context),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  ..._buildSections(article.body, isChecklist: article.isChecklist),
+                  ..._buildSections(context, article.body, isChecklist: article.isChecklist),
                 ],
               ),
             ),
@@ -98,7 +98,7 @@ class ArticleDetailScreen extends StatelessWidget {
 /// listesine (bkz. _ChecklistRow) dönüşür. Başlıksız bölümler (giriş/kapanış
 /// paragrafları) her iki türde de düz akan metin olarak kalır — kullanıcı
 /// "çok düz duruyor" geri bildirimi üzerine seçildi.
-List<Widget> _buildSections(List<ArticleSection> sections, {bool isChecklist = false}) {
+List<Widget> _buildSections(BuildContext context, List<ArticleSection> sections, {bool isChecklist = false}) {
   var stepIndex = 0;
   return sections.map((section) {
     if (section.heading == null) {
@@ -109,7 +109,7 @@ List<Widget> _buildSections(List<ArticleSection> sections, {bool isChecklist = f
           style: TextStyle(
             fontSize: 15,
             height: 1.6,
-            color: AppColors.ink.withValues(alpha: 0.75),
+            color: AppColors.inkOn(context).withValues(alpha: 0.75),
           ),
         ),
       );
@@ -183,14 +183,14 @@ class _ChecklistRowState extends State<_ChecklistRow> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.ink,
+                      color: AppColors.inkOn(context),
                       decoration: _checked ? TextDecoration.lineThrough : TextDecoration.none,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     widget.text,
-                    style: TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.ink.withValues(alpha: 0.65)),
+                    style: TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.inkOn(context).withValues(alpha: 0.65)),
                   ),
                 ],
               ),
@@ -249,7 +249,7 @@ class _StepCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.ink,
+                    color: AppColors.inkOn(context),
                   ),
                 ),
               ),
@@ -261,7 +261,7 @@ class _StepCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               height: 1.55,
-              color: AppColors.ink.withValues(alpha: 0.7),
+              color: AppColors.inkOn(context).withValues(alpha: 0.7),
             ),
           ),
         ],

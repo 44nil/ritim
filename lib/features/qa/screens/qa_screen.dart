@@ -15,7 +15,7 @@ class QaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -27,7 +27,7 @@ class QaScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  Text('Uzman\nPaneli', style: AppTextStyles.heading(fontSize: 32, color: AppColors.ink)),
+                  Text('Uzman\nPaneli', style: AppTextStyles.heading(fontSize: 32, color: AppColors.inkOn(context))),
                   const SizedBox(height: 4),
                   Text('yakında burada.', style: AppTextStyles.accent(fontSize: 18, color: AppColors.softPink)),
                   const SizedBox(height: 32),
@@ -38,13 +38,13 @@ class QaScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.hourglass_top_rounded, color: AppColors.softPink, size: 28),
                         const SizedBox(height: 14),
-                        Text('Bu bölüm henüz hazır değil', style: AppTextStyles.heading(fontSize: 18, color: AppColors.ink)),
+                        Text('Bu bölüm henüz hazır değil', style: AppTextStyles.heading(fontSize: 18, color: AppColors.inkOn(context))),
                         const SizedBox(height: 8),
                         Text(
                           'Gerçek bir uzman tarafından onaylanmış soru-cevap içeriği '
                           'burada yayınlanmadan önce göstermek istemedik. Hazır olduğunda '
                           'bu bölüm gerçek, onaylı içerikle güncellenecek.',
-                          style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5),
+                          style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5),
                         ),
                       ],
                     ),

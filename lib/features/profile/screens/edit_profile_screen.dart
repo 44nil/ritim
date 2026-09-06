@@ -31,21 +31,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
       ),
       body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
         SafeArea(child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Profili\nDüzenle', style: AppTextStyles.heading(fontSize: 28, color: AppColors.ink)),
+            Text('Profili\nDüzenle', style: AppTextStyles.heading(fontSize: 28, color: AppColors.inkOn(context))),
             const SizedBox(height: 24),
-            Text('İsim', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.5))),
+            Text('İsim', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
             const SizedBox(height: 8),
             TextField(
               controller: _controller,
@@ -62,7 +62,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               width: double.infinity, height: 54,
               child: ElevatedButton(
                 onPressed: _save,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.ink, foregroundColor: Colors.white),
+                style: ElevatedButton.styleFrom(backgroundColor: AppColors.inkOn(context), foregroundColor: Colors.white),
                 child: const Text('Kaydet', style: TextStyle(fontSize: 16)),
               ),
             ),

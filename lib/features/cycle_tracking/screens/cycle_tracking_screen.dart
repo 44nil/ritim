@@ -73,7 +73,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
     final phase = MockCycleData.phaseForDay(cycle.currentCycleDay, cycleLength: cycle.averageCycleLength);
 
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -95,19 +95,19 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         width: 44, height: 44,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.cardCream,
+                          color: AppColors.cardOn(context),
                           border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 2),
                         ),
                         child: Center(child: Text(
                           cycle.userName.isNotEmpty ? cycle.userName[0].toUpperCase() : '?',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.ink),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.inkOn(context)),
                         )),
                       ),
                       const SizedBox(width: 12),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(
                           cycle.userName.isNotEmpty ? 'Merhaba, ${cycle.userName}' : 'Merhaba!',
-                          style: AppTextStyles.heading(fontSize: 22, color: AppColors.ink),
+                          style: AppTextStyles.heading(fontSize: 22, color: AppColors.inkOn(context)),
                         ),
                         Text('Bugün nasıl hissediyorsun?', style: AppTextStyles.accent(fontSize: 16, color: AppColors.softPink)),
                       ])),
@@ -133,24 +133,24 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         // regl daha başlamadan sanki başlamış gibi bir izlenim veriyordu.
                         // İlk kayıt oluşana kadar nötr, tatlı bir bekleme mesajı gösterelim.
                         if (cycle.periods.isEmpty) ...[
-                          Text('Henüz kayıt yok', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
+                          Text('Henüz kayıt yok', style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
                           const SizedBox(height: 4),
-                          Text('Takip Zamanı', style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+                          Text('Takip Zamanı', style: AppTextStyles.heading(fontSize: 26, color: AppColors.inkOn(context))),
                           const SizedBox(height: 8),
                           Text(
                             'Reglin başladığında aşağıdaki butona dokunarak ilk kaydını oluşturabilirsin. Acele etmene gerek yok.',
-                            style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5),
+                            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5),
                           ),
                         ] else ...[
-                          Text('${cycle.currentCycleDay}. gün', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
+                          Text('${cycle.currentCycleDay}. gün', style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
                           const SizedBox(height: 4),
-                          Text(phase.friendlyLabel ?? phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+                          Text(phase.friendlyLabel ?? phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.inkOn(context))),
                           if (phase.friendlyLabel != null) ...[
                             const SizedBox(height: 2),
-                            Text('(${phase.label} faz)', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
+                            Text('(${phase.label} faz)', style: TextStyle(fontSize: 11, color: AppColors.inkOn(context).withValues(alpha: 0.4))),
                           ],
                           const SizedBox(height: 8),
-                          Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
+                          Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5)),
                         ],
                         const SizedBox(height: 12),
                         // Reglin ne zaman başladı / sonraki tahmini ne zaman
@@ -169,7 +169,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                               color: Colors.white.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Text(info, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.7))),
+                            child: Text(info, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.7))),
                           );
                         }),
                         const SizedBox(height: 16),
@@ -194,7 +194,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                             child: Container(
                               height: 48,
                               decoration: BoxDecoration(
-                                color: AppColors.ink,
+                                color: AppColors.inkOn(context),
                                 borderRadius: BorderRadius.circular(24),
                               ),
                               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -219,7 +219,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       Expanded(
                         child: Text(
                           DateFormat('MMMM yyyy', 'tr_TR').format(_displayedMonth),
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.inkOn(context)),
                         ),
                       ),
                       _CalendarNavButton(icon: Icons.chevron_left_rounded, semanticLabel: 'Önceki ay', onTap: () => _changeMonth(-1)),
@@ -244,7 +244,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   // ardından gelir.
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text('Bugünü Kaydet', style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
+                    child: Text('Bugünü Kaydet', style: AppTextStyles.heading(fontSize: 24, color: AppColors.inkOn(context))),
                   ),
                   const SizedBox(height: 14),
 
@@ -254,7 +254,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppColors.cardTranslucent,
+                        color: AppColors.translucentOn(context),
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
@@ -263,9 +263,9 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         // Ruh hali
                         Row(children: [
-                          Icon(Icons.mood_outlined, size: 18, color: AppColors.ink.withValues(alpha: 0.5)),
+                          Icon(Icons.mood_outlined, size: 18, color: AppColors.inkOn(context).withValues(alpha: 0.5)),
                           const SizedBox(width: 8),
-                          Text('Ruh Hali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+                          Text('Ruh Hali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.6))),
                         ]),
                         const SizedBox(height: 12),
                         Builder(builder: (ctx) {
@@ -362,7 +362,7 @@ class _SmallButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.softPink.withValues(alpha: 0.15),
         ),
-        child: Icon(icon, size: 20, color: AppColors.ink.withValues(alpha: 0.5)),
+        child: Icon(icon, size: 20, color: AppColors.inkOn(context).withValues(alpha: 0.5)),
       ),
     ));
   }
@@ -381,7 +381,7 @@ class _SchoolBagReminderCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.cardTranslucent,
+          color: AppColors.translucentOn(context),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
@@ -391,14 +391,14 @@ class _SchoolBagReminderCard extends StatelessWidget {
           Container(
             width: 40, height: 40,
             decoration: BoxDecoration(color: AppColors.warmOrange.withValues(alpha: 0.15), shape: BoxShape.circle),
-            child: Icon(article.icon, size: 20, color: AppColors.ink.withValues(alpha: 0.7)),
+            child: Icon(article.icon, size: 20, color: AppColors.inkOn(context).withValues(alpha: 0.7)),
           ),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Okul çantan hazır mı?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink)),
-            Text('Kontrol listesine bak', style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.55))),
+            Text('Okul çantan hazır mı?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.inkOn(context))),
+            Text('Kontrol listesine bak', style: TextStyle(fontSize: 11.5, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
           ])),
-          Icon(Icons.chevron_right_rounded, color: AppColors.ink.withValues(alpha: 0.3)),
+          Icon(Icons.chevron_right_rounded, color: AppColors.inkOn(context).withValues(alpha: 0.3)),
         ]),
       ),
     );
@@ -547,10 +547,10 @@ void _showMedications(BuildContext context, {DateTime? date}) {
         padding: const EdgeInsets.only(bottom: 10),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(color: AppColors.cardCream, borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(color: AppColors.cardOn(context), borderRadius: BorderRadius.circular(16)),
           child: Row(children: [
-            Expanded(child: Text(name, style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.ink))),
-            Text('${counts[name] ?? 0}x', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink.withValues(alpha: 0.5))),
+            Expanded(child: Text(name, style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.inkOn(context)))),
+            Text('${counts[name] ?? 0}x', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
             const SizedBox(width: 10),
             _StepperBtn(icon: Icons.remove_rounded, onTap: () => adjust(name, -1)),
             const SizedBox(width: 6),
@@ -729,7 +729,7 @@ class _MoodPickerState extends State<_MoodPicker> {
         ),
       ),
       const SizedBox(height: 6),
-      Text(_mood ?? 'Nasıl hissediyorsun?', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.65))),
+      Text(_mood ?? 'Nasıl hissediyorsun?', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.65))),
       const SizedBox(height: 14),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _moods.map((m) {
         final isSelected = _mood == m.$1;
@@ -740,13 +740,13 @@ class _MoodPickerState extends State<_MoodPicker> {
             width: 44, height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected ? AppColors.ink : Colors.white.withValues(alpha: 0.7),
-              border: Border.all(color: isSelected ? AppColors.ink : AppColors.softPink.withValues(alpha: 0.3)),
+              color: isSelected ? AppColors.inkOn(context) : Colors.white.withValues(alpha: 0.7),
+              border: Border.all(color: isSelected ? AppColors.inkOn(context) : AppColors.softPink.withValues(alpha: 0.3)),
               boxShadow: isSelected ? null : [
                 BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 2)),
               ],
             ),
-            child: Icon(m.$2, size: 20, color: isSelected ? Colors.white : AppColors.ink.withValues(alpha: 0.4)),
+            child: Icon(m.$2, size: 20, color: isSelected ? Colors.white : AppColors.inkOn(context).withValues(alpha: 0.4)),
           ),
         );
       }).toList()),
@@ -781,7 +781,7 @@ class _WaterGaugeState extends State<_WaterGauge> {
       Row(children: [
         Icon(Icons.water_drop_outlined, size: 16, color: AppColors.softPink),
         const SizedBox(width: 6),
-        Text('Su', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+        Text('Su', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.6))),
       ]),
       const SizedBox(height: 10),
       Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -808,8 +808,8 @@ class _WaterGaugeState extends State<_WaterGauge> {
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           RichText(text: TextSpan(children: [
-            TextSpan(text: '$drunk/$goal', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink)),
-            TextSpan(text: ' bardak', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55))),
+            TextSpan(text: '$drunk/$goal', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.inkOn(context))),
+            TextSpan(text: ' bardak', style: TextStyle(fontSize: 12, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
           ])),
           const SizedBox(height: 8),
           Row(children: [
@@ -851,7 +851,7 @@ class _QuickLogDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 18),
-      child: Container(height: 1, color: AppColors.ink.withValues(alpha: 0.06)),
+      child: Container(height: 1, color: AppColors.inkOn(context).withValues(alpha: 0.06)),
     );
   }
 }
@@ -877,7 +877,7 @@ class _SleepStepper extends ConsumerWidget {
       Row(children: [
         Icon(Icons.nightlight_outlined, size: 16, color: AppColors.softPink),
         const SizedBox(width: 6),
-        Text('Uyku', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+        Text('Uyku', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.6))),
         const SizedBox(width: 4),
         GestureDetector(
           onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -885,13 +885,13 @@ class _SleepStepper extends ConsumerWidget {
             behavior: SnackBarBehavior.floating,
             backgroundColor: AppColors.softPink,
           )),
-          child: Icon(Icons.info_outline_rounded, size: 13, color: AppColors.ink.withValues(alpha: 0.3)),
+          child: Icon(Icons.info_outline_rounded, size: 13, color: AppColors.inkOn(context).withValues(alpha: 0.3)),
         ),
       ]),
       const SizedBox(height: 10),
       RichText(text: TextSpan(children: [
-        TextSpan(text: hours != null ? _format(hours) : '—', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.ink)),
-        if (hours != null) TextSpan(text: ' saat', style: TextStyle(fontSize: 12, color: AppColors.ink.withValues(alpha: 0.55))),
+        TextSpan(text: hours != null ? _format(hours) : '—', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.inkOn(context))),
+        if (hours != null) TextSpan(text: ' saat', style: TextStyle(fontSize: 12, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
       ])),
       const SizedBox(height: 8),
       Row(children: [
@@ -901,7 +901,7 @@ class _SleepStepper extends ConsumerWidget {
       ]),
       const SizedBox(height: 6),
       // 13-18 yaş için AASM/AAP önerisi — bkz. docs/content-sources.md.
-      Text('Önerilen: 8-10 saat', style: TextStyle(fontSize: 10, color: AppColors.ink.withValues(alpha: 0.5))),
+      Text('Önerilen: 8-10 saat', style: TextStyle(fontSize: 10, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
     ]);
   }
 }
@@ -919,11 +919,11 @@ class _QuickLogAction extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Row(children: [
-        Icon(icon, size: 18, color: AppColors.ink.withValues(alpha: 0.5)),
+        Icon(icon, size: 18, color: AppColors.inkOn(context).withValues(alpha: 0.5)),
         const SizedBox(width: 8),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
-          Text(caption, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.55))),
+          Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkOn(context))),
+          Text(caption, style: TextStyle(fontSize: 11, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
         ])),
       ]),
     );
@@ -952,7 +952,7 @@ class _MonthCalendar extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.cardTranslucent,
+        color: AppColors.translucentOn(context),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
@@ -965,7 +965,7 @@ class _MonthCalendar extends StatelessWidget {
             children: const ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
                 .map((d) => Expanded(
                       child: Center(
-                        child: Text(d, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.35))),
+                        child: Text(d, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.35))),
                       ),
                     ))
                 .toList(),
@@ -1015,7 +1015,7 @@ class _CalendarNavButton extends StatelessWidget {
       child: Container(
         width: 30, height: 30,
         decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.softPink.withValues(alpha: 0.12)),
-        child: Icon(icon, size: 18, color: AppColors.ink.withValues(alpha: 0.6)),
+        child: Icon(icon, size: 18, color: AppColors.inkOn(context).withValues(alpha: 0.6)),
       ),
     ));
   }
@@ -1031,7 +1031,7 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color? background;
-    Color textColor = AppColors.ink.withValues(alpha: 0.7);
+    Color textColor = AppColors.inkOn(context).withValues(alpha: 0.7);
     Border? border;
 
     if (isPeriod) {
@@ -1042,7 +1042,7 @@ class _DayCell extends StatelessWidget {
       textColor = AppColors.phaseMenstruation;
     } else if (isToday) {
       background = AppColors.softPink.withValues(alpha: 0.25);
-      textColor = AppColors.ink;
+      textColor = AppColors.inkOn(context);
     }
 
     return Padding(
@@ -1080,7 +1080,7 @@ class _LegendDot extends StatelessWidget {
         ),
       ),
       const SizedBox(width: 6),
-      Text(label, style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.5))),
+      Text(label, style: TextStyle(fontSize: 11, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
     ]);
   }
 }
@@ -1119,7 +1119,7 @@ class _SymptomInsightsCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppColors.cardTranslucent,
+          color: AppColors.translucentOn(context),
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
@@ -1127,12 +1127,12 @@ class _SymptomInsightsCard extends StatelessWidget {
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Icon(Icons.insights_rounded, size: 18, color: AppColors.ink.withValues(alpha: 0.5)),
+            Icon(Icons.insights_rounded, size: 18, color: AppColors.inkOn(context).withValues(alpha: 0.5)),
             const SizedBox(width: 8),
-            Text('Kendi Ritmin', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink)),
+            Text('Kendi Ritmin', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.inkOn(context))),
           ]),
           const SizedBox(height: 4),
-          Text(caption, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.55), height: 1.3)),
+          Text(caption, style: TextStyle(fontSize: 11.5, color: AppColors.inkOn(context).withValues(alpha: 0.55), height: 1.3)),
           if (insights.isNotEmpty) ...[
             const SizedBox(height: 16),
             ...insights.map((insight) => Padding(
@@ -1157,10 +1157,10 @@ class _SymptomInsightRow extends StatelessWidget {
     return Row(children: [
       Container(width: 8, height: 8, decoration: BoxDecoration(shape: BoxShape.circle, color: phaseInfo.color)),
       const SizedBox(width: 10),
-      Expanded(child: Text(insight.symptom, style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: AppColors.ink))),
+      Expanded(child: Text(insight.symptom, style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: AppColors.inkOn(context)))),
       Text(
         '${insight.dominantCount}/${insight.totalCount} kez ${phaseInfo.friendlyLabel ?? phaseInfo.label}',
-        style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.6)),
+        style: TextStyle(fontSize: 11.5, color: AppColors.inkOn(context).withValues(alpha: 0.6)),
       ),
     ]);
   }

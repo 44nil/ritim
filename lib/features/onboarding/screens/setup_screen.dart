@@ -192,7 +192,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                           shape: BoxShape.circle,
                           color: Colors.white.withValues(alpha: 0.6),
                         ),
-                        child: const Icon(Icons.arrow_back_rounded, size: 18, color: AppColors.ink),
+                        child: Icon(Icons.arrow_back_rounded, size: 18, color: AppColors.inkOn(context)),
                       ),
                     ))
                   else
@@ -307,9 +307,9 @@ class _AgePage extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Kaç\nyaşındasın?', style: TextStyle(
+          Text('Kaç\nyaşındasın?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const Spacer(),
           // Büyük sayı göstergesi
@@ -332,8 +332,8 @@ class _AgePage extends StatelessWidget {
                         fontSize: val == age ? 48 : 28,
                         fontWeight: FontWeight.w800,
                         color: val == age
-                            ? AppColors.darkCard
-                            : AppColors.darkCard.withValues(alpha: 0.2),
+                            ? AppColors.inkOn(context)
+                            : AppColors.inkOn(context).withValues(alpha: 0.2),
                       ),
                     ),
                   );
@@ -368,14 +368,14 @@ class _PeriodStartedPage extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('İlk reglin\noldu mu?', style: TextStyle(
+          Text('İlk reglin\noldu mu?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const SizedBox(height: 12),
           Text(
             'Endişelenme, henüz olmadıysa da tamamen normal.',
-            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
           ),
           const SizedBox(height: 40),
           _OptionCard(
@@ -421,7 +421,7 @@ class _OptionCard extends StatelessWidget {
           children: [
             Expanded(child: Text(label, style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w600,
-              color: AppColors.darkCard,
+              color: AppColors.inkOn(context),
             ))),
             Container(
               width: 24, height: 24,
@@ -429,7 +429,7 @@ class _OptionCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isSelected ? AppColors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.darkCard.withValues(alpha: 0.2),
+                  color: isSelected ? AppColors.primary : AppColors.inkOn(context).withValues(alpha: 0.2),
                   width: 2,
                 ),
               ),
@@ -492,14 +492,14 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Son reglin\nne zaman\nbaşladı?', style: TextStyle(
+          Text('Son reglin\nne zaman\nbaşladı?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const SizedBox(height: 12),
           Text(
             'Tam tarihi bilmiyorsan yaklaşık seç.',
-            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
           ),
           const Spacer(),
           // 3 scroll picker yan yana: Gün — Ay — Yıl
@@ -521,7 +521,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
                       final val = i + 1;
                       return Center(child: Text('$val', style: TextStyle(
                         fontSize: val == _day ? 32 : 20, fontWeight: FontWeight.w700,
-                        color: val == _day ? AppColors.darkCard : AppColors.darkCard.withValues(alpha: 0.2),
+                        color: val == _day ? AppColors.inkOn(context) : AppColors.inkOn(context).withValues(alpha: 0.2),
                       )));
                     }),
                   ),
@@ -540,7 +540,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
                       final isSelected = e.key + 1 == _month;
                       return Center(child: Text(e.value, style: TextStyle(
                         fontSize: isSelected ? 22 : 16, fontWeight: FontWeight.w700,
-                        color: isSelected ? AppColors.darkCard : AppColors.darkCard.withValues(alpha: 0.2),
+                        color: isSelected ? AppColors.inkOn(context) : AppColors.inkOn(context).withValues(alpha: 0.2),
                       )));
                     }).toList(),
                   ),
@@ -559,7 +559,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
                       final val = now.year - i;
                       return Center(child: Text('$val', style: TextStyle(
                         fontSize: val == _year ? 28 : 20, fontWeight: FontWeight.w700,
-                        color: val == _year ? AppColors.darkCard : AppColors.darkCard.withValues(alpha: 0.2),
+                        color: val == _year ? AppColors.inkOn(context) : AppColors.inkOn(context).withValues(alpha: 0.2),
                       )));
                     }),
                   ),
@@ -594,14 +594,14 @@ class _CycleLengthPage extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Döngün\ngenelde kaç\ngün sürüyor?', style: TextStyle(
+          Text('Döngün\ngenelde kaç\ngün sürüyor?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const SizedBox(height: 12),
           Text(
             'Bilmiyorsan 28 gün varsayılan — sonra güncelleyebilirsin.',
-            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
           ),
           const Spacer(),
           Center(
@@ -627,8 +627,8 @@ class _CycleLengthPage extends StatelessWidget {
                             fontSize: val == length ? 48 : 28,
                             fontWeight: FontWeight.w800,
                             color: val == length
-                                ? AppColors.darkCard
-                                : AppColors.darkCard.withValues(alpha: 0.2),
+                                ? AppColors.inkOn(context)
+                                : AppColors.inkOn(context).withValues(alpha: 0.2),
                           ),
                         ),
                         if (val == length)
@@ -636,7 +636,7 @@ class _CycleLengthPage extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 8, left: 4),
                             child: Text('gün', style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500,
-                              color: AppColors.darkCard.withValues(alpha: 0.4),
+                              color: AppColors.inkOn(context).withValues(alpha: 0.4),
                             )),
                           ),
                       ],
@@ -673,28 +673,28 @@ class _NamePage extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Sana nasıl\nhitap\nedelim?', style: TextStyle(
+          Text('Sana nasıl\nhitap\nedelim?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const SizedBox(height: 12),
           Text(
             'Takma ad da olur, gerçek ismin de — seni temsil eden ne varsa.',
-            style: TextStyle(fontSize: 14, color: AppColors.darkCard.withValues(alpha: 0.5), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
           ),
           const SizedBox(height: 40),
           TextField(
             controller: controller,
             onChanged: (_) => onChanged(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 28, fontWeight: FontWeight.w700,
-              color: AppColors.ink,
+              color: AppColors.inkOn(context),
             ),
             decoration: InputDecoration(
               hintText: 'Adın...',
               hintStyle: TextStyle(
                 fontSize: 28, fontWeight: FontWeight.w700,
-                color: AppColors.darkCard.withValues(alpha: 0.15),
+                color: AppColors.inkOn(context).withValues(alpha: 0.15),
               ),
               border: InputBorder.none,
               enabledBorder: UnderlineInputBorder(
@@ -734,9 +734,9 @@ class _PrivacyNoticePage extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Önce seni\nbilgilendirelim', style: TextStyle(
+          Text('Önce seni\nbilgilendirelim', style: TextStyle(
             fontSize: 30, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.ink,
+            color: AppColors.inkOn(context),
           )),
           const SizedBox(height: 20),
           Container(
@@ -749,11 +749,11 @@ class _PrivacyNoticePage extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline_rounded, size: 16, color: AppColors.darkCard.withValues(alpha: 0.7)),
+                Icon(Icons.info_outline_rounded, size: 16, color: AppColors.inkOn(context).withValues(alpha: 0.7)),
                 const SizedBox(width: 10),
                 Expanded(child: Text(
                   kLegalDraftDisclaimer,
-                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.darkCard.withValues(alpha: 0.75), height: 1.4),
+                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.75), height: 1.4),
                 )),
               ],
             ),
@@ -761,7 +761,7 @@ class _PrivacyNoticePage extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             kKvkkAydinlatmaMetni,
-            style: TextStyle(fontSize: 13.5, height: 1.6, color: AppColors.darkCard.withValues(alpha: 0.8)),
+            style: TextStyle(fontSize: 13.5, height: 1.6, color: AppColors.inkOn(context).withValues(alpha: 0.8)),
           ),
           const SizedBox(height: 40),
         ],

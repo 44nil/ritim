@@ -68,23 +68,23 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final cycle = ref.watch(cycleProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
       ),
       body: Stack(fit: StackFit.expand, children: [
         const ScreenGradientBackground(),
         SafeArea(child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Bildirimler', style: AppTextStyles.heading(fontSize: 28, color: AppColors.ink)),
+            Text('Bildirimler', style: AppTextStyles.heading(fontSize: 28, color: AppColors.inkOn(context))),
             const SizedBox(height: 6),
             Text(
               'Sunucu yok — bunlar tamamen telefonunda planlanan yerel hatırlatmalar, hiçbir veri gönderilmez.',
-              style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5), height: 1.4),
+              style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
             ),
             const SizedBox(height: 24),
 
@@ -101,7 +101,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(14)),
                   child: Text(
                     '${cycle.dailyReminderHour.toString().padLeft(2, '0')}:${cycle.dailyReminderMinute.toString().padLeft(2, '0')}',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.ink.withValues(alpha: 0.7)),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.inkOn(context).withValues(alpha: 0.7)),
                   ),
                 ),
               ) : null,
@@ -120,7 +120,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 _StepBtn(icon: Icons.remove_rounded, semanticLabel: 'Azalt', onTap: () => _adjustPeriodDays(-1)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text('${cycle.periodReminderDaysBefore} gün önce', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.ink.withValues(alpha: 0.6))),
+                  child: Text('${cycle.periodReminderDaysBefore} gün önce', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.6))),
                 ),
                 _StepBtn(icon: Icons.add_rounded, semanticLabel: 'Artır', onTap: () => _adjustPeriodDays(1)),
               ]) : null,
@@ -154,8 +154,8 @@ class _NotificationCard extends StatelessWidget {
           Icon(icon, size: 20, color: AppColors.warmOrange),
           const SizedBox(width: 10),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink)),
-            Text(subtitle, style: TextStyle(fontSize: 11.5, color: AppColors.ink.withValues(alpha: 0.55))),
+            Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.inkOn(context))),
+            Text(subtitle, style: TextStyle(fontSize: 11.5, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
           ])),
           Switch(value: value, onChanged: onChanged, activeThumbColor: AppColors.softPink),
         ]),

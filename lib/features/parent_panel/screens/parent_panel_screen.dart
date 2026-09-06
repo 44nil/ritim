@@ -36,13 +36,13 @@ class ParentPanelScreen extends StatelessWidget {
     final ageMinutes = DateTime.now().difference(summary.generatedAt).inMinutes;
 
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.ink),
-        title: Text('Ebeveyn Paneli', style: AppTextStyles.heading(fontSize: 20, color: AppColors.ink)),
+        iconTheme: IconThemeData(color: AppColors.inkOn(context)),
+        title: Text('Ebeveyn Paneli', style: AppTextStyles.heading(fontSize: 20, color: AppColors.inkOn(context))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           tooltip: 'Geri',
@@ -54,16 +54,16 @@ class ParentPanelScreen extends StatelessWidget {
         SafeArea(child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Merhaba, Ebeveyn', style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+          Text('Merhaba, Ebeveyn', style: AppTextStyles.heading(fontSize: 26, color: AppColors.inkOn(context))),
           const SizedBox(height: 4),
           Text(
             '${summary.userName} adlı çocuğunuzun döngü takibini ve uygulamanın içerik güvencesini buradan görebilirsiniz.',
-            style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.4),
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.4),
           ),
           const SizedBox(height: 8),
           Text(
             ageMinutes < 1 ? 'Az önce tarandı' : '$ageMinutes dakika önce tarandı',
-            style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.55), fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 11, color: AppColors.inkOn(context).withValues(alpha: 0.55), fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 24),
 
@@ -71,7 +71,7 @@ class ParentPanelScreen extends StatelessWidget {
             Row(children: [
               Icon(Icons.water_drop_outlined, color: AppColors.softPink, size: 20),
               const SizedBox(width: 8),
-              Text('Döngü Genel Bakış', style: AppTextStyles.heading(fontSize: 16, color: AppColors.ink)),
+              Text('Döngü Genel Bakış', style: AppTextStyles.heading(fontSize: 16, color: AppColors.inkOn(context))),
             ]),
             const SizedBox(height: 16),
             _InfoRow(
@@ -93,14 +93,14 @@ class ParentPanelScreen extends StatelessWidget {
             Row(children: [
               Icon(Icons.shield_outlined, color: AppColors.warmOrange, size: 20),
               const SizedBox(width: 8),
-              Text('Uygulamada Neler Var, Neler Yok', style: AppTextStyles.heading(fontSize: 16, color: AppColors.ink)),
+              Text('Uygulamada Neler Var, Neler Yok', style: AppTextStyles.heading(fontSize: 16, color: AppColors.inkOn(context))),
             ]),
             const SizedBox(height: 14),
             ..._included.map((t) => _CheckRow(text: t, included: true)),
             const SizedBox(height: 6),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Divider(color: AppColors.ink.withValues(alpha: 0.08), height: 1),
+              child: Divider(color: AppColors.inkOn(context).withValues(alpha: 0.08), height: 1),
             ),
             const SizedBox(height: 6),
             ..._excluded.map((t) => _CheckRow(text: t, included: false)),
@@ -108,13 +108,13 @@ class ParentPanelScreen extends StatelessWidget {
           const SizedBox(height: 16),
 
           CleanCard(
-            color: AppColors.cardCream,
+            color: AppColors.cardOn(context),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(Icons.lock_outline_rounded, color: AppColors.ink.withValues(alpha: 0.5), size: 20),
+              Icon(Icons.lock_outline_rounded, color: AppColors.inkOn(context).withValues(alpha: 0.5), size: 20),
               const SizedBox(width: 12),
               Expanded(child: Text(
                 'Çocuğunuzun ruh hali, semptom ve günlük not girişleri kişiye özeldir ve bu panelde gösterilmez. Bu, ona dürüst ve açık kayıt tutabileceği bir alan tanımak için bilinçli bir tercihtir.',
-                style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.7), height: 1.5),
+                style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.7), height: 1.5),
               )),
             ]),
           ),
@@ -135,8 +135,8 @@ class _InfoRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(children: [
-        Expanded(child: Text(label, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5)))),
-        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.ink)),
+        Expanded(child: Text(label, style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.5)))),
+        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.inkOn(context))),
       ]),
     );
   }
@@ -158,7 +158,7 @@ class _CheckRow extends StatelessWidget {
           color: included ? AppColors.success : AppColors.error,
         ),
         const SizedBox(width: 10),
-        Expanded(child: Text(text, style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.75), height: 1.4))),
+        Expanded(child: Text(text, style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.75), height: 1.4))),
       ]),
     );
   }

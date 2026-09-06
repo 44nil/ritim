@@ -21,7 +21,7 @@ class ProfileScreen extends ConsumerWidget {
     final userName = cycle.userName;
 
     return Scaffold(
-      backgroundColor: AppColors.cardCream,
+      backgroundColor: AppColors.cardOn(context),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -37,13 +37,13 @@ class ProfileScreen extends ConsumerWidget {
                     width: 80, height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.cardCream,
+                      color: AppColors.cardOn(context),
                       border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 3),
                     ),
-                    child: Center(child: Text(userName.isNotEmpty ? userName[0].toUpperCase() : '?', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.ink))),
+                    child: Center(child: Text(userName.isNotEmpty ? userName[0].toUpperCase() : '?', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.inkOn(context)))),
                   ),
                   const SizedBox(height: 12),
-                  Text(userName, style: AppTextStyles.heading(fontSize: 24, color: AppColors.ink)),
+                  Text(userName, style: AppTextStyles.heading(fontSize: 24, color: AppColors.inkOn(context))),
                 ])),
                 const SizedBox(height: 20),
 
