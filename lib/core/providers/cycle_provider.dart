@@ -312,6 +312,13 @@ class CycleNotifier extends StateNotifier<CycleState> {
     state = const CycleState();
   }
 
+  // Bir önceki state'e döner — "Geri Al" aksiyonları için. startPeriod/
+  // endPeriod gibi aksiyonların tersini ayrıca hesaplamak yerine, aksiyondan
+  // hemen önceki state'in bir kopyasını geri yüklemek daha basit ve güvenli
+  // (ör. startPeriod'un aktif regli kapatıp yenisini açtığı kenar durumunda
+  // bile doğru çalışır).
+  void restore(CycleState previous) => state = previous;
+
   void startPeriod([DateTime? date]) {
     final start = date ?? DateTime.now();
     // Önceki aktif regl varsa kapat

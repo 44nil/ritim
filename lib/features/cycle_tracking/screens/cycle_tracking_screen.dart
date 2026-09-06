@@ -179,10 +179,16 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                           final notifier = ProviderScope.containerOf(ctx).read(cycleProvider.notifier);
                           return GestureDetector(
                             onTap: () {
+                              final previousState = cycle;
                               if (isOn) { notifier.endPeriod(); } else { notifier.startPeriod(); }
                               ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
                                 content: Text(isOn ? 'Regl bitiş kaydedildi' : 'Regl başlangıcı kaydedildi'),
                                 behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink,
+                                action: SnackBarAction(
+                                  label: 'Geri Al',
+                                  textColor: Colors.white,
+                                  onPressed: () => notifier.restore(previousState),
+                                ),
                               ));
                             },
                             child: Container(
