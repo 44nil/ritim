@@ -13,13 +13,9 @@ const kLegalDraftDisclaimer =
     'TASLAK — bu metin yayına alınmadan önce hukuki inceleme gerektirir.';
 
 /// Rıza kaydında hangi metin versiyonuna onay verildiğini işaretlemek için.
-const kLegalContentVersion = 'v3-2026-09-07';
+const kLegalContentVersion = 'v4-2026-09-07';
 
 const kKvkkAydinlatmaMetni = '''
-Veri sorumlusu: Eduxperts Eğitim Teknoloji Danışmanlık
-Ticaret Limited Şirketi (Girne Mah., 09100 Efeler/Aydın,
-info@eduxperts.com.tr)
-
 Ritim olarak, uygulamayı kullanırken bize verdiğin bilgileri neden ve nasıl
 kullandığımızı burada açıkça anlatıyoruz.
 
@@ -37,10 +33,11 @@ ve (istersen) bir ebeveyn/vasinle güven içinde paylaşabilmen için.
 
 Bu bilgiler nerede duruyor?
 Bugün itibarıyla Ritim'in bir sunucu (backend) altyapısı yok. Girdiğin
-bilgiler yalnızca cihazının hafızasında tutuluyor ve uygulamayı kapattığında
-siliniyor. İleride bir sunucu altyapısı eklenirse, bu metin güncellenecek
-ve hangi bilgilerin ne kadar süreyle, nerede saklanacağı burada açıkça
-belirtilecek.
+bilgiler yalnızca cihazının şifreli belleğinde tutulur ve sen silene kadar
+saklanır — uygulamayı kapatman ya da telefonundan silmen bu bilgileri
+otomatik olarak silmez. İleride bir sunucu altyapısı eklenirse, bu metin
+güncellenecek ve hangi bilgilerin ne kadar süreyle, nerede saklanacağı
+burada açıkça belirtilecek.
 
 Kiminle paylaşıyoruz?
 Hiçbir reklam, analiz (analytics) ya da üçüncü taraf hizmeti kullanmıyoruz.
@@ -54,28 +51,29 @@ bir alan tanımak için.
 
 Hakların
 Kişisel verilerinle ilgili bilgi alma, düzeltme, silinmesini isteme gibi
-haklara sahipsin. Bu haklara nasıl başvuracağını, sunucu altyapısı devreye
-girdiğinde burada ve Gizlilik Politikası'nda bulacaksın.
+haklara sahipsin. Verilerini istediğin an Profil > Tüm Verilerimi Sil ile
+kendin, hemen ve kalıcı olarak silebilirsin — bunun için bizimle iletişime
+geçmen gerekmez.
+
+Veri sorumlusu
+Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited Şirketi
+Girne Mah., 09100 Efeler/Aydın
+E-posta: info@eduxperts.com.tr
 ''';
 
 const kGizlilikPolitikasi = '''
 Bu Gizlilik Politikası, Ritim uygulamasının kişisel verilerini nasıl ele
 aldığını açıklar.
 
-Veri sorumlusu
-Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
-Şirketi
-Girne Mah., 09100 Efeler/Aydın
-E-posta: info@eduxperts.com.tr
-
 Topladığımız veriler
 KVKK Aydınlatma Metni'nde listelenen veriler (yaş, döngü bilgileri, ruh
 hali/belirti/not, ilaç hatırlatma sayacı, isim/takma ad).
 
 Saklama
-Bugün: cihaz hafızasında, uygulama kapanınca silinir, hiçbir sunucuya
-gönderilmez. Bir sunucu altyapısı eklendiğinde bu bölüm, saklama süresi ve
-konumuyla birlikte güncellenecek.
+Bugün: cihazının şifreli belleğinde, sen silene kadar saklanır, hiçbir
+sunucuya gönderilmez. Uygulamayı kapatman bu bilgileri silmez. Bir sunucu
+altyapısı eklendiğinde bu bölüm, saklama süresi ve konumuyla birlikte
+güncellenecek.
 
 Üçüncü taraflarla paylaşım
 Hiçbir reklam, analitik veya üçüncü taraf servisiyle entegrasyonumuz yok.
@@ -90,9 +88,10 @@ gösterilmez.
 
 Haklarınız
 KVKK kapsamında bilgi alma, düzeltme, silme ve itiraz haklarına sahipsiniz.
-Başvuru yöntemi, sunucu altyapısı devreye girdiğinde burada belirtilecektir.
+Silme hakkınızı Profil > Tüm Verilerimi Sil ile bugün, doğrudan
+uygulama içinden kullanabilirsiniz — bizimle iletişime geçmeniz gerekmez.
 
-İletişim
+Veri sorumlusu / İletişim
 Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited
 Şirketi
 Girne Mah., 09100 Efeler/Aydın
