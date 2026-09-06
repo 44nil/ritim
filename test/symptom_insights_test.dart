@@ -12,7 +12,7 @@ void main() {
     });
 
     test('aynı belirti aynı fazda 2+ kez kaydedilince örüntü olarak görünür', () {
-      // 28 günlük varsayılan döngüde 1 Ocak başlangıçlı adet: gün 1-5 = adet fazı.
+      // 28 günlük varsayılan döngüde 1 Ocak başlangıçlı regl: gün 1-5 = regl fazı.
       final period = PeriodRecord(startDate: DateTime(2026, 1, 1), endDate: DateTime(2026, 1, 5));
       final state = CycleState(periods: [period], logs: {
         _key(DateTime(2026, 1, 3)): const DailyLog(symptoms: ['Kramp']),
@@ -52,7 +52,7 @@ void main() {
       expect(symptomPhaseInsights(state, minOccurrences: 1), hasLength(1));
     });
 
-    test('hiç adet kaydından önceki bir tarih faz hesaplanamadığı için sayılmaz', () {
+    test('hiç regl kaydından önceki bir tarih faz hesaplanamadığı için sayılmaz', () {
       final period = PeriodRecord(startDate: DateTime(2026, 1, 1), endDate: DateTime(2026, 1, 5));
       final state = CycleState(periods: [period], logs: {
         _key(DateTime(2025, 12, 25)): const DailyLog(symptoms: ['Kramp']),

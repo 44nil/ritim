@@ -25,7 +25,7 @@ kullandığımızı burada açıkça anlatıyoruz.
 
 Hangi bilgileri topluyoruz?
 • Yaşın
-• Adet döngünle ilgili bilgiler (başlangıç/bitiş tarihleri, döngü uzunluğu)
+• Regl döngünle ilgili bilgiler (başlangıç/bitiş tarihleri, döngü uzunluğu)
 • Günlük ruh hali, belirti ve serbest metin notların
 • Kendi yazdığın ilaç isimleri ve günlük alım sayıların (doz/mg gibi tıbbi
   bilgi tutulmaz, sadece kişisel bir hatırlatma sayacı)
@@ -104,7 +104,7 @@ Bu Kullanım Şartları, Ritim uygulamasını kullanırken geçerli olan temel
 kuralları özetler.
 
 Uygulamanın amacı
-Ritim, adet döngüsü takibi ve yaşa uygun genel sağlık bilgilendirmesi
+Ritim, regl döngüsü takibi ve yaşa uygun genel sağlık bilgilendirmesi
 sunan bir uygulamadır. Tıbbi tanı, tedavi veya profesyonel sağlık
 danışmanlığı yerine geçmez.
 

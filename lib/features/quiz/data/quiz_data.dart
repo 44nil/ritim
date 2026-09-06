@@ -19,24 +19,24 @@ class QuizData {
 
   static const questions = [
     QuizQuestion(
-      question: 'Aşağıdakilerden hangisi adet döngüsü hakkında doğrudur?',
+      question: 'Aşağıdakilerden hangisi regl döngüsü hakkında doğrudur?',
       options: [
         'Döngü her zaman tam 28 gün sürer',
         'Senin yaşında 21-45 gün arası döngü süresi normaldir',
-        'Adet sadece 3 gün sürer',
-        'Egzersiz adet döneminde zararlıdır',
+        'Regl sadece 3 gün sürer',
+        'Egzersiz regl döneminde zararlıdır',
       ],
       correctIndex: 1,
       explanation:
           'Senin yaşındaki (10-17) bir döngü için 21-45 gün arası tamamen '
           'normal — bu, yetişkinlerdeki aralıktan (21-35 gün) daha geniş. '
-          'İlk adetten sonraki birkaç yıl içinde döngün kademeli olarak '
+          'İlk reglden sonraki birkaç yıl içinde döngün kademeli olarak '
           'daha düzenli hale gelir. "28 gün" sadece bir ortalama, senin '
           'döngün farklı olabilir ve bu sorun değil.\n\n'
           'Kaynak: ACOG & AAP Committee Opinion No. 651 (2015)',
     ),
     QuizQuestion(
-      question: 'PMS (adet öncesi sendrom) hakkında hangisi doğrudur?',
+      question: 'PMS (regl öncesi sendrom) hakkında hangisi doğrudur?',
       options: [
         'PMS gerçek değildir, sadece hayal gücüdür',
         'Mod değişimi, sinirlilik ve şişkinlik gibi belirtiler yaşayabilirsin — çok yaygın ve normaldir',
@@ -45,7 +45,7 @@ class QuizData {
       ],
       correctIndex: 1,
       explanation:
-          'PMS, adetten önceki günlerde bazı kızların yaşadığı fiziksel ve '
+          'PMS, reglden önceki günlerde bazı kızların yaşadığı fiziksel ve '
           'duygusal değişikliklerin genel adı — gerçek bir durum ve çok '
           'yaygın. Belirtiler günlük hayatını ciddi etkiliyorsa güvendiğin '
           'bir yetişkine söylemek iyi bir adımdır, ama her PMS ilaç '
@@ -54,7 +54,7 @@ class QuizData {
     ),
     QuizQuestion(
       question:
-          'Adet krampı için hangi yöntem araştırmalarla destekleniyor?',
+          'Regl krampı için hangi yöntem araştırmalarla destekleniyor?',
       options: [
         'Sıcak su torbası — bazı araştırmalarda ağrı kesici hap kadar etkili bulunmuş',
         'Kramp varken hiç hareket etmemek',
@@ -75,8 +75,8 @@ class QuizData {
       options: [
         'Kesinlikle doğru, her fazda tamamen farklı antrenman yapmalısın',
         'Kontrollü araştırmalar, döngü fazının spor gücünü ölçülebilir şekilde etkilediğine dair bir kanıt bulamadı',
-        'Sadece adet gününde spor yapılabilir',
-        'Spor adet döngüsünü tamamen durdurur',
+        'Sadece regl gününde spor yapılabilir',
+        'Spor regl döngüsünü tamamen durdurur',
       ],
       correctIndex: 1,
       explanation:
@@ -106,15 +106,15 @@ class QuizData {
           '14-18 yaş kızlar neden yetişkin erkeklere/çocuklara göre daha fazla demire ihtiyaç duyar?',
       options: [
         'İhtiyaç duymazlar, herkeste aynıdır',
-        'Adet ile demir kaybı + büyüme çağı olduğu için',
+        'Regl ile demir kaybı + büyüme çağı olduğu için',
         'Sadece spor yapanlar demire ihtiyaç duyar',
         'Demir sadece et yiyenler için önemlidir',
       ],
       correctIndex: 1,
       explanation:
-          'Adet sırasında kan kaybıyla birlikte demir de kaybedilir. '
+          'Regl sırasında kan kaybıyla birlikte demir de kaybedilir. '
           'Büyüme çağında olduğun için de bedeninin demire ihtiyacı artıyor '
-          '— 14-18 yaş için önerilen günlük miktar (~15mg), henüz adet '
+          '— 14-18 yaş için önerilen günlük miktar (~15mg), henüz regl '
           'görmeyen çocuklara göre neredeyse iki kat fazla.\n\n'
           'Kaynak: Academy of Nutrition and Dietetics',
     ),

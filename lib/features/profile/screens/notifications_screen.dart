@@ -110,9 +110,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
             _NotificationCard(
               icon: Icons.water_drop_outlined,
-              title: 'Adet Tahmini Hatırlatması',
+              title: 'Regl Tahmini Hatırlatması',
               subtitle: cycle.canPredict
-                  ? 'Tahmini adet tarihinden birkaç gün önce hatırlat'
+                  ? 'Tahmini regl tarihinden birkaç gün önce hatırlat'
                   : 'En az 3 döngü kaydettiğinde açılabilir',
               value: cycle.periodReminderEnabled,
               onChanged: cycle.canPredict ? _togglePeriod : null,

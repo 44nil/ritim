@@ -28,7 +28,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     await ref.read(cycleProvider.notifier).ready;
     if (!mounted) return;
     final cycle = ref.read(cycleProvider);
-    // Tahmini adet tarihi son açılıştan beri değişmiş olabilir (yeni kayıt,
+    // Tahmini regl tarihi son açılıştan beri değişmiş olabilir (yeni kayıt,
     // yeni döngü) — açılışta yeniden planlamak bunu güncel tutar.
     if (cycle.periodReminderEnabled) {
       NotificationService.reschedulePeriodReminder(cycle, enabled: true, daysBefore: cycle.periodReminderDaysBefore);

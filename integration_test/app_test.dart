@@ -24,10 +24,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Döngüm'), findsOneWidget);
-    // Faz kartı artık gerçek cycleProvider'dan besleniyor (bkz. mock_cycle_data.dart
-    // phaseForDay) — kayıt geçmişi olmayan taze bir kurulumda gün 1 = "Adet" fazı.
-    // Eskiden sabit/mock "Ovülasyon" (gün 14) bekleniyordu, artık öyle değil.
-    expect(find.text('Adet'), findsOneWidget);
+    // "Atla" ile hiç regl kaydı oluşturulmadan geçildiği için hero kart
+    // artık bir faz adı değil, ilk kayıt öncesi nötr bekleme durumunu
+    // gösteriyor (bkz. cycle_tracking_screen.dart, cycle.periods.isEmpty dalı).
+    expect(find.text('Takip Zamanı'), findsOneWidget);
 
     await tester.tap(find.text('Profil'));
     await tester.pumpAndSettle();

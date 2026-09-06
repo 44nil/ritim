@@ -74,7 +74,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         curve: Curves.easeOutCubic,
       );
     } else {
-      // "İlk adetin oldu mu?" -> evetse, "ne zaman başladı"/"kaç gün sürüyor"
+      // "İlk reglin oldu mu?" -> evetse, "ne zaman başladı"/"kaç gün sürüyor"
       // cevaplarını gerçek bir kayda çeviriyoruz — yoksa bu sorulara verilen
       // cevaplar hiçbir yere yazılmadan kayboluyordu.
       if (_hasStarted == true) {
@@ -344,7 +344,7 @@ class _AgePage extends StatelessWidget {
   }
 }
 
-// ─── Sayfa 2: İlk adet oldu mu? ────────────────────────────────────────────
+// ─── Sayfa 2: İlk regl oldu mu? ────────────────────────────────────────────
 
 class _PeriodStartedPage extends StatelessWidget {
   const _PeriodStartedPage({required this.value, required this.onChanged});
@@ -364,7 +364,7 @@ class _PeriodStartedPage extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('İlk adetin\noldu mu?', style: TextStyle(
+          const Text('İlk reglin\noldu mu?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
             color: AppColors.ink,
           )),
@@ -440,7 +440,7 @@ class _OptionCard extends StatelessWidget {
   }
 }
 
-// ─── Sayfa 3: Son adet tarihi ───────────────────────────────────────────────
+// ─── Sayfa 3: Son regl tarihi ───────────────────────────────────────────────
 
 class _LastPeriodPage extends StatefulWidget {
   const _LastPeriodPage({required this.date, required this.onChanged});
@@ -488,7 +488,7 @@ class _LastPeriodPageState extends State<_LastPeriodPage> {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          const Text('Son adetin\nne zaman\nbaşladı?', style: TextStyle(
+          const Text('Son reglin\nne zaman\nbaşladı?', style: TextStyle(
             fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
             color: AppColors.ink,
           )),

@@ -43,7 +43,7 @@ class ArticleData {
   static const featured = Article(
     title: 'Döngünü Tanımak:\nBaşlangıç Rehberi',
     subtitle:
-        'Vücudunda her ay neler oluyor? İlk adetten döngü fazlarına, bilmen gereken her şey.',
+        'Vücudunda her ay neler oluyor? İlk reglden döngü fazlarına, bilmen gereken her şey.',
     readTime: '6 dk',
     level: 'Başlangıç',
     icon: Icons.menu_book_rounded,
@@ -51,8 +51,8 @@ class ArticleData {
     body: [
       ArticleSection(
         text:
-            'Adet döngüsü sadece kanama günlerinden ibaret değil. Bedenin '
-            'aslında ay boyunca sessizce çalışıyor — adet günü bunun sadece '
+            'Regl döngüsü sadece kanama günlerinden ibaret değil. Bedenin '
+            'aslında ay boyunca sessizce çalışıyor — regl günü bunun sadece '
             'gözle görülen kısmı.',
       ),
       ArticleSection(
@@ -61,15 +61,15 @@ class ArticleData {
             'Bu yaşlarda döngün henüz kendi ritmini arıyor. Yetişkinlerde '
             'döngü genelde 21-35 gün sürer, ama senin yaşında (10-17) bu '
             '21-45 güne kadar çıkabilir — bu tamamen normal. Bedenin ilk '
-            'adetten sonraki birkaç yıl içinde kendi düzenini buluyor. Bu ay '
+            'reglden sonraki birkaç yıl içinde kendi düzenini buluyor. Bu ay '
             'ile geçen ay farklı sürse bile kaygılanmana gerek yok.',
       ),
       ArticleSection(
         heading: 'Döngünün 4 evresi',
         text:
-            'Adet (kanamanın olduğu günler) → Toparlanma Dönemi (adet bitip '
-            'bedenin yeniden enerji topladığı dönem) → Zirve Dönemi (kısa bir '
-            'yumurtlama penceresi) → Sakinleşme Dönemi (bir sonraki adete '
+            'Regl (kanamanın olduğu günler) → Toparlanma Dönemi (regl bitip '
+            'bedenin yeniden enerji topladığı dönem) → Canlanma Dönemi (kısa bir '
+            'yumurtlama penceresi) → Sakinleşme Dönemi (bir sonraki regle '
             'kadar olan dönem). Ritim\'in sana her gün farklı bir faz '
             'göstermesinin sebebi bu.',
       ),
@@ -90,7 +90,7 @@ class ArticleData {
 
   static const articles = [
     Article(
-      title: 'Adet Sancısıyla Başa Çıkmanın 5 Yolu',
+      title: 'Regl Sancısıyla Başa Çıkmanın 5 Yolu',
       subtitle: 'Kramplar seni yıldırmasın',
       readTime: '4 dk',
       level: 'Başlangıç',
@@ -99,7 +99,7 @@ class ArticleData {
       body: [
         ArticleSection(
           text:
-              'Adet krampı, genç kızlarda en sık yaşanan adet belirtisi '
+              'Regl krampı, genç kızlarda en sık yaşanan regl belirtisi '
               '(doktorlar buna "dismenore" der). Kramplar rahim kaslarının '
               'kanamayı kolaylaştırmak için kasılmasından kaynaklanır — yani '
               '"bir şey ters gidiyor" anlamına gelmez, çok yaygındır.',
@@ -167,7 +167,7 @@ class ArticleData {
         ArticleSection(
           heading: 'Neden bazen daha hassas hissediyorsun',
           text:
-              'Adetten önceki dönemde progesteron artıyor ve bu, serotonini '
+              'Reglden önceki dönemde progesteron artıyor ve bu, serotonini '
               'azaltabiliyor — bazı kızlar bu günlerde kendini daha hassas '
               'ya da sinirli hissedebiliyor. Buradaki asıl mesele hormon '
               'miktarı değil, o hormonun ne kadar hızlı yükselip alçaldığı.',
@@ -197,10 +197,10 @@ class ArticleData {
         ArticleSection(
           heading: 'Demir neden önemli',
           text:
-              'Adet sırasında kan kaybıyla birlikte demir de kaybedilir. '
+              'Regl sırasında kan kaybıyla birlikte demir de kaybedilir. '
               'Sen de büyüme çağında olduğun için demire normalden daha çok '
               'ihtiyacın var — 14-18 yaş kızlar için önerilen günlük miktar '
-              '~15mg, henüz adet görmeyen çocuklara göre neredeyse iki kat '
+              '~15mg, henüz regl görmeyen çocuklara göre neredeyse iki kat '
               'fazla.',
         ),
         ArticleSection(
@@ -215,7 +215,7 @@ class ArticleData {
           heading: 'Magnezyum hakkında dürüst olalım',
           text:
               'Magnezyum (badem, muz, avokado gibi besinlerde bulunur) bazı '
-              'araştırmalarda adet öncesi şişkinlikte yardımcı bulunmuş. Ama '
+              'araştırmalarda regl öncesi şişkinlikte yardımcı bulunmuş. Ama '
               'ruh hali üzerindeki etkisiyle ilgili kanıtlar henüz yeterince '
               'net değil — "magnezyum modunu düzeltir" diyemeyiz.',
         ),
@@ -240,9 +240,9 @@ class ArticleData {
               'için önerilen uyku süresi günde 8-10 saat.',
         ),
         ArticleSection(
-          heading: 'Adetten önce neden zorlanabilirsin',
+          heading: 'Reglden önce neden zorlanabilirsin',
           text:
-              'Bazı kızlar adetten hemen önceki günlerde uykuya dalmakta '
+              'Bazı kızlar reglden hemen önceki günlerde uykuya dalmakta '
               'biraz daha zorlanabiliyor. Olası bir sebep: yükselen '
               'progesteron vücut sıcaklığını hafifçe artırıyor. Vücudun '
               'derin uykuya geçebilmesi için geceleri biraz soğuması '
@@ -289,7 +289,7 @@ class ArticleData {
         ArticleSection(
           heading: 'Peki gerçekten işe yarayan ne',
           text:
-              'Adet günlerinde hafif hareket — yürüyüş, esneme, yoga gibi — '
+              'Regl günlerinde hafif hareket — yürüyüş, esneme, yoga gibi — '
               'kramp şiddetini azaltmaya yardımcı olabiliyor.',
         ),
         ArticleSection(
@@ -302,7 +302,7 @@ class ArticleData {
     ),
     Article(
       title: 'PMS Nedir?',
-      subtitle: 'Adet öncesi sendrom hakkında bilmen gerekenler',
+      subtitle: 'Regl öncesi sendrom hakkında bilmen gerekenler',
       readTime: '4 dk',
       level: 'Başlangıç',
       icon: Icons.info_outline_rounded,
@@ -310,7 +310,7 @@ class ArticleData {
       body: [
         ArticleSection(
           text:
-              'PMS (adet öncesi sendrom), adetten önceki günlerde bazı '
+              'PMS (regl öncesi sendrom), reglden önceki günlerde bazı '
               'kızların yaşadığı fiziksel ve duygusal değişikliklerin genel '
               'adı.',
         ),
@@ -354,7 +354,7 @@ class ArticleData {
       body: [
         ArticleSection(
           text:
-              'Adetin ne zaman başlayacağını bazen tam olarak bilemezsin, '
+              'Reglin ne zaman başlayacağını bazen tam olarak bilemezsin, '
               'özellikle döngün henüz düzene oturmadıysa. Çantanda birkaç '
               'küçük şey bulundurmak, "ya okulda başlarsa" endişesini büyük '
               'ölçüde azaltır.',
@@ -362,7 +362,7 @@ class ArticleData {
         ArticleSection(
           heading: 'Yedek ped',
           text:
-              'Adet olmasan bile çantanda her zaman bir tane bulunsun. '
+              'Regl olmasan bile çantanda her zaman bir tane bulunsun. '
               'İhtiyacın olmasa bile, bir arkadaşının ihtiyacı olabilir — '
               'birbirinize göz kulak olmak güzel bir şey.',
         ),
@@ -396,8 +396,8 @@ class ArticleData {
       body: [
         ArticleSection(
           text:
-              'Adet lekesi okulda fark edilirse dünyanın sonu değil — bu, '
-              'adet gören hemen hemen her kızın başına en az bir kez gelen '
+              'Regl lekesi okulda fark edilirse dünyanın sonu değil — bu, '
+              'regl gören hemen hemen her kızın başına en az bir kez gelen '
               'bir şey. Kimse bunu senin sandığın kadar fark etmez ya da '
               'takmaz.',
         ),

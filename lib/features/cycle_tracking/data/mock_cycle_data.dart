@@ -36,13 +36,13 @@ class MockCycleData {
 
   // Faz sınırları 28 günlük bir döngü baz alınarak tanımlandı (aşağıda).
   // Gerçek kullanıcı döngüsü bundan farklı uzunluktaysa phaseForDay bu
-  // sınırları oranlayarak (örn. 21 günlük döngüde adet fazı 1-4 olur) uyarlar.
+  // sınırları oranlayarak (örn. 21 günlük döngüde regl fazı 1-4 olur) uyarlar.
   static const _referenceCycleLength = 28;
 
   static const phases = [
     CyclePhaseInfo(
       phase: CyclePhase.menstruation,
-      label: 'Adet',
+      label: 'Regl',
       color: AppColors.phaseMenstruation,
       icon: Icons.water_drop_rounded,
       tip: 'Kendine nazik ol, bol su iç ve dinlenmeye vakit ayır.',
@@ -64,7 +64,7 @@ class MockCycleData {
     CyclePhaseInfo(
       phase: CyclePhase.ovulation,
       label: 'Ovülasyon',
-      friendlyLabel: 'Zirve Dönemi',
+      friendlyLabel: 'Canlanma Dönemi',
       color: AppColors.phaseOvulation,
       icon: Icons.brightness_high_rounded,
       tip: 'Bazı kızlar bu dönemde kendini daha enerjik ve özgüvenli hissediyor.',
@@ -80,7 +80,7 @@ class MockCycleData {
       icon: Icons.nights_stay_rounded,
       tip: 'Enerjin azalabilir, bu tamamen normal. Rahatlatıcı aktiviteler dene.',
       dayRange: (17, 28),
-      bodyInfo: 'Progesteron hormonu yükseliyor. Vücudun bir sonraki adete hazırlanıyor. Bu dönemde şişkinlik, hassasiyet veya ruh hali değişimleri yaşamak normal.',
+      bodyInfo: 'Progesteron hormonu yükseliyor. Vücudun bir sonraki regle hazırlanıyor. Bu dönemde şişkinlik, hassasiyet veya ruh hali değişimleri yaşamak normal.',
       selfCare: ['Kendine vakit ayır', 'Rahatlatıcı müzik dinle', 'Sıcak içecekler iç', 'Fazla zorlama, dinlen'],
     ),
   ];

@@ -46,19 +46,19 @@ void main() {
     expect(find.text('Son bir şey:\nrızan'), findsOneWidget, reason: 'Rıza verilmeden ilerlememeli');
 
     // Checkbox'ı işaretle, şimdi ilerleyebilmeli.
-    await tester.tap(find.textContaining('Adet döngüm'));
+    await tester.tap(find.textContaining('Regl döngüm'));
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
 
     // Kalan veri adımlarını tamamla.
-    expect(find.text('İlk adetin\noldu mu?'), findsOneWidget);
+    expect(find.text('İlk reglin\noldu mu?'), findsOneWidget);
     await tester.tap(find.text('Evet, oldu'));
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
 
-    expect(find.text('Son adetin\nne zaman\nbaşladı?'), findsOneWidget);
+    expect(find.text('Son reglin\nne zaman\nbaşladı?'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
 

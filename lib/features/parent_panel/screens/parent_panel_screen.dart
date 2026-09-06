@@ -8,7 +8,7 @@ import '../../../shared/widgets/screen_gradient_background.dart';
 import '../models/parent_summary.dart';
 
 const _included = [
-  'Döngü ve adet takibi',
+  'Döngü ve regl takibi',
   'Yaşa uygun genel sağlık bilgileri (beslenme, uyku, hareket)',
   'Ruh hali ve günlük not tutma',
   'Kendi ilaç hatırlatıcısı — doz/tıbbi tavsiye içermez, sadece kişisel bir sayım',
@@ -74,7 +74,7 @@ class ParentPanelScreen extends StatelessWidget {
             ]),
             const SizedBox(height: 16),
             _InfoRow(
-              label: 'Son adet başlangıcı',
+              label: 'Son regl başlangıcı',
               value: summary.lastPeriodStart != null
                   ? DateFormat('d MMMM yyyy', 'tr_TR').format(summary.lastPeriodStart!)
                   : 'Henüz kayıt yok',

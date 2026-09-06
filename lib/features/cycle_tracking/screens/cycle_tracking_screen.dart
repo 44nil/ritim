@@ -129,8 +129,8 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        // Hiç adet kaydı yokken "1. gün / Adet" göstermek yanıltıcı —
-                        // adet daha başlamadan sanki başlamış gibi bir izlenim veriyordu.
+                        // Hiç regl kaydı yokken "1. gün / Regl" göstermek yanıltıcı —
+                        // regl daha başlamadan sanki başlamış gibi bir izlenim veriyordu.
                         // İlk kayıt oluşana kadar nötr, tatlı bir bekleme mesajı gösterelim.
                         if (cycle.periods.isEmpty) ...[
                           Text('Henüz kayıt yok', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
@@ -138,7 +138,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                           Text('Takip Zamanı', style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
                           const SizedBox(height: 8),
                           Text(
-                            'Adetin başladığında aşağıdaki butona dokunarak ilk kaydını oluşturabilirsin. Acele etmene gerek yok.',
+                            'Reglin başladığında aşağıdaki butona dokunarak ilk kaydını oluşturabilirsin. Acele etmene gerek yok.',
                             style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5),
                           ),
                         ] else ...[
@@ -153,13 +153,13 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                           Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
                         ],
                         const SizedBox(height: 12),
-                        // Adetin ne zaman başladı / sonraki tahmini ne zaman
+                        // Reglin ne zaman başladı / sonraki tahmini ne zaman
                         Builder(builder: (ctx) {
                           final String info;
                           if (cycle.isOnPeriod) {
                             info = '${DateFormat('d MMMM', 'tr_TR').format(cycle.activePeriod!.startDate)} tarihinde başladı';
                           } else if (cycle.daysUntilNextPeriod != null) {
-                            info = 'Sonraki adet tahmini: ${cycle.daysUntilNextPeriod} gün sonra · ${DateFormat('d MMMM', 'tr_TR').format(cycle.nextPeriodEstimate!)}';
+                            info = 'Sonraki regl tahmini: ${cycle.daysUntilNextPeriod} gün sonra · ${DateFormat('d MMMM', 'tr_TR').format(cycle.nextPeriodEstimate!)}';
                           } else {
                             info = 'Kayıt yaptıkça tahminlerin daha isabetli olur';
                           }
@@ -173,7 +173,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                           );
                         }),
                         const SizedBox(height: 16),
-                        // Adetim başladı/bitti butonu
+                        // Reglim başladı/bitti butonu
                         Builder(builder: (ctx) {
                           final isOn = cycle.isOnPeriod;
                           final notifier = ProviderScope.containerOf(ctx).read(cycleProvider.notifier);
@@ -181,7 +181,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                             onTap: () {
                               if (isOn) { notifier.endPeriod(); } else { notifier.startPeriod(); }
                               ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                                content: Text(isOn ? 'Adet bitiş kaydedildi' : 'Adet başlangıcı kaydedildi'),
+                                content: Text(isOn ? 'Regl bitiş kaydedildi' : 'Regl başlangıcı kaydedildi'),
                                 behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink,
                               ));
                             },
@@ -194,7 +194,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                 Icon(isOn ? Icons.stop_rounded : Icons.water_drop_rounded, size: 20, color: Colors.white),
                                 const SizedBox(width: 8),
-                                Text(isOn ? 'Adetim Bitti' : 'Adetim Başladı', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white)),
+                                Text(isOn ? 'Reglim Bitti' : 'Reglim Başladı', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white)),
                               ]),
                             ),
                           );
@@ -204,7 +204,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   ),
                   const SizedBox(height: 24),
 
-                  // Aylık takvim — geçmiş adet günleri ve tahmini günler.
+                  // Aylık takvim — geçmiş regl günleri ve tahmini günler.
                   // Ay adı + gezinme okları artık takvimin kendi küçük
                   // kontrolü (eskiden sayfanın en üstündeki büyük başlıktı).
                   Padding(
@@ -318,7 +318,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                     child: _staggered(index: 3, child: _SymptomInsightsCard(cycle: cycle)),
                   ),
 
-                  // Adet günüyse ya da yaklaşıyorsa okul çantası hatırlatıcısı
+                  // Regl günüyse ya da yaklaşıyorsa okul çantası hatırlatıcısı
                   // — okuma köşesindeki kontrol listesi makalesine götürür.
                   // Kalıcı bir bildirim değil, sadece o an anlamlıysa görünen
                   // küçük bir dokunuş.
@@ -362,7 +362,7 @@ class _SmallButton extends StatelessWidget {
 }
 
 // Okul çantası hatırlatıcısı — Okuma köşesindeki kontrol listesi makalesine
-// kısayol. Sadece adet günü ya da yakınsa gösteriliyor (bkz. çağrı yeri).
+// kısayol. Sadece regl günü ya da yakınsa gösteriliyor (bkz. çağrı yeri).
 class _SchoolBagReminderCard extends StatelessWidget {
   const _SchoolBagReminderCard();
 
@@ -570,7 +570,7 @@ void _showMedications(BuildContext context, {DateTime? date}) {
 }
 
 void _sheet(BuildContext context, Widget Function(BuildContext) builder) {
-  // Önceki bir aksiyondan (ör. "Adetim Başladı") kalan bir SnackBar hâlâ
+  // Önceki bir aksiyondan (ör. "Reglim Başladı") kalan bir SnackBar hâlâ
   // ekrandaysa, floating SnackBar'ın kapladığı alan yeni sheet'in alt
   // kısmındaki bir butonla çakışıp dokunuşu yutabiliyor — gerçek bir hataydı,
   // hızlı art arda işlemde buton hiç tetiklenmeden kayıt sessizce kayboluyordu.
@@ -985,7 +985,7 @@ class _MonthCalendar extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Wrap(spacing: 18, runSpacing: 6, children: [
-            _LegendDot(color: AppColors.phaseMenstruation, filled: true, label: 'Adet günü'),
+            _LegendDot(color: AppColors.phaseMenstruation, filled: true, label: 'Regl günü'),
             _LegendDot(color: AppColors.phaseMenstruation, filled: false, label: 'Tahmini'),
             _LegendDot(color: AppColors.softPink.withValues(alpha: 0.4), filled: true, label: 'Bugün'),
           ]),
@@ -1082,7 +1082,7 @@ class _LegendDot extends StatelessWidget {
 // döngü fazında yaşandığını gösterir. Kart her zaman görünür — koşula bağlı
 // gizlemek kullanıcıda "neden hiç görünmüyor, bir şey mi bozuk" hissi
 // yaratıyordu (gerçek bir geri bildirimdi). Bunun yerine üç durumu var:
-// (1) yeterli veri varsa gerçek örüntü, (2) belirti var ama adet kaydı
+// (1) yeterli veri varsa gerçek örüntü, (2) belirti var ama regl kaydı
 // yoksa bunu açıklayan bir ipucu, (3) hiçbiri yoksa neyin biriktiğini
 // açıklayan sakin bir bekleme metni.
 class _SymptomInsightsCard extends StatelessWidget {
@@ -1101,9 +1101,9 @@ class _SymptomInsightsCard extends StatelessWidget {
     if (insights.isNotEmpty) {
       caption = 'Kendi geçmiş kayıtlarına göre — bilimsel bir iddia değil, sadece senin verin.';
     } else if (needsPeriodHint) {
-      caption = 'Belirtilerini bir döngü fazına bağlayabilmemiz için önce "Adetim Başladı" ile bir kayıt oluşturman gerekiyor.';
+      caption = 'Belirtilerini bir döngü fazına bağlayabilmemiz için önce "Reglim Başladı" ile bir kayıt oluşturman gerekiyor.';
     } else {
-      caption = 'Adetini başlatıp aynı belirtiyi birkaç kez kaydettikçe, burada hangi dönemde yoğunlaştığını göreceksin.';
+      caption = 'Reglini başlatıp aynı belirtiyi birkaç kez kaydettikçe, burada hangi dönemde yoğunlaştığını göreceksin.';
     }
 
     return Column(children: [

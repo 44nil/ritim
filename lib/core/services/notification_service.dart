@@ -4,7 +4,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../providers/cycle_provider.dart';
 
 /// Yerel (cihaz üstü) bildirimler — sunucu yok, hiçbir veri dışarı gitmiyor.
-/// İki bildirim türü var: günlük kayıt hatırlatması (tekrarlı) ve adet
+/// İki bildirim türü var: günlük kayıt hatırlatması (tekrarlı) ve regl
 /// tahmini hatırlatması (tahmin her değiştiğinde yeniden planlanan, tek
 /// seferlik bir bildirim).
 class NotificationService {
@@ -60,7 +60,7 @@ class NotificationService {
     );
   }
 
-  /// Tahmini adet tarihinden `daysBefore` gün önce, saat 09:00'da tek
+  /// Tahmini regl tarihinden `daysBefore` gün önce, saat 09:00'da tek
   /// seferlik bir hatırlatma planlar. Tahmin her değiştiğinde (yeni kayıt,
   /// yeni döngü) yeniden çağrılmalı — bu yüzden state'e bağlı bir "setter"
   /// değil, mevcut CycleState'i parametre olarak alan saf bir fonksiyon.
@@ -74,11 +74,11 @@ class NotificationService {
     if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) return;
     await _plugin.zonedSchedule(
       id: _periodReminderId,
-      title: 'Adetin yaklaşıyor',
-      body: 'Tahminlere göre $daysBefore gün içinde adetin başlayabilir.',
+      title: 'Reglin yaklaşıyor',
+      body: 'Tahminlere göre $daysBefore gün içinde reglin başlayabilir.',
       scheduledDate: scheduled,
       notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails('period_reminder', 'Adet Tahmini Hatırlatması'),
+        android: AndroidNotificationDetails('period_reminder', 'Regl Tahmini Hatırlatması'),
         iOS: DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

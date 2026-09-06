@@ -82,7 +82,7 @@ class CycleState {
   // Kullanıcının takip etmeye başladığı ilaç isimleri (kalıcı liste, günlük değil).
   final List<String> medicationNames;
   // Onboarding'de kullanıcının kendi bildirdiği "genelde kaç gün sürüyor"
-  // cevabı. Henüz gerçek döngü geçmişi (2+ adet) yokken averageCycleLength
+  // cevabı. Henüz gerçek döngü geçmişi (2+ regl) yokken averageCycleLength
   // için sabit 28 yerine bunu kullanırız — kullanıcı gerçek veri girdikçe
   // gerçek ortalama bunun yerini alır.
   final int? reportedCycleLength;
@@ -100,7 +100,7 @@ class CycleState {
 
   static String _key(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
-  // Aktif adet var mı?
+  // Aktif regl var mı?
   bool get isOnPeriod => periods.isNotEmpty && periods.last.isActive;
   PeriodRecord? get activePeriod => isOnPeriod ? periods.last : null;
 
@@ -129,7 +129,7 @@ class CycleState {
     return raw.clamp(21, 45);
   }
 
-  // Ortalama adet süresi
+  // Ortalama regl süresi
   int get averagePeriodLength {
     final completed = periods.where((p) => p.endDate != null).toList();
     if (completed.isEmpty) return 5;
@@ -144,21 +144,21 @@ class CycleState {
     return DateTime.now().difference(lastStart).inDays + 1;
   }
 
-  // Sonraki adet tahmini
+  // Sonraki regl tahmini
   int? get daysUntilNextPeriod {
     if (!canPredict || periods.isEmpty) return null;
     final expected = averageCycleLength - currentCycleDay;
     return expected > 0 ? expected : null;
   }
 
-  // Tahmini sonraki adet tarihi
+  // Tahmini sonraki regl tarihi
   DateTime? get nextPeriodEstimate {
     final days = daysUntilNextPeriod;
     if (days == null) return null;
     return DateTime.now().add(Duration(days: days));
   }
 
-  // Belirli bir gün adet günü mü?
+  // Belirli bir gün regl günü mü?
   bool isPeriodDay(DateTime date) {
     for (final p in periods) {
       final end = p.endDate ?? DateTime.now();
@@ -167,7 +167,7 @@ class CycleState {
     return false;
   }
 
-  // Belirli bir gün tahmin edilen adet günü mü?
+  // Belirli bir gün tahmin edilen regl günü mü?
   bool isPredictedPeriodDay(DateTime date) {
     if (!canPredict || periods.isEmpty) return false;
     final nextStart = nextPeriodEstimate;
@@ -179,8 +179,8 @@ class CycleState {
   DailyLog? logForDate(DateTime date) => logs[_key(date)];
   DailyLog? get todayLog => logForDate(DateTime.now());
 
-  // Belirli bir tarihte, o tarihte en son başlamış adete göre kaçıncı döngü
-  // gününde olunduğunu döner. O tarihten önce hiç adet kaydı yoksa null
+  // Belirli bir tarihte, o tarihte en son başlamış regle göre kaçıncı döngü
+  // gününde olunduğunu döner. O tarihten önce hiç regl kaydı yoksa null
   // döner — faz hesaplanamaz. `periods` her zaman başlangıç tarihine göre
   // artan sırada tutulur (startPeriod sadece sona ekler).
   int? cycleDayFor(DateTime date) {
@@ -193,7 +193,7 @@ class CycleState {
     return date.difference(active.startDate).inDays + 1;
   }
 
-  // Kaç gündür art arda bir kayıt (ruh hali/semptom/not/ilaç/adet) girilmiş.
+  // Kaç gündür art arda bir kayıt (ruh hali/semptom/not/ilaç/regl) girilmiş.
   // Bugün henüz kayıt yoksa dünden sayılır — gün bitmedi, seri henüz bozulmuş
   // sayılmaz.
   int get currentStreak {
@@ -314,7 +314,7 @@ class CycleNotifier extends StateNotifier<CycleState> {
 
   void startPeriod([DateTime? date]) {
     final start = date ?? DateTime.now();
-    // Önceki aktif adet varsa kapat
+    // Önceki aktif regl varsa kapat
     final periods = List<PeriodRecord>.from(state.periods);
     if (periods.isNotEmpty && periods.last.isActive) {
       final last = periods.removeLast();
@@ -327,15 +327,15 @@ class CycleNotifier extends StateNotifier<CycleState> {
     state = state.copyWith(periods: periods);
   }
 
-  // Onboarding'de kullanıcı "ilk adetim oldu" dediyse ve bize son adetinin
+  // Onboarding'de kullanıcı "ilk reglim oldu" dediyse ve bize son reglinin
   // ne zaman başladığını + döngüsünün genelde kaç gün sürdüğünü söylediyse,
   // bu cevapları gerçek bir kayda çevirir. Gerçek veri zaten varsa (ör.
   // kalıcı depodan yüklendiyse) üzerine yazmaz.
   void seedFromOnboarding({required DateTime lastPeriodStart, int? reportedCycleLength}) {
     if (state.periods.isNotEmpty) return;
-    // Son adet yakın zamanda başladıysa muhtemelen hâlâ sürüyordur —
-    // kullanıcı kendi "Adetim Bitti" diyene kadar açık (aktif) bırakılır.
-    // Değilse ortalama bir adet süresiyle (5 gün) kapatılmış sayılır.
+    // Son regl yakın zamanda başladıysa muhtemelen hâlâ sürüyordur —
+    // kullanıcı kendi "Reglim Bitti" diyene kadar açık (aktif) bırakılır.
+    // Değilse ortalama bir regl süresiyle (5 gün) kapatılmış sayılır.
     final daysSince = DateTime.now().difference(lastPeriodStart).inDays;
     final isLikelyOngoing = daysSince < 5;
     state = state.copyWith(
