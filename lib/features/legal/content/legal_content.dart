@@ -8,10 +8,6 @@
 /// kararlar: VERBİS kaydı, ebeveyn kapısı eşiği, veri saklama süresi).
 library;
 
-/// Yasal metin ekranlarının üstünde gösterilen taslak uyarısı.
-const kLegalDraftDisclaimer =
-    'TASLAK — bu metin yayına alınmadan önce hukuki inceleme gerektirir.';
-
 /// Rıza kaydında hangi metin versiyonuna onay verildiğini işaretlemek için.
 const kLegalContentVersion = 'v4-2026-09-07';
 

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/providers/cycle_provider.dart';
 import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../legal/content/legal_content.dart';
 import '../../legal/screens/consent_gate_screen.dart';
 import '../../legal/screens/guardian_assist_gate_screen.dart';
 import '../../legal/state/onboarding_consent_provider.dart';
@@ -738,26 +737,6 @@ class _PrivacyNoticePage extends StatelessWidget {
             fontSize: 30, fontWeight: FontWeight.w800, height: 1.1,
             color: AppColors.inkOn(context),
           )),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.warning.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.warning.withValues(alpha: 0.4)),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.info_outline_rounded, size: 16, color: AppColors.inkOn(context).withValues(alpha: 0.7)),
-                const SizedBox(width: 10),
-                Expanded(child: Text(
-                  kLegalDraftDisclaimer,
-                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.75), height: 1.4),
-                )),
-              ],
-            ),
-          ),
           const SizedBox(height: 20),
           // Kurulum ekranında tüm KVKK metnini (şirket adresi dahil) doğrudan
           // basmak yerine kısa bir özet + tam metne link gösteriyoruz — bu,
