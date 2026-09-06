@@ -129,15 +129,29 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('${cycle.currentCycleDay}. gün', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
-                        const SizedBox(height: 4),
-                        Text(phase.friendlyLabel ?? phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
-                        if (phase.friendlyLabel != null) ...[
-                          const SizedBox(height: 2),
-                          Text('(${phase.label} faz)', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
+                        // Hiç adet kaydı yokken "1. gün / Adet" göstermek yanıltıcı —
+                        // adet daha başlamadan sanki başlamış gibi bir izlenim veriyordu.
+                        // İlk kayıt oluşana kadar nötr, tatlı bir bekleme mesajı gösterelim.
+                        if (cycle.periods.isEmpty) ...[
+                          Text('Henüz kayıt yok', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
+                          const SizedBox(height: 4),
+                          Text('Takip Zamanı', style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Adetin başladığında aşağıdaki butona dokunarak ilk kaydını oluşturabilirsin. Acele etmene gerek yok.',
+                            style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5),
+                          ),
+                        ] else ...[
+                          Text('${cycle.currentCycleDay}. gün', style: TextStyle(fontSize: 13, color: AppColors.ink.withValues(alpha: 0.5))),
+                          const SizedBox(height: 4),
+                          Text(phase.friendlyLabel ?? phase.label, style: AppTextStyles.heading(fontSize: 26, color: AppColors.ink)),
+                          if (phase.friendlyLabel != null) ...[
+                            const SizedBox(height: 2),
+                            Text('(${phase.label} faz)', style: TextStyle(fontSize: 11, color: AppColors.ink.withValues(alpha: 0.4))),
+                          ],
+                          const SizedBox(height: 8),
+                          Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
                         ],
-                        const SizedBox(height: 8),
-                        Text(phase.tip, style: TextStyle(fontSize: 14, color: AppColors.ink.withValues(alpha: 0.6), height: 1.5)),
                         const SizedBox(height: 12),
                         // Adetin ne zaman başladı / sonraki tahmini ne zaman
                         Builder(builder: (ctx) {
