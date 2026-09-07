@@ -422,6 +422,7 @@ void _showSymptoms(BuildContext context, {DateTime? date}) {
     ('Akne', Icons.face_outlined), ('Hassasiyet', Icons.favorite_border_rounded),
     ('Bulantı', Icons.sick_outlined), ('Uykusuzluk', Icons.nightlight_outlined),
     ('Bel ağrısı', Icons.accessibility_new_rounded), ('İştahsızlık', Icons.no_food_outlined),
+    ('Tatlı krizi', Icons.icecream_outlined),
   ];
   // O gün zaten kayıtlı belirtiler varsa sheet açılınca önceden seçili görünsün.
   final existingSymptoms = container.read(cycleProvider).logForDate(day)?.symptoms ?? const [];
