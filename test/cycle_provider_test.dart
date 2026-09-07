@@ -16,4 +16,17 @@ void main() {
       expect(MockCycleData.phaseForDay(1, cycleLength: state.averageCycleLength).phase, CyclePhase.menstruation);
     });
   });
+
+  group('lastExportDate', () {
+    test('toJson/fromJson üzerinden kayıpsız yuvarlanır', () {
+      final state = CycleState(lastExportDate: DateTime(2026, 9, 7, 12, 30));
+      final restored = CycleState.fromJson(state.toJson());
+      expect(restored.lastExportDate, DateTime(2026, 9, 7, 12, 30));
+    });
+
+    test('hiç export yapılmamışsa null kalır', () {
+      final restored = CycleState.fromJson(const CycleState().toJson());
+      expect(restored.lastExportDate, isNull);
+    });
+  });
 }

@@ -74,6 +74,7 @@ class CycleState {
     this.dailyReminderMinute = 0,
     this.periodReminderEnabled = false,
     this.periodReminderDaysBefore = 2,
+    this.lastExportDate,
   });
 
   final List<PeriodRecord> periods;
@@ -97,6 +98,9 @@ class CycleState {
   final int dailyReminderMinute;
   final bool periodReminderEnabled;
   final int periodReminderDaysBefore;
+  // Android'de otomatik senkronizasyon olmadığı için kullanıcıya elle
+  // yedeklemesini hatırlatabilmek adına (bkz. profile_screen.dart).
+  final DateTime? lastExportDate;
 
   static String _key(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
@@ -221,6 +225,7 @@ class CycleState {
     int? dailyReminderMinute,
     bool? periodReminderEnabled,
     int? periodReminderDaysBefore,
+    DateTime? lastExportDate,
   }) {
     return CycleState(
       periods: periods ?? this.periods,
@@ -234,6 +239,7 @@ class CycleState {
       dailyReminderMinute: dailyReminderMinute ?? this.dailyReminderMinute,
       periodReminderEnabled: periodReminderEnabled ?? this.periodReminderEnabled,
       periodReminderDaysBefore: periodReminderDaysBefore ?? this.periodReminderDaysBefore,
+      lastExportDate: lastExportDate ?? this.lastExportDate,
     );
   }
 
@@ -259,6 +265,7 @@ class CycleState {
     'dailyReminderMinute': dailyReminderMinute,
     'periodReminderEnabled': periodReminderEnabled,
     'periodReminderDaysBefore': periodReminderDaysBefore,
+    'lastExportDate': lastExportDate?.toIso8601String(),
   };
 
   factory CycleState.fromJson(Map<String, dynamic> json) => CycleState(
@@ -273,6 +280,7 @@ class CycleState {
     dailyReminderMinute: json['dailyReminderMinute'] as int? ?? 0,
     periodReminderEnabled: json['periodReminderEnabled'] as bool? ?? false,
     periodReminderDaysBefore: json['periodReminderDaysBefore'] as int? ?? 2,
+    lastExportDate: json['lastExportDate'] != null ? DateTime.parse(json['lastExportDate'] as String) : null,
   );
 }
 
@@ -360,6 +368,13 @@ class CycleNotifier extends StateNotifier<CycleState> {
   // splash ekranı kullanıcıyı direkt Döngüm'e yönlendirir.
   void markOnboardingComplete() {
     state = state.copyWith(hasCompletedOnboarding: true);
+  }
+
+  // Kullanıcı "Verilerimi Dışa Aktar"ı gerçekten tamamladığında (paylaşım
+  // sayfasını kapatmadı, bir yere kaydetti/gönderdi) çağrılır — Profil'de
+  // "son yedek ne zaman" hatırlatması için.
+  void recordExport() {
+    state = state.copyWith(lastExportDate: DateTime.now());
   }
 
   void endPeriod([DateTime? date]) {

@@ -24,6 +24,20 @@ class ProfileScreen extends ConsumerWidget {
     final cycle = ref.watch(cycleProvider);
     final userName = cycle.userName;
 
+    // Android'de (ve iCloud Anahtarlığı kapalı iOS'ta) otomatik bir
+    // senkronizasyon olmadığı için, kullanıcı hiç yedeklememişse ya da
+    // uzun süredir yedeklememişse nazikçe hatırlatıyoruz — zorlamadan,
+    // sadece görünür kılarak.
+    final daysSinceExport = cycle.lastExportDate == null
+        ? null
+        : DateTime.now().difference(cycle.lastExportDate!).inDays;
+    final exportOverdue = daysSinceExport == null || daysSinceExport >= 30;
+    final exportSubtitle = daysSinceExport == null
+        ? 'Hiç yedeklenmedi'
+        : daysSinceExport == 0
+            ? 'Bugün'
+            : '$daysSinceExport gün önce';
+
     return Scaffold(
       backgroundColor: AppColors.cardOn(context),
       body: Stack(
@@ -86,7 +100,14 @@ class ProfileScreen extends ConsumerWidget {
                   _SettingsRow(
                     icon: Icons.ios_share_rounded,
                     label: 'Verilerimi Dışa Aktar',
-                    onTap: () => _exportData(context, cycle),
+                    trailing: Text(
+                      exportSubtitle,
+                      style: TextStyle(
+                        fontWeight: exportOverdue ? FontWeight.w700 : null,
+                        color: exportOverdue ? AppColors.warning : null,
+                      ),
+                    ),
+                    onTap: () => _exportData(context, ref, cycle),
                   ),
                   _SettingsRow(
                     icon: Icons.settings_backup_restore_rounded,
@@ -168,9 +189,14 @@ void _confirmDeleteAllData(BuildContext context, WidgetRef ref) {
 // iCloud Anahtarlık senkronizasyonunun aksine) otomatik bir "yeni telefonda
 // geri gel" yolu yok — bu, kullanıcının kendi elleriyle alabileceği bir
 // yedek (Drive, e-posta, Dosyalar'a kaydedebilir).
-Future<void> _exportData(BuildContext context, CycleState cycle) async {
+Future<void> _exportData(BuildContext context, WidgetRef ref, CycleState cycle) async {
   final file = await CycleStorageService.exportToTempFile(cycle);
-  await SharePlus.instance.share(ShareParams(files: [XFile(file.path)], text: 'Ritim yedeğim'));
+  final result = await SharePlus.instance.share(ShareParams(files: [XFile(file.path)], text: 'Ritim yedeğim'));
+  // Sadece kullanıcı gerçekten bir yere kaydettiyse/gönderdiyse "yedeklendi"
+  // sayıyoruz — paylaşım sayfasını kapatıp vazgeçtiyse hatırlatma kalmalı.
+  if (result.status == ShareResultStatus.success) {
+    ref.read(cycleProvider.notifier).recordExport();
+  }
 }
 
 Future<void> _importData(BuildContext context, WidgetRef ref) async {
