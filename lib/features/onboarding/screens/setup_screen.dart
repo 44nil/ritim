@@ -46,7 +46,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         _StepKind.privacyNotice,
         _StepKind.consent,
         _StepKind.periodStarted,
-        _StepKind.lastPeriodDate,
+        if (_hasStarted == true) _StepKind.lastPeriodDate,
         _StepKind.cycleLength,
         _StepKind.name,
       ];
