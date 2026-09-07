@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import '../providers/cycle_provider.dart';
 
 // Döngü verisini cihazın güvenli depolamasında tutar (iOS Keychain /
@@ -39,5 +41,28 @@ class CycleStorageService {
   // kaldırmak yeterli değil.
   static Future<void> delete() {
     return _storage.delete(key: _key);
+  }
+
+  // Elle yedekleme — özellikle Android'de, Keystore anahtarları cihaz
+  // dışına çıkamadığı için otomatik bir "yeni telefonda geri gel"
+  // mekanizması yok (bkz. iOS'taki iCloud Anahtarlık senkronizasyonu).
+  // Kullanıcı bu dosyayı istediği yere (Drive, e-posta, Dosyalar) kendi
+  // kaydedip, yeni cihazda geri yükleyebilir.
+  static Future<File> exportToTempFile(CycleState state) async {
+    final dir = await getTemporaryDirectory();
+    final now = DateTime.now();
+    final name = 'ritim-yedek-${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}.json';
+    final file = File('${dir.path}/$name');
+    return file.writeAsString(jsonEncode(state.toJson()));
+  }
+
+  static Future<CycleState?> importFromFile(File file) async {
+    try {
+      final raw = await file.readAsString();
+      return CycleState.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      // Bozuk/uyumsuz dosya — çökmek yerine null döndürüp UI'da uyarı gösteriyoruz.
+      return null;
+    }
   }
 }

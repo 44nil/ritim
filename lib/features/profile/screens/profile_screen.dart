@@ -1,8 +1,12 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/router/route_names.dart';
+import '../../../core/services/cycle_storage_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/widgets/clean_card.dart';
@@ -80,6 +84,16 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 12),
                 _SettingsGroup(title: 'Veri', items: [
                   _SettingsRow(
+                    icon: Icons.ios_share_rounded,
+                    label: 'Verilerimi Dışa Aktar',
+                    onTap: () => _exportData(context, cycle),
+                  ),
+                  _SettingsRow(
+                    icon: Icons.settings_backup_restore_rounded,
+                    label: 'Yedekten Geri Yükle',
+                    onTap: () => _importData(context, ref),
+                  ),
+                  _SettingsRow(
                     icon: Icons.delete_outline_rounded,
                     label: 'Tüm Verilerimi Sil',
                     color: AppColors.error,
@@ -144,6 +158,59 @@ void _confirmDeleteAllData(BuildContext context, WidgetRef ref) {
             }
           },
           child: Text('Evet, Sil', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w700)),
+        ),
+      ],
+    ),
+  );
+}
+
+// Android'de Keystore anahtarları cihaz dışına çıkamadığı için (iOS'taki
+// iCloud Anahtarlık senkronizasyonunun aksine) otomatik bir "yeni telefonda
+// geri gel" yolu yok — bu, kullanıcının kendi elleriyle alabileceği bir
+// yedek (Drive, e-posta, Dosyalar'a kaydedebilir).
+Future<void> _exportData(BuildContext context, CycleState cycle) async {
+  final file = await CycleStorageService.exportToTempFile(cycle);
+  await SharePlus.instance.share(ShareParams(files: [XFile(file.path)], text: 'Ritim yedeğim'));
+}
+
+Future<void> _importData(BuildContext context, WidgetRef ref) async {
+  final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+  if (picked.isEmpty) return;
+  final path = picked.first.path;
+  if (path == null || !context.mounted) return;
+
+  final imported = await CycleStorageService.importFromFile(File(path));
+  if (!context.mounted) return;
+  if (imported == null) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Bu dosya okunamadı — geçerli bir Ritim yedeği değil'),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: AppColors.error,
+    ));
+    return;
+  }
+
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      title: const Text('Yedekten geri yükle?'),
+      content: const Text(
+        'Bu, cihazındaki mevcut verinin üzerine yazar. Şu anki verin kaybolur.',
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(ctx);
+            ref.read(cycleProvider.notifier).restore(imported);
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Yedek geri yüklendi'),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: AppColors.softPink,
+            ));
+          },
+          child: Text('Evet, Geri Yükle', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700)),
         ),
       ],
     ),
