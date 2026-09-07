@@ -127,7 +127,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               title: 'Regl Yaklaşıyor Hatırlatması',
               subtitle: cycle.canPredict
                   ? 'Dönemin yaklaşırken çantana ped atman için seni uyarır'
-                  : 'En az 3 döngü kaydettiğinde açılabilir',
+                  : 'En az 3 döngü kaydettiğinde açılabilir (şu an ${cycle.cycleLengths.length}/3)',
               value: cycle.periodReminderEnabled,
               onChanged: cycle.canPredict ? _togglePeriod : null,
               trailing: (cycle.periodReminderEnabled && cycle.canPredict) ? Row(mainAxisSize: MainAxisSize.min, children: [
