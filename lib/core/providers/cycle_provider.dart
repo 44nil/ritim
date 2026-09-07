@@ -74,6 +74,7 @@ class CycleState {
     this.dailyReminderMinute = 0,
     this.periodReminderEnabled = false,
     this.periodReminderDaysBefore = 2,
+    this.warmNotificationTone = true,
     this.lastExportDate,
   });
 
@@ -98,6 +99,9 @@ class CycleState {
   final int dailyReminderMinute;
   final bool periodReminderEnabled;
   final int periodReminderDaysBefore;
+  // Bildirimler her zaman gizli/örtük metin kullanır (regl kelimesi geçmez —
+  // kilit ekranında başkası görebilir diye), sadece TONU seçilebilir.
+  final bool warmNotificationTone;
   // Android'de otomatik senkronizasyon olmadığı için kullanıcıya elle
   // yedeklemesini hatırlatabilmek adına (bkz. profile_screen.dart).
   final DateTime? lastExportDate;
@@ -225,6 +229,7 @@ class CycleState {
     int? dailyReminderMinute,
     bool? periodReminderEnabled,
     int? periodReminderDaysBefore,
+    bool? warmNotificationTone,
     DateTime? lastExportDate,
   }) {
     return CycleState(
@@ -239,6 +244,7 @@ class CycleState {
       dailyReminderMinute: dailyReminderMinute ?? this.dailyReminderMinute,
       periodReminderEnabled: periodReminderEnabled ?? this.periodReminderEnabled,
       periodReminderDaysBefore: periodReminderDaysBefore ?? this.periodReminderDaysBefore,
+      warmNotificationTone: warmNotificationTone ?? this.warmNotificationTone,
       lastExportDate: lastExportDate ?? this.lastExportDate,
     );
   }
@@ -265,6 +271,7 @@ class CycleState {
     'dailyReminderMinute': dailyReminderMinute,
     'periodReminderEnabled': periodReminderEnabled,
     'periodReminderDaysBefore': periodReminderDaysBefore,
+    'warmNotificationTone': warmNotificationTone,
     'lastExportDate': lastExportDate?.toIso8601String(),
   };
 
@@ -280,6 +287,7 @@ class CycleState {
     dailyReminderMinute: json['dailyReminderMinute'] as int? ?? 0,
     periodReminderEnabled: json['periodReminderEnabled'] as bool? ?? false,
     periodReminderDaysBefore: json['periodReminderDaysBefore'] as int? ?? 2,
+    warmNotificationTone: json['warmNotificationTone'] as bool? ?? true,
     lastExportDate: json['lastExportDate'] != null ? DateTime.parse(json['lastExportDate'] as String) : null,
   );
 }
@@ -413,6 +421,10 @@ class CycleNotifier extends StateNotifier<CycleState> {
       periodReminderEnabled: enabled,
       periodReminderDaysBefore: daysBefore,
     );
+  }
+
+  void setNotificationTone({required bool warm}) {
+    state = state.copyWith(warmNotificationTone: warm);
   }
 
   void logFlow(String flow) {

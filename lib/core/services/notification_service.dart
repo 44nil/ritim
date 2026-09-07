@@ -43,13 +43,16 @@ class NotificationService {
     return (ios ?? android ?? true);
   }
 
-  static Future<void> setDailyReminder({required bool enabled, required int hour, required int minute}) async {
+  static Future<void> setDailyReminder({required bool enabled, required int hour, required int minute, bool warmTone = true}) async {
     await _plugin.cancel(id: _dailyReminderId);
     if (!enabled) return;
+    final text = warmTone
+        ? ('Bugünü kaydetmeyi unutma 💛', 'Ruh halini ya da bir notunu eklemek ister misin?')
+        : ('Günlük kaydın bekliyor', 'Ruh hali veya not eklemek için uygulamayı aç.');
     await _plugin.zonedSchedule(
       id: _dailyReminderId,
-      title: 'Bugünü kaydetmeyi unutma',
-      body: 'Ruh halini, belirtilerini ya da bir notunu ekleyebilirsin.',
+      title: text.$1,
+      body: text.$2,
       scheduledDate: _nextInstanceOf(hour, minute),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails('daily_reminder', 'Günlük Kayıt Hatırlatması'),
@@ -64,7 +67,11 @@ class NotificationService {
   /// seferlik bir hatırlatma planlar. Tahmin her değiştiğinde (yeni kayıt,
   /// yeni döngü) yeniden çağrılmalı — bu yüzden state'e bağlı bir "setter"
   /// değil, mevcut CycleState'i parametre olarak alan saf bir fonksiyon.
-  static Future<void> reschedulePeriodReminder(CycleState cycle, {required bool enabled, required int daysBefore}) async {
+  ///
+  /// Metin bilerek örtük/gizli — "regl" kelimesi hiç geçmez, kilit ekranında
+  /// bunu görebilecek biri (okulda bir arkadaş gibi) ne olduğunu anlamasın
+  /// diye. Sadece TON (samimi/sade) seçilebilir, içerik her zaman gizli.
+  static Future<void> reschedulePeriodReminder(CycleState cycle, {required bool enabled, required int daysBefore, bool warmTone = true}) async {
     await _plugin.cancel(id: _periodReminderId);
     if (!enabled) return;
     final estimate = cycle.nextPeriodEstimate;
@@ -72,13 +79,16 @@ class NotificationService {
     final reminderDate = estimate.subtract(Duration(days: daysBefore));
     final scheduled = tz.TZDateTime(tz.local, reminderDate.year, reminderDate.month, reminderDate.day, 9);
     if (scheduled.isBefore(tz.TZDateTime.now(tz.local))) return;
+    final text = warmTone
+        ? ('Takvimden bir mesajın var ✨', 'Çantanı kontrol etmek isteyebilirsin 🎒')
+        : ('Takvimden bir hatırlatman var', 'Uygulamayı kontrol edebilirsin.');
     await _plugin.zonedSchedule(
       id: _periodReminderId,
-      title: 'Reglin yaklaşıyor',
-      body: 'Tahminlere göre $daysBefore gün içinde reglin başlayabilir.',
+      title: text.$1,
+      body: text.$2,
       scheduledDate: scheduled,
       notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails('period_reminder', 'Regl Tahmini Hatırlatması'),
+        android: AndroidNotificationDetails('period_reminder', 'Takvim Hatırlatması'),
         iOS: DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

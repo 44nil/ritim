@@ -31,7 +31,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     // Tahmini regl tarihi son açılıştan beri değişmiş olabilir (yeni kayıt,
     // yeni döngü) — açılışta yeniden planlamak bunu güncel tutar.
     if (cycle.periodReminderEnabled) {
-      NotificationService.reschedulePeriodReminder(cycle, enabled: true, daysBefore: cycle.periodReminderDaysBefore);
+      NotificationService.reschedulePeriodReminder(cycle, enabled: true, daysBefore: cycle.periodReminderDaysBefore, warmTone: cycle.warmNotificationTone);
     }
     context.go(cycle.hasCompletedOnboarding ? '/cycle-tracking' : '/onboarding');
   }
