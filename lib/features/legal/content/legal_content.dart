@@ -9,7 +9,7 @@
 library;
 
 /// Rıza kaydında hangi metin versiyonuna onay verildiğini işaretlemek için.
-const kLegalContentVersion = 'v4-2026-09-07';
+const kLegalContentVersion = 'v5-2026-09-07';
 
 const kKvkkAydinlatmaMetni = '''
 Ritim olarak, uygulamayı kullanırken bize verdiğin bilgileri neden ve nasıl
@@ -29,11 +29,15 @@ ve (istersen) bir ebeveyn/vasinle güven içinde paylaşabilmen için.
 
 Bu bilgiler nerede duruyor?
 Bugün itibarıyla Ritim'in bir sunucu (backend) altyapısı yok. Girdiğin
-bilgiler yalnızca cihazının şifreli belleğinde tutulur ve sen silene kadar
-saklanır — uygulamayı kapatman ya da telefonundan silmen bu bilgileri
-otomatik olarak silmez. İleride bir sunucu altyapısı eklenirse, bu metin
-güncellenecek ve hangi bilgilerin ne kadar süreyle, nerede saklanacağı
-burada açıkça belirtilecek.
+bilgiler cihazının şifreli belleğinde (Keychain) tutulur ve sen silene
+kadar saklanır — uygulamayı kapatman ya da telefonundan silmen bu
+bilgileri otomatik olarak silmez. Telefonunda iCloud Anahtarlık açıksa,
+bu bilgiler Apple ID'ne bağlı diğer cihazlarınla uçtan uca şifreli olarak
+senkronize olur (kaybolma/sıfırlanma durumunda geri gelmesi için) —
+bu senkronizasyon tamamen Apple'ın kendi altyapısında olur, Ritim ya da
+bizim bir sunucumuz bu bilgilere hiçbir zaman erişemez. İleride bir sunucu
+altyapısı eklenirse, bu metin güncellenecek ve hangi bilgilerin ne kadar
+süreyle, nerede saklanacağı burada açıkça belirtilecek.
 
 Kiminle paylaşıyoruz?
 Hiçbir reklam, analiz (analytics) ya da üçüncü taraf hizmeti kullanmıyoruz.
@@ -66,10 +70,12 @@ KVKK Aydınlatma Metni'nde listelenen veriler (yaş, döngü bilgileri, ruh
 hali/belirti/not, ilaç hatırlatma sayacı, isim/takma ad).
 
 Saklama
-Bugün: cihazının şifreli belleğinde, sen silene kadar saklanır, hiçbir
-sunucuya gönderilmez. Uygulamayı kapatman bu bilgileri silmez. Bir sunucu
-altyapısı eklendiğinde bu bölüm, saklama süresi ve konumuyla birlikte
-güncellenecek.
+Bugün: cihazının şifreli belleğinde (Keychain), sen silene kadar saklanır,
+hiçbir sunucuya gönderilmez. Uygulamayı kapatman bu bilgileri silmez.
+iCloud Anahtarlık açıksa, Apple'ın kendi uçtan uca şifreli altyapısı
+üzerinden Apple ID'ne bağlı diğer cihazlarınla senkronize olabilir — bu
+senkronizasyona Ritim'in veya bizim erişimimiz yoktur. Bir sunucu altyapısı
+eklendiğinde bu bölüm, saklama süresi ve konumuyla birlikte güncellenecek.
 
 Üçüncü taraflarla paylaşım
 Hiçbir reklam, analitik veya üçüncü taraf servisiyle entegrasyonumuz yok.

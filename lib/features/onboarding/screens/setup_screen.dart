@@ -746,8 +746,8 @@ class _PrivacyNoticePage extends StatelessWidget {
           Text(
             'Yaşını, döngü bilgilerini ve istersen ruh hali/belirti notlarını, '
             'döngünü takip edebilmen ve yaşına uygun genel bilgi sunabilmemiz '
-            'için kullanıyoruz. Hiçbir bilgi cihazından dışarı çıkmıyor, '
-            'satılmıyor ya da paylaşılmıyor.',
+            'için kullanıyoruz. Bu bilgiler sadece senin kendi cihazlarında '
+            'kalır, bize ya da başka kimseyle satılmaz, paylaşılmaz.',
             style: TextStyle(fontSize: 13.5, height: 1.6, color: AppColors.inkOn(context).withValues(alpha: 0.8)),
           ),
           const SizedBox(height: 14),
