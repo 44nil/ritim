@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../data/mock_cycle_data.dart';
 import '../data/mock_wellness_data.dart';
+import '../data/mood_data.dart';
 import '../data/symptom_insights.dart';
 import '../../../shared/widgets/screen_gradient_background.dart';
 import '../../articles/data/article_data.dart';
@@ -788,6 +789,11 @@ class _MoodPickerState extends State<_MoodPicker> {
       if (m.$1 == _mood) { selected = m; break; }
     }
 
+    // Her ruh hali kendi rengiyle gösteriliyor (bkz. mood_data.dart) — bu
+    // renkler takvimde o günün hücresini boyamak için de kullanılıyor,
+    // böylece kullanıcı burada seçtiği rengi takvimde tanıyor, ayrı bir
+    // açıklamaya (legend) gerek kalmıyor.
+    final selectedColor = MoodData.colorFor(selected?.$1) ?? AppColors.softPink;
     return Column(children: [
       AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
@@ -797,9 +803,9 @@ class _MoodPickerState extends State<_MoodPicker> {
           width: 72, height: 72,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.softPink.withValues(alpha: selected == null ? 0.1 : 0.2),
+            color: selectedColor.withValues(alpha: selected == null ? 0.15 : 0.4),
           ),
-          child: Icon(selected?.$2 ?? Icons.mood_outlined, size: 34, color: AppColors.softPink),
+          child: Icon(selected?.$2 ?? Icons.mood_outlined, size: 34, color: selected == null ? AppColors.softPink : AppColors.inkOn(context)),
         ),
       ),
       const SizedBox(height: 6),
@@ -807,6 +813,7 @@ class _MoodPickerState extends State<_MoodPicker> {
       const SizedBox(height: 14),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _moods.map((m) {
         final isSelected = _mood == m.$1;
+        final color = MoodData.colorFor(m.$1)!;
         return GestureDetector(
           onTap: () => _select(m.$1),
           child: AnimatedContainer(
@@ -814,13 +821,13 @@ class _MoodPickerState extends State<_MoodPicker> {
             width: 44, height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected ? AppColors.inkOn(context) : Colors.white.withValues(alpha: 0.7),
-              border: Border.all(color: isSelected ? AppColors.inkOn(context) : AppColors.softPink.withValues(alpha: 0.3)),
+              color: isSelected ? color : Colors.white.withValues(alpha: 0.7),
+              border: Border.all(color: isSelected ? color : color.withValues(alpha: 0.5), width: isSelected ? 0 : 1.5),
               boxShadow: isSelected ? null : [
                 BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 2)),
               ],
             ),
-            child: Icon(m.$2, size: 20, color: isSelected ? Colors.white : AppColors.inkOn(context).withValues(alpha: 0.4)),
+            child: Icon(m.$2, size: 20, color: isSelected ? AppColors.inkOn(context) : color),
           ),
         );
       }).toList()),
@@ -1058,10 +1065,12 @@ class _MonthCalendar extends StatelessWidget {
               final isPeriod = cycle.isPeriodDay(date);
               final isPredicted = !isPeriod && cycle.isPredictedPeriodDay(date);
               final isTappable = !date.isAfter(today);
-              final hasLog = cycle.logForDate(date)?.hasAnyData ?? false;
+              final log = cycle.logForDate(date);
+              final hasLog = log?.hasAnyData ?? false;
+              final moodColor = MoodData.colorFor(log?.mood);
               return GestureDetector(
                 onTap: isTappable ? () => onDayTap(date) : null,
-                child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted, hasLog: hasLog),
+                child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted, hasLog: hasLog, moodColor: moodColor),
               );
             },
           ),
@@ -1098,7 +1107,7 @@ class _CalendarNavButton extends StatelessWidget {
 }
 
 class _DayCell extends StatelessWidget {
-  const _DayCell({required this.day, required this.isToday, required this.isPeriod, required this.isPredicted, required this.hasLog});
+  const _DayCell({required this.day, required this.isToday, required this.isPeriod, required this.isPredicted, required this.hasLog, this.moodColor});
   final int day;
   final bool isToday;
   final bool isPeriod;
@@ -1107,6 +1116,10 @@ class _DayCell extends StatelessWidget {
   // nokta gösteriyoruz, ki hangi günlerin "dolu" olduğu bir bakışta görülsün
   // — eskiden buna dokunmadan anlamanın hiçbir yolu yoktu.
   final bool hasLog;
+  // O gün bir ruh hali kaydedilmişse (bkz. mood_data.dart), aya bakınca genel
+  // bir "ruh hali deseni" görülsün diye günü o rengin yumuşak bir tonuyla
+  // boyuyoruz. Regl günü rengi (sağlık bilgisi) her zaman önceliklidir.
+  final Color? moodColor;
 
   @override
   Widget build(BuildContext context) {
@@ -1120,6 +1133,9 @@ class _DayCell extends StatelessWidget {
     } else if (isPredicted) {
       border = Border.all(color: AppColors.phaseMenstruation.withValues(alpha: 0.5), width: 1.5);
       textColor = AppColors.phaseMenstruation;
+    } else if (moodColor != null) {
+      background = moodColor!.withValues(alpha: 0.55);
+      textColor = AppColors.inkOn(context);
     } else if (isToday) {
       background = AppColors.softPink.withValues(alpha: 0.25);
       textColor = AppColors.inkOn(context);
