@@ -9,7 +9,7 @@
 library;
 
 /// Rıza kaydında hangi metin versiyonuna onay verildiğini işaretlemek için.
-const kLegalContentVersion = 'v5-2026-09-07';
+const kLegalContentVersion = 'v6-2026-09-07';
 
 const kKvkkAydinlatmaMetni = '''
 Ritim olarak, uygulamayı kullanırken bize verdiğin bilgileri neden ve nasıl
@@ -50,10 +50,11 @@ gösterilmez — bu bilinçli bir tercih, sana özel ve dürüst kayıt tutabile
 bir alan tanımak için.
 
 Hakların
-Kişisel verilerinle ilgili bilgi alma, düzeltme, silinmesini isteme gibi
-haklara sahipsin. Verilerini istediğin an Profil > Tüm Verilerimi Sil ile
-kendin, hemen ve kalıcı olarak silebilirsin — bunun için bizimle iletişime
-geçmen gerekmez.
+Kişisel verilerinle ilgili bilgi alma, düzeltme, kopyasını alma ve
+silinmesini isteme gibi haklara sahipsin. Verilerini istediğin an Profil >
+Tüm Verilerimi Sil ile kendin, hemen ve kalıcı olarak silebilirsin;
+Profil > Verilerimi Dışa Aktar ile de bir kopyasını dosya olarak
+alabilirsin — ikisi için de bizimle iletişime geçmen gerekmez.
 
 Veri sorumlusu
 Eduxperts Eğitim Teknoloji Danışmanlık Ticaret Limited Şirketi
@@ -89,8 +90,9 @@ döngü bilgilerini görebilir; kişisel not/ruh hali/belirti kayıtları
 gösterilmez.
 
 Haklarınız
-KVKK kapsamında bilgi alma, düzeltme, silme ve itiraz haklarına sahipsiniz.
-Silme hakkınızı Profil > Tüm Verilerimi Sil ile bugün, doğrudan
+KVKK kapsamında bilgi alma, düzeltme, kopyasını alma, silme ve itiraz
+haklarına sahipsiniz. Silme hakkınızı Profil > Tüm Verilerimi Sil, kopya
+alma hakkınızı Profil > Verilerimi Dışa Aktar ile bugün, doğrudan
 uygulama içinden kullanabilirsiniz — bizimle iletişime geçmeniz gerekmez.
 
 Veri sorumlusu / İletişim
