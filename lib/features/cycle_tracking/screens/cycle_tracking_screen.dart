@@ -610,6 +610,13 @@ void _showDayLog(BuildContext context, DateTime date) {
   final container = ProviderScope.containerOf(context);
   final isToday = _isSameDay(date, DateTime.now());
   final dateLabel = isToday ? 'Bugün' : DateFormat('d MMMM', 'tr_TR').format(date);
+  final hasExistingData = container.read(cycleProvider).logForDate(date)?.hasAnyData ?? false;
+
+  // Veri zaten varsa önce net bir ÖZET gösteriyoruz ("o gün ne olmuş"),
+  // düzenleme formu bir dokunuş ötede. Boş bir günse (özellikle bugün, ilk
+  // kayıt) direkt düzenleme formuyla başlıyoruz — eskiden ikisi hep aynı
+  // (düzenleme) ekranıydı, geçmiş bir günü açsan bile bir form görürdün.
+  var editing = !hasExistingData;
 
   _sheet(context, (ctx) => StatefulBuilder(builder: (ctx, setSt) {
     final log = container.read(cycleProvider).logForDate(date);
@@ -621,10 +628,50 @@ void _showDayLog(BuildContext context, DateTime date) {
       setSt(() {});
     }
 
+    if (!editing) {
+      return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _sheetHandle(context),
+        const SizedBox(height: 24),
+        Row(children: [
+          Expanded(child: Text(
+            isToday ? 'Bugün ne oldu?' : '$dateLabel günü ne oldu?',
+            style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface),
+          )),
+          TextButton.icon(
+            onPressed: () => setSt(() => editing = true),
+            icon: const Icon(Icons.edit_outlined, size: 16),
+            label: const Text('Düzenle'),
+          ),
+        ]),
+        const SizedBox(height: 12),
+        if (log?.mood != null)
+          _DaySummaryRow(icon: Icons.mood_outlined, label: 'Ruh Hali', child: Text(log!.mood!, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface))),
+        if (log?.sleepHours != null)
+          _DaySummaryRow(icon: Icons.nightlight_outlined, label: 'Uyku', child: Text('${_SleepStepper._format(log!.sleepHours!)} saat', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface))),
+        if (log?.symptoms.isNotEmpty ?? false)
+          _DaySummaryRow(icon: Icons.healing_outlined, label: 'Belirtiler', child: Wrap(spacing: 6, runSpacing: 6, children: log!.symptoms.map((s) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(20)),
+            child: Text(s, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface)),
+          )).toList())),
+        if (log?.note?.isNotEmpty ?? false)
+          _DaySummaryRow(icon: Icons.sticky_note_2_outlined, label: 'Not', child: Text(log!.note!, style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurface.withValues(alpha: 0.8), height: 1.4))),
+        if (log?.medications.isNotEmpty ?? false)
+          _DaySummaryRow(icon: Icons.medication_outlined, label: 'İlaçlar', child: Text(
+            log!.medications.entries.map((e) => '${e.key} (${e.value})').join(', '),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface),
+          )),
+        SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
+      ]);
+    }
+
     return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
       _sheetHandle(context),
       const SizedBox(height: 24),
-      Center(child: Text(dateLabel, style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface))),
+      Center(child: Text(
+        isToday ? 'Bugünü Kaydet' : '$dateLabel Günü Düzenle',
+        style: AppTextStyles.heading(fontSize: 20, color: theme.colorScheme.onSurface),
+      )),
       const SizedBox(height: 20),
 
       Text('Ruh Hali', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
@@ -678,6 +725,33 @@ void _showDayLog(BuildContext context, DateTime date) {
       SizedBox(height: MediaQuery.of(ctx).padding.bottom + 16),
     ]);
   }));
+}
+
+// Özet görünümündeki her satır — solda kategori ikonu+etiketi, sağda/altta
+// gerçek değer. Sadece dolu kategoriler gösterilir (bkz. çağrı yerindeki
+// if'ler) — boş bir "Uyku: —" satırı özet görünümünde anlamsız.
+class _DaySummaryRow extends StatelessWidget {
+  const _DaySummaryRow({required this.icon, required this.label, required this.child});
+  final IconData icon;
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(icon, size: 15, color: AppColors.softPink),
+          const SizedBox(width: 8),
+          Text(label, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface.withValues(alpha: 0.55))),
+        ]),
+        const SizedBox(height: 6),
+        child,
+      ]),
+    );
+  }
 }
 
 // ─── Ruh hali seçici — büyük animasyonlu gösterge + küçük seçim ikonları ───
@@ -984,9 +1058,10 @@ class _MonthCalendar extends StatelessWidget {
               final isPeriod = cycle.isPeriodDay(date);
               final isPredicted = !isPeriod && cycle.isPredictedPeriodDay(date);
               final isTappable = !date.isAfter(today);
+              final hasLog = cycle.logForDate(date)?.hasAnyData ?? false;
               return GestureDetector(
                 onTap: isTappable ? () => onDayTap(date) : null,
-                child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted),
+                child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted, hasLog: hasLog),
               );
             },
           ),
@@ -995,6 +1070,7 @@ class _MonthCalendar extends StatelessWidget {
             _LegendDot(color: AppColors.phaseMenstruation, filled: true, label: 'Regl günü'),
             _LegendDot(color: AppColors.phaseMenstruation, filled: false, label: 'Tahmini'),
             _LegendDot(color: AppColors.softPink.withValues(alpha: 0.4), filled: true, label: 'Bugün'),
+            _LegendDot(color: AppColors.inkOn(context).withValues(alpha: 0.55), filled: true, label: 'Kayıt var'),
           ]),
         ],
       ),
@@ -1022,11 +1098,15 @@ class _CalendarNavButton extends StatelessWidget {
 }
 
 class _DayCell extends StatelessWidget {
-  const _DayCell({required this.day, required this.isToday, required this.isPeriod, required this.isPredicted});
+  const _DayCell({required this.day, required this.isToday, required this.isPeriod, required this.isPredicted, required this.hasLog});
   final int day;
   final bool isToday;
   final bool isPeriod;
   final bool isPredicted;
+  // Ruh hali/uyku/belirti/not — herhangi biri girilmişse takvimde küçük bir
+  // nokta gösteriyoruz, ki hangi günlerin "dolu" olduğu bir bakışta görülsün
+  // — eskiden buna dokunmadan anlamanın hiçbir yolu yoktu.
+  final bool hasLog;
 
   @override
   Widget build(BuildContext context) {
@@ -1049,14 +1129,27 @@ class _DayCell extends StatelessWidget {
       padding: const EdgeInsets.all(3),
       child: AspectRatio(
         aspectRatio: 1,
-        child: Container(
-          decoration: BoxDecoration(color: background, shape: BoxShape.circle, border: border),
-          alignment: Alignment.center,
-          child: Text(
-            '$day',
-            style: TextStyle(fontSize: 12.5, fontWeight: isToday ? FontWeight.w700 : FontWeight.w500, color: textColor),
+        child: Stack(alignment: Alignment.center, children: [
+          Container(
+            decoration: BoxDecoration(color: background, shape: BoxShape.circle, border: border),
+            alignment: Alignment.center,
+            child: Text(
+              '$day',
+              style: TextStyle(fontSize: 12.5, fontWeight: isToday ? FontWeight.w700 : FontWeight.w500, color: textColor),
+            ),
           ),
-        ),
+          if (hasLog)
+            Positioned(
+              bottom: 2,
+              child: Container(
+                width: 4, height: 4,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isPeriod ? Colors.white : AppColors.inkOn(context).withValues(alpha: 0.55),
+                ),
+              ),
+            ),
+        ]),
       ),
     );
   }
