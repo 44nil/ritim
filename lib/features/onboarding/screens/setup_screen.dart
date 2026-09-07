@@ -661,7 +661,11 @@ class _NamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    // Sabit yükseklikli bir Column + Spacer, klavye açılıp mevcut alanı
+    // daraltınca (özellikle küçük ekranlarda) taşabiliyordu — kaydırılabilir
+    // yapıp Spacer'ı sabit bir boşlukla değiştirdik (Spacer sınırsız
+    // yükseklikte anlamsız).
+    return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -705,7 +709,7 @@ class _NamePage extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 40),
         ],
       ),
     );
