@@ -769,14 +769,6 @@ class _MoodPicker extends StatefulWidget {
 class _MoodPickerState extends State<_MoodPicker> {
   late String? _mood = widget.initialMood;
 
-  static const _moods = [
-    ('Mutlu', Icons.sentiment_satisfied_rounded),
-    ('Sakin', Icons.self_improvement_rounded),
-    ('Yorgun', Icons.bedtime_rounded),
-    ('Hassas', Icons.favorite_rounded),
-    ('Sinirli', Icons.sentiment_very_dissatisfied_rounded),
-  ];
-
   void _select(String mood) {
     setState(() => _mood = mood);
     widget.onSelected(mood);
@@ -784,8 +776,8 @@ class _MoodPickerState extends State<_MoodPicker> {
 
   @override
   Widget build(BuildContext context) {
-    (String, IconData)? selected;
-    for (final m in _moods) {
+    (String, IconData, Color)? selected;
+    for (final m in MoodData.all) {
       if (m.$1 == _mood) { selected = m; break; }
     }
 
@@ -811,7 +803,7 @@ class _MoodPickerState extends State<_MoodPicker> {
       const SizedBox(height: 6),
       Text(_mood ?? 'Nasıl hissediyorsun?', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.65))),
       const SizedBox(height: 14),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _moods.map((m) {
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: MoodData.all.map((m) {
         final isSelected = _mood == m.$1;
         final color = MoodData.colorFor(m.$1)!;
         return GestureDetector(
@@ -1068,9 +1060,10 @@ class _MonthCalendar extends StatelessWidget {
               final log = cycle.logForDate(date);
               final hasLog = log?.hasAnyData ?? false;
               final moodColor = MoodData.colorFor(log?.mood);
+              final moodIcon = MoodData.iconFor(log?.mood);
               return GestureDetector(
                 onTap: isTappable ? () => onDayTap(date) : null,
-                child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted, hasLog: hasLog, moodColor: moodColor),
+                child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted, hasLog: hasLog, moodColor: moodColor, moodIcon: moodIcon),
               );
             },
           ),
@@ -1107,7 +1100,7 @@ class _CalendarNavButton extends StatelessWidget {
 }
 
 class _DayCell extends StatelessWidget {
-  const _DayCell({required this.day, required this.isToday, required this.isPeriod, required this.isPredicted, required this.hasLog, this.moodColor});
+  const _DayCell({required this.day, required this.isToday, required this.isPeriod, required this.isPredicted, required this.hasLog, this.moodColor, this.moodIcon});
   final int day;
   final bool isToday;
   final bool isPeriod;
@@ -1120,6 +1113,9 @@ class _DayCell extends StatelessWidget {
   // bir "ruh hali deseni" görülsün diye günü o rengin yumuşak bir tonuyla
   // boyuyoruz. Regl günü rengi (sağlık bilgisi) her zaman önceliklidir.
   final Color? moodColor;
+  // Aynı ruh halinin ikonu — küçük bir rozet olarak günün köşesinde
+  // gösteriliyor, sadece renk değil somut bir sembol de görülsün diye.
+  final IconData? moodIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -1154,7 +1150,21 @@ class _DayCell extends StatelessWidget {
               style: TextStyle(fontSize: 12.5, fontWeight: isToday ? FontWeight.w700 : FontWeight.w500, color: textColor),
             ),
           ),
-          if (hasLog)
+          if (moodIcon != null)
+            Positioned(
+              top: -2, right: -2,
+              child: Container(
+                width: 16, height: 16,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 2)],
+                ),
+                alignment: Alignment.center,
+                child: Icon(moodIcon, size: 10, color: moodColor ?? AppColors.inkOn(context)),
+              ),
+            )
+          else if (hasLog)
             Positioned(
               bottom: 2,
               child: Container(
