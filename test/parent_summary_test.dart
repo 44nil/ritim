@@ -46,4 +46,50 @@ void main() {
     expect(summary.lastPeriodStart, isNull);
     expect(() => summary.encode(), returnsNormally);
   });
+
+  test('recentPeriods 90 günden eski regl kayıtlarını dışarıda bırakır', () {
+    final now = DateTime.now();
+    final cycle = CycleState(periods: [
+      PeriodRecord(startDate: now.subtract(const Duration(days: 200)), endDate: now.subtract(const Duration(days: 196))),
+      PeriodRecord(startDate: now.subtract(const Duration(days: 30)), endDate: now.subtract(const Duration(days: 26))),
+    ]);
+
+    final summary = ParentSummary.fromCycleState(cycle);
+    expect(summary.recentPeriods, hasLength(1));
+    expect(summary.periodCount, 2, reason: 'periodCount hâlâ tüm geçmişi saymalı, sadece takvim son 90 günü göstermeli');
+  });
+
+  test('recentPeriods ve tahmin bilgisi encode/decode üzerinden kayıpsız yuvarlanır', () {
+    final original = ParentSummary(
+      userName: 'Ela',
+      lastPeriodStart: DateTime(2026, 8, 20),
+      currentCycleDay: 15,
+      averageCycleLength: 27,
+      canPredict: true,
+      periodCount: 4,
+      generatedAt: DateTime(2026, 9, 4, 20, 0),
+      recentPeriods: [PeriodRecord(startDate: DateTime(2026, 8, 20), endDate: DateTime(2026, 8, 24))],
+      nextPeriodEstimate: DateTime(2026, 9, 16),
+      averagePeriodLength: 5,
+    );
+
+    final decoded = ParentSummary.decode(original.encode());
+
+    expect(decoded.recentPeriods, hasLength(1));
+    expect(decoded.recentPeriods.first.startDate, DateTime(2026, 8, 20));
+    expect(decoded.recentPeriods.first.endDate, DateTime(2026, 8, 24));
+    expect(decoded.nextPeriodEstimate, DateTime(2026, 9, 16));
+    expect(decoded.averagePeriodLength, 5);
+  });
+
+  test('eski (recentPeriods alanı olmayan) bir JSON hâlâ çözülebiliyor', () {
+    const oldJson = '{"v":1,"userName":"Ela","lastPeriodStart":null,"currentCycleDay":1,'
+        '"averageCycleLength":28,"canPredict":false,"periodCount":0,'
+        '"generatedAt":"2026-09-04T20:00:00.000"}';
+
+    final decoded = ParentSummary.decode(oldJson);
+    expect(decoded.recentPeriods, isEmpty);
+    expect(decoded.nextPeriodEstimate, isNull);
+    expect(decoded.averagePeriodLength, 5);
+  });
 }

@@ -89,6 +89,19 @@ class ParentPanelScreen extends StatelessWidget {
           ])),
           const SizedBox(height: 16),
 
+          if (summary.recentPeriods.isNotEmpty) ...[
+            CleanCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Icon(Icons.calendar_month_outlined, color: AppColors.softPink, size: 20),
+                const SizedBox(width: 8),
+                Text('Regl Takvimi', style: AppTextStyles.heading(fontSize: 16, color: AppColors.inkOn(context))),
+              ]),
+              const SizedBox(height: 16),
+              _ParentMiniCalendar(summary: summary),
+            ])),
+            const SizedBox(height: 16),
+          ],
+
           CleanCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               Icon(Icons.shield_outlined, color: AppColors.warmOrange, size: 20),
@@ -161,5 +174,130 @@ class _CheckRow extends StatelessWidget {
         Expanded(child: Text(text, style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.75), height: 1.4))),
       ]),
     );
+  }
+}
+
+// Ana uygulamadaki takvimin salt-okunur, sadeleştirilmiş hali — ruh hali
+// rengi/tıklama/gün-içi özet yok, sadece regl günü ve tahmini gün gösterir
+// (bkz. ParentSummary.recentPeriods — sadece son ~90 gün, paylaşılması
+// zaten onaylı veri).
+class _ParentMiniCalendar extends StatefulWidget {
+  const _ParentMiniCalendar({required this.summary});
+  final ParentSummary summary;
+
+  @override
+  State<_ParentMiniCalendar> createState() => _ParentMiniCalendarState();
+}
+
+class _ParentMiniCalendarState extends State<_ParentMiniCalendar> {
+  late DateTime _displayedMonth = DateTime(DateTime.now().year, DateTime.now().month);
+
+  bool _isPeriodDay(DateTime date) {
+    for (final p in widget.summary.recentPeriods) {
+      final end = p.endDate ?? DateTime.now();
+      if (!date.isBefore(p.startDate) && !date.isAfter(end)) return true;
+    }
+    return false;
+  }
+
+  bool _isPredictedDay(DateTime date) {
+    final next = widget.summary.nextPeriodEstimate;
+    if (next == null) return false;
+    final diff = date.difference(next).inDays;
+    return diff >= 0 && diff < widget.summary.averagePeriodLength;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final firstDay = DateTime(_displayedMonth.year, _displayedMonth.month, 1);
+    final daysInMonth = DateTime(_displayedMonth.year, _displayedMonth.month + 1, 0).day;
+    final leadingEmpty = firstDay.weekday - 1;
+
+    return Column(children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        IconButton(
+          onPressed: () => setState(() => _displayedMonth = DateTime(_displayedMonth.year, _displayedMonth.month - 1)),
+          icon: const Icon(Icons.chevron_left_rounded),
+          tooltip: 'Önceki ay',
+        ),
+        Text(DateFormat('MMMM y', 'tr_TR').format(_displayedMonth), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.inkOn(context))),
+        IconButton(
+          onPressed: () => setState(() => _displayedMonth = DateTime(_displayedMonth.year, _displayedMonth.month + 1)),
+          icon: const Icon(Icons.chevron_right_rounded),
+          tooltip: 'Sonraki ay',
+        ),
+      ]),
+      const SizedBox(height: 4),
+      Row(
+        children: const ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
+            .map((d) => Expanded(child: Center(child: Text(d, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.35))))))
+            .toList(),
+      ),
+      const SizedBox(height: 4),
+      GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: leadingEmpty + daysInMonth,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+        itemBuilder: (context, index) {
+          if (index < leadingEmpty) return const SizedBox.shrink();
+          final day = index - leadingEmpty + 1;
+          final date = DateTime(_displayedMonth.year, _displayedMonth.month, day);
+          final isPeriod = _isPeriodDay(date);
+          final isPredicted = !isPeriod && _isPredictedDay(date);
+
+          Color? background;
+          Color textColor = AppColors.inkOn(context).withValues(alpha: 0.7);
+          Border? border;
+          if (isPeriod) {
+            background = AppColors.phaseMenstruation;
+            textColor = Colors.white;
+          } else if (isPredicted) {
+            border = Border.all(color: AppColors.phaseMenstruation.withValues(alpha: 0.5), width: 1.5);
+            textColor = AppColors.phaseMenstruation;
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(2),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                decoration: BoxDecoration(color: background, shape: BoxShape.circle, border: border),
+                alignment: Alignment.center,
+                child: Text('$day', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: textColor)),
+              ),
+            ),
+          );
+        },
+      ),
+      const SizedBox(height: 12),
+      Wrap(spacing: 16, runSpacing: 6, children: [
+        _LegendDot(color: AppColors.phaseMenstruation, filled: true, label: 'Regl günü'),
+        _LegendDot(color: AppColors.phaseMenstruation, filled: false, label: 'Tahmini'),
+      ]),
+    ]);
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({required this.color, required this.filled, required this.label});
+  final Color color;
+  final bool filled;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Container(
+        width: 10, height: 10,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: filled ? color : Colors.transparent,
+          border: filled ? null : Border.all(color: color, width: 1.5),
+        ),
+      ),
+      const SizedBox(width: 6),
+      Text(label, style: TextStyle(fontSize: 11, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
+    ]);
   }
 }

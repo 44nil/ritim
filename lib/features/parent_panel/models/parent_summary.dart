@@ -13,6 +13,9 @@ class ParentSummary {
     required this.canPredict,
     required this.periodCount,
     required this.generatedAt,
+    this.recentPeriods = const [],
+    this.nextPeriodEstimate,
+    this.averagePeriodLength = 5,
   });
 
   final String userName;
@@ -22,8 +25,19 @@ class ParentSummary {
   final bool canPredict;
   final int periodCount;
   final DateTime generatedAt;
+  // Son ~90 günün regl kayıtları — panelde gerçek bir mini takvim
+  // gösterebilmek için (bkz. parent_panel_screen.dart, _ParentMiniCalendar).
+  // Regl tarihleri zaten paylaşılması onaylanmış veri; ruh hali/belirti/not
+  // gibi kişiye özel bir şey içermez.
+  final List<PeriodRecord> recentPeriods;
+  final DateTime? nextPeriodEstimate;
+  final int averagePeriodLength;
 
   factory ParentSummary.fromCycleState(CycleState cycle) {
+    final cutoff = DateTime.now().subtract(const Duration(days: 90));
+    final recentPeriods = cycle.periods
+        .where((p) => (p.endDate ?? DateTime.now()).isAfter(cutoff))
+        .toList();
     return ParentSummary(
       userName: cycle.userName,
       lastPeriodStart: cycle.periods.isNotEmpty ? cycle.periods.last.startDate : null,
@@ -32,11 +46,14 @@ class ParentSummary {
       canPredict: cycle.canPredict,
       periodCount: cycle.periods.length,
       generatedAt: DateTime.now(),
+      recentPeriods: recentPeriods,
+      nextPeriodEstimate: cycle.nextPeriodEstimate,
+      averagePeriodLength: cycle.averagePeriodLength,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'v': 1,
+    'v': 2,
     'userName': userName,
     'lastPeriodStart': lastPeriodStart?.toIso8601String(),
     'currentCycleDay': currentCycleDay,
@@ -44,6 +61,9 @@ class ParentSummary {
     'canPredict': canPredict,
     'periodCount': periodCount,
     'generatedAt': generatedAt.toIso8601String(),
+    'recentPeriods': recentPeriods.map((p) => p.toJson()).toList(),
+    'nextPeriodEstimate': nextPeriodEstimate?.toIso8601String(),
+    'averagePeriodLength': averagePeriodLength,
   };
 
   factory ParentSummary.fromJson(Map<String, dynamic> json) => ParentSummary(
@@ -54,6 +74,13 @@ class ParentSummary {
     canPredict: json['canPredict'] as bool,
     periodCount: json['periodCount'] as int,
     generatedAt: DateTime.parse(json['generatedAt'] as String),
+    // Eski (v1) QR'larla da uyumlu olsun diye hepsi opsiyonel/varsayılanlı.
+    recentPeriods: (json['recentPeriods'] as List?)
+            ?.map((p) => PeriodRecord.fromJson(p as Map<String, dynamic>))
+            .toList() ??
+        const [],
+    nextPeriodEstimate: json['nextPeriodEstimate'] != null ? DateTime.parse(json['nextPeriodEstimate'] as String) : null,
+    averagePeriodLength: json['averagePeriodLength'] as int? ?? 5,
   );
 
   String encode() => jsonEncode(toJson());
