@@ -143,8 +143,11 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                             style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5),
                           ),
                         ] else ...[
-                          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            Container(width: 10, height: 10, decoration: BoxDecoration(shape: BoxShape.circle, color: phase.color)),
+                          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 7),
+                              child: Container(width: 10, height: 10, decoration: BoxDecoration(shape: BoxShape.circle, color: phase.color)),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(child: Text(
                               '${cycle.currentCycleDay}. gün · ${phase.friendlyLabel ?? phase.label}',
