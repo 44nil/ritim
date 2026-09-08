@@ -8,8 +8,6 @@ class HomeScaffold extends StatelessWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  // "Sorular" sekmesi gerçek, uzman onaylı içerik hazır olana kadar
-  // kaldırıldı — bkz. core/router/app_router.dart ve qa_screen.dart.
   static const _tabs = [
     _TabItem(label: 'Döngüm', icon: Icons.water_drop_outlined, activeIcon: Icons.water_drop_rounded, routeName: RouteNames.cycleTracking),
     _TabItem(label: 'Okuma', icon: Icons.auto_stories_outlined, activeIcon: Icons.auto_stories_rounded, routeName: RouteNames.articles),

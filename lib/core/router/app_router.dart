@@ -74,10 +74,6 @@ class AppRouter {
             ],
           ),
 
-          // Sorular sekmesi (Uzman Paneli) gerçek, uzman onaylı içerik hazır
-          // olana kadar kaldırıldı — bkz. lib/features/qa/screens/qa_screen.dart.
-          // İçerik hazır olduğunda buraya ve home_scaffold.dart'a geri eklenmeli.
-
           // Sekme 1 — Makaleler
           StatefulShellBranch(
             routes: [
