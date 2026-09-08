@@ -33,6 +33,5 @@ abstract class AppConstants {
   static const radiusRound = 100.0;
 
   // Ebeveyn paneli
-  // TODO: Backend entegrasyonu — ebeveyn PIN uzunluğu sunucudan gelecek
   static const parentPinLength = 6;
 }

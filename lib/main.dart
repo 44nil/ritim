@@ -9,8 +9,6 @@ void main() async {
   await initializeDateFormatting('tr_TR');
   await NotificationService.init();
 
-  // TODO: Backend entegrasyonu — Firebase.initializeApp() veya benzeri başlatma buraya gelecek
-
   runApp(
     const ProviderScope(
       child: RitimApp(),
