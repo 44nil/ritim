@@ -12,10 +12,10 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  // "Günün Sorusu" o gün için sabit bir soruyla başlar (tarihe göre seçilir),
-  // ama "Sonraki Soru" ile havuzdaki bir sonraki soruya geçilebilir — eskiden
-  // tek bir sabit soru vardı ve bu buton sadece cevap durumunu sıfırlayıp
-  // aynı soruyu tekrar gösteriyordu (gerçek bir hataydı).
+  // Ekran her açıldığında tarihe göre değişen bir soruyla başlar (çeşitlilik
+  // için), ama "Sonraki Soru" ile sınırsız ilerlenebilir — bu yüzden etiket
+  // "Günün Sorusu" değil "Bilgi Testi": tek bir soruyla sınırlı olduğu
+  // izlenimi vermek yanıltıcıydı (gerçek bir geri bildirimdi).
   late int _questionIndex = _dayOfYear(DateTime.now()) % QuizData.questions.length;
   int? _selected;
   bool _answered = false;
@@ -68,7 +68,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('Günün Sorusu', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.softPink)),
+                        Text('Bilgi Testi', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.softPink)),
                         const SizedBox(height: 14),
                         Text(q.question, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.inkOn(context), height: 1.4)),
                         const SizedBox(height: 18),

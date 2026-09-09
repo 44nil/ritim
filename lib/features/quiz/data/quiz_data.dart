@@ -57,6 +57,22 @@ class QuizData {
           'Döngü süresi kişiden kişiye değişebilir, 21-35 gün arası '
           'tamamen normal kabul edilir.',
     ),
+    QuizQuestion(
+      question:
+          'İlk regl dönemi başladıktan sonraki ilk birkaç yıl boyunca, '
+          'sonraki regl günlerinin tam vaktinde gelmemesi veya bazı '
+          'aylarda gecikmesi normal midir?',
+      options: [
+        'Hayır, bu vücudumuzun bozulduğunu gösterir ve hemen hastaneye yatılması gerekir',
+        'Evet, tamamen normaldir! Vücudumuz ve hormonlarımız bu yeni duruma alışmaya çalışıyordur',
+        'Normal değildir, regl başladıktan sonra her ay bir saat gibi kusursuz çalışmalıdır',
+      ],
+      correctIndex: 1,
+      explanation:
+          'Endişelenme! İlk yıllarda regl takviminin biraz şaşırması, '
+          'düzensiz olması çok doğaldır. Vücudun bu yeni sistemi öğreniyor '
+          've zamanla kendi ritmini (düzenini) bulacaktır.',
+    ),
 
     // ─── Özbakım ve Hijyen Kahramanları ────────────────────────────────
     QuizQuestion(
@@ -90,29 +106,88 @@ class QuizData {
           'çevreci yoldur.',
     ),
     QuizQuestion(
-      question: 'Regl döneminde banyo yapmak veya duş almak zararlı mıdır?',
-      options: [
-        'Hayır, aksine ılık bir duş almak bizi temiz tutar ve rahatlatır',
-        'Evet, reglken suya dokunulmamalıdır',
-      ],
-      correctIndex: 0,
-      explanation:
-          'Bu sadece bir efsane — duş almak seni temiz tutar ve '
-          'rahatlatır, hiç zararı yok.',
-    ),
-    QuizQuestion(
       question:
-          'Hafif regl sancısı (karın ağrısı) yaşadığımızda aşağıdakilerden '
-          'hangisi bizi rahatlatabilir?',
+          '"Regl döneminde banyo yapmak, duş almak veya saç yıkamak '
+          'zararlıdır, kanı durdurur" inanışı doğru mudur?',
       options: [
-        'Çok hızlı koşmak',
-        'Karnımıza ılık (aşırı sıcak olmayan) bir su torbası koymak ve dinlenmek',
-        'Saatlerce ağlamak',
+        'Doğrudur, regl bitene kadar suya hiç dokunmamalıyız',
+        'Yanlıştır! Ayakta alınan ılık bir duş bizi temiz tutar, mikroplardan korur ve ağrılarımızı hafifletir',
+        'Doğrudur, sadece parmak uçlarımızı yıkayabiliriz',
       ],
       correctIndex: 1,
       explanation:
-          'Ilık bir su torbası ve dinlenmek, kramp ağrısını hafifletmeye '
-          'yardımcı olabilir.',
+          'Tam bir temizlik zamanı! Reglken temizliğe daha çok dikkat '
+          'etmeliyiz. Ilık bir duş almak kaslarını gevşetir ve seni çok '
+          'rahatlatır — küvette oturmak yerine ayakta duş almayı tercih et.',
+    ),
+    QuizQuestion(
+      question:
+          'Regl döneminde karnımızda veya belimizde hafif ağrılar '
+          '(kramplar) hissettiğimizde, kendimizi daha iyi hissetmek için '
+          'ne yapabiliriz?',
+      options: [
+        'Buz gibi soğuk suyla duş alıp saatlerce ağlamak',
+        'Karnımıza ılık (aşırı sıcak olmayan) bir su torbası koymak, '
+            'dinlenmek ve ılık süt veya bitki çayı içmek',
+        'Çok ağır eşyaları kaldırmaya çalışmak',
+      ],
+      correctIndex: 1,
+      explanation:
+          'Harika bir yöntem! Ilık uygulamalar ve dinlenmek, karın '
+          'kaslarının gevşemesini sağlar ve ağrıyı hafifletir. Ağrın çok '
+          'fazlaysa mutlaka annene veya güvendiğin bir büyüğüne haber ver.',
+    ),
+    QuizQuestion(
+      question:
+          'Regl döneminde genital bölgemizi (özel bölgemizi) '
+          'temizlerken parfümlü sabunlar, duş jelleri veya deodorantlar '
+          'kullanmalı mıyız?',
+      options: [
+        'Hayır, o bölgenin sağlığı için sadece duru su kullanmak en '
+            'doğrusudur. Parfümlü ürünler cildimizi tahriş edebilir',
+        'Evet, güzel kokması için bol bol parfüm ve sabun sıkmalıyız',
+        'Evet, çamaşır suyu ile temizlemeliyiz',
+      ],
+      correctIndex: 0,
+      explanation:
+          'Harika bir bilgi! Vücudumuzun o bölgesi kendi kendini koruyan '
+          'özel bir sisteme sahiptir. Kimyasal ve parfümlü ürünler bu '
+          'sistemi bozabilir. Sadece temiz suyla önden arkaya doğru '
+          'yıkamak tamamen yeterli ve sağlıklıdır.',
+    ),
+
+    // ─── Günlük Hayat ve Pratik Çözümler ────────────────────────────────
+    QuizQuestion(
+      question:
+          'Okuldayken veya dışarıdayken aniden regl olursak ve yanımızda '
+          'hiç ped yoksa ne yapmalıyız?',
+      options: [
+        'Panik yapıp ağlamalı ve okulu terk etmeliyiz',
+        'Hiç kimseye söylemeden sessizce sıramızda oturmalıyız',
+        'Okul hemşiresinden, kadın öğretmenlerimizden veya bir kız arkadaşımızdan yardım istemeliyiz',
+      ],
+      correctIndex: 2,
+      explanation:
+          'Unutma, dünyadaki tüm kadınlar ve öğretmenlerin bu süreci '
+          'yaşıyor! Bu yüzden yardım istemekten asla çekinme. Geçici bir '
+          'çözüm olarak tuvalet kağıdını katlayıp çamaşırına koyabilir ve '
+          'hemen bir büyüğünden ped isteyebilirsin.',
+    ),
+    QuizQuestion(
+      question:
+          'Regl dönemindeyken iç çamaşırımıza veya kıyafetimize kazara '
+          'kan lekesi geçerse bu utanılacak bir durum mudur?',
+      options: [
+        'Evet, bu çok büyük bir hatadır ve herkes bizimle alay eder',
+        'Kesinlikle hayır! Bu, regl olan her insanın başına gelebilecek çok doğal bir kazadır',
+        'Evet, leke olan kıyafeti hemen çöpe atmalıyız',
+      ],
+      correctIndex: 1,
+      explanation:
+          'Hiç utanma, bu sadece küçük bir kaza! Lekeli kıyafetini soğuk '
+          'su ve sabunla yıkayarak kolayca temizleyebilirsin. Okula '
+          'giderken çantana yedek bir iç çamaşırı ve koyu renkli bir '
+          'hırka atmak her zaman iyi bir fikirdir.',
     ),
 
     // ─── Mitler ve Duygular ─────────────────────────────────────────────
