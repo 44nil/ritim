@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -23,11 +24,10 @@ class CycleTrackingScreen extends ConsumerStatefulWidget {
   ConsumerState<CycleTrackingScreen> createState() => _CycleTrackingScreenState();
 }
 
-// İnce beyaz kenarlıklı, tintli bir "cam" kart görünümü. Gerçek
-// BackdropFilter bulanıklığı denendi ama düz iki renkli gradient
-// arka planda hiçbir görsel fark yaratmadı (blur'un bulanıklaştıracağı
-// bir detay/doku yoktu) — performans maliyeti karşılıksız kaldığı için
-// kaldırıldı, sadece tint+kenarlık kaldı (kullanıcı geri bildirimi).
+// Gerçek buzlu cam efekti — bu sefer arkada gerçekten bulanıklaştıracak bir
+// şey var (bkz. build() içindeki dekoratif "blob" daireler), o yüzden blur
+// bu kez görünür. Gölge BİLEREK dıştaki, klipsiz Container'da — ClipRRect'in
+// İÇİNE alınırsa gölgenin dışa taşan bulanıklığı sert bir kenarda kesilir.
 Widget _glassCard({
   required Widget child,
   required Color tint,
@@ -38,14 +38,33 @@ Widget _glassCard({
 }) {
   return Container(
     width: width,
-    padding: padding,
-    decoration: BoxDecoration(
-      color: tint,
+    decoration: BoxDecoration(borderRadius: radius, boxShadow: shadow),
+    child: ClipRRect(
       borderRadius: radius,
-      border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
-      boxShadow: shadow,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+        child: Container(
+          padding: padding,
+          decoration: BoxDecoration(
+            color: tint,
+            borderRadius: radius,
+            border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 1),
+          ),
+          child: child,
+        ),
+      ),
     ),
-    child: child,
+  );
+}
+
+// Döngüm ekranının arka planına serpiştirilen dekoratif renkli daireler —
+// buzlu cam kartların bulanıklaştıracağı bir "şey" olsun diye. Sadece bu
+// ekranda (ScreenGradientBackground her ekranda kullanıldığı için oraya
+// eklenmedi, kapsam bilerek dar tutuldu).
+Widget _bgBlob(double size, Color color) {
+  return Container(
+    width: size, height: size,
+    decoration: BoxDecoration(shape: BoxShape.circle, color: color.withValues(alpha: 0.5)),
   );
 }
 
@@ -117,6 +136,19 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
         fit: StackFit.expand,
         children: [
           const ScreenGradientBackground(),
+          // Buzlu cam kartların (bkz. _glassCard) arkasında gerçekten
+          // bulanıklaştıracak bir şey olsun diye — düz gradient üstünde blur
+          // hiçbir fark yaratmıyordu (kullanıcı ile birlikte test ettik).
+          // Sadece bu ekranda, dokunuşları geçiren (IgnorePointer) dekoratif
+          // lekeler.
+          IgnorePointer(
+            child: Stack(children: [
+              Positioned(top: 40, left: -70, child: _bgBlob(220, const Color(0xFFB8A8E6))),
+              Positioned(top: 260, right: -90, child: _bgBlob(260, const Color(0xFFA8E6C8))),
+              Positioned(bottom: 320, left: -40, child: _bgBlob(190, const Color(0xFFF4A8C4))),
+              Positioned(bottom: 60, right: -50, child: _bgBlob(230, const Color(0xFFFFD66B))),
+            ]),
+          ),
           SafeArea(
             child: SingleChildScrollView(
               controller: _scrollController,
