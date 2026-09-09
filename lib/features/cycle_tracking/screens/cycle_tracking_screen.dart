@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -135,7 +136,9 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: _staggered(index: 0, child: AnimatedBuilder(
                       animation: _breathController,
-                      builder: (context, child) => Container(
+                      builder: (context, child) => Transform.scale(
+                        scale: 1.0 + 0.018 * _breathController.value,
+                        child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(22),
                         decoration: BoxDecoration(
@@ -143,14 +146,14 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.softPink.withValues(alpha: 0.12 + 0.1 * _breathController.value),
-                              blurRadius: 22 + 12 * _breathController.value,
-                              spreadRadius: 1 * _breathController.value,
+                              color: AppColors.softPink.withValues(alpha: 0.18 + 0.22 * _breathController.value),
+                              blurRadius: 18 + 26 * _breathController.value,
+                              spreadRadius: 2 * _breathController.value,
                             ),
                           ],
                         ),
                         child: child,
-                      ),
+                      )),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         // Hiç regl kaydı yokken "1. gün / Regl" göstermek yanıltıcı —
                         // regl daha başlamadan sanki başlamış gibi bir izlenim veriyordu.
@@ -262,7 +265,10 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         AnimatedBuilder(
                           animation: _breathController,
-                          builder: (context, child) => Transform.scale(scale: 0.92 + 0.16 * _breathController.value, child: child),
+                          builder: (context, child) => Transform.rotate(
+                            angle: math.sin(_breathController.value * math.pi) * 0.35,
+                            child: Transform.scale(scale: 0.85 + 0.3 * _breathController.value, child: child),
+                          ),
                           child: Container(
                             width: 32, height: 32,
                             decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.2), shape: BoxShape.circle),
