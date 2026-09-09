@@ -1,7 +1,4 @@
-/// Tek bir quiz sorusu. Her iddianın kaynağı docs/content-sources.md'de
-/// izleniyor — çocuğa gösterilen metin bilerek sade tutuluyor, akademik
-/// kaynak adı/dipnot burada YOK (yayından önce gerçek bir uzman tarafından
-/// son onay da bekliyor, bkz. aynı belge).
+/// Tek bir quiz sorusu. Şık sayısı sabit değil (2 ya da 3 olabilir).
 class QuizQuestion {
   const QuizQuestion({
     required this.question,
@@ -20,232 +17,131 @@ class QuizData {
   QuizData._();
 
   static const questions = [
+    // ─── Temel Bilgiler ────────────────────────────────────────────────
     QuizQuestion(
-      question: 'Aşağıdakilerden hangisi regl döngüsü hakkında doğrudur?',
+      question: 'Regl (menstrüasyon) olmak ne anlama gelir?',
       options: [
-        'Döngü her zaman tam 28 gün sürer',
-        'Senin yaşında 21-45 gün arası döngü süresi normaldir',
-        'Regl sadece 3 gün sürer',
-        'Egzersiz regl döneminde zararlıdır',
+        'Vücudun hasta olduğunu gösterir',
+        'Büyüdüğümüzün ve vücudumuzun sağlıklı çalıştığının doğal bir işaretidir',
+        'Sadece çok yaşlı insanların yaşadığı bir durumdur',
       ],
       correctIndex: 1,
       explanation:
-          'Senin yaşındaki (10-17) bir döngü için 21-45 gün arası tamamen '
-          'normal — bu, yetişkinlerdeki aralıktan (21-35 gün) daha geniş. '
-          'İlk reglden sonraki birkaç yıl içinde döngün kademeli olarak '
-          'daha düzenli hale gelir. "28 gün" sadece bir ortalama, senin '
-          'döngün farklı olabilir ve bu sorun değil.',
+          'Regl olmak, vücudunun büyüdüğünü ve sağlıklı çalıştığını '
+          'gösteren doğal bir işaret — hastalık değil!',
     ),
     QuizQuestion(
-      question: 'PMS (regl öncesi sendrom) hakkında hangisi doğrudur?',
-      options: [
-        'PMS gerçek değildir, sadece hayal gücüdür',
-        'Mod değişimi, sinirlilik ve şişkinlik gibi belirtiler yaşayabilirsin — çok yaygın ve normaldir',
-        'PMS yaşayan herkesin mutlaka ilaç alması gerekir',
-        'PMS sadece yetişkin kadınlarda görülür',
-      ],
+      question: 'İlk regl genellikle hangi yaşlar arasında başlar?',
+      options: ['4-6 yaş', '9-16 yaş', '30-40 yaş'],
       correctIndex: 1,
       explanation:
-          'PMS, reglden önceki günlerde bazı kızların yaşadığı fiziksel ve '
-          'duygusal değişikliklerin genel adı — gerçek bir durum ve çok '
-          'yaygın. Belirtiler günlük hayatını ciddi etkiliyorsa güvendiğin '
-          'bir yetişkine söylemek iyi bir adımdır, ama her PMS ilaç '
-          'gerektirmez.',
+          'Herkesin vücut saati farklıdır, bu yaş aralığı tamamen normaldir!',
     ),
     QuizQuestion(
       question:
-          'Regl krampı için hangi yöntem araştırmalarla destekleniyor?',
+          'Ortalama bir regl döngüsü (bir reglin ilk gününden sonraki '
+          'reglin ilk gününe kadar geçen süre) kaç gün sürer?',
+      options: ['1 gün', 'Yaklaşık 21 ila 35 gün', 'Tam bir yıl'],
+      correctIndex: 1,
+      explanation:
+          'Döngü süresi kişiden kişiye değişebilir, 21-35 gün arası '
+          'tamamen normal kabul edilir.',
+    ),
+
+    // ─── Hijyen ve Özbakım ─────────────────────────────────────────────
+    QuizQuestion(
+      question: 'Kullanılmış bir pedi değiştirdikten sonra ne yapmalıyız?',
       options: [
-        'Sıcak su torbası — bazı araştırmalarda ağrı kesici hap kadar etkili bulunmuş',
-        'Kramp varken hiç hareket etmemek',
-        'Kramplara hiçbir şeyin faydası yoktur',
-        'Sadece uyumak tek çözümdür',
+        'Tuvalete atıp sifonu çekmeliyiz',
+        'Temiz bir kağıda veya ped poşetine sarıp çöp kutusuna atmalıyız',
+        'Odamızda masanın üstünde bırakmalıyız',
+      ],
+      correctIndex: 1,
+      explanation:
+          'Tuvalete atmak tıkanıklığa yol açar, çöpe atmak en doğrusudur!',
+    ),
+    QuizQuestion(
+      question:
+          'Sağlığımız ve temizliğimiz için gün içinde hijyenik pedi '
+          'ortalama ne sıklıkla değiştirmeliyiz?',
+      options: [
+        '3-4 günde bir',
+        'Kanama yoğunluğuna göre 4-6 saatte bir',
+        'Sadece geceleri uyumadan önce',
+      ],
+      correctIndex: 1,
+      explanation:
+          'Pedi düzenli değiştirmek hem hijyen hem rahatlık için önemli.',
+    ),
+    QuizQuestion(
+      question: 'Regl döneminde banyo yapmak veya duş almak zararlı mıdır?',
+      options: [
+        'Hayır, aksine ılık bir duş almak bizi temiz tutar ve rahatlatır',
+        'Evet, reglken suya dokunulmamalıdır',
       ],
       correctIndex: 0,
       explanation:
-          'Karnına/beline sıcak su torbası koymak, araştırmalarda ibuprofen '
-          'gibi ağrı kesicilere yakın etki göstermiş; ikisini birlikte '
-          'kullanmak rahatlamayı hızlandırabiliyor. Hafif hareket de bazı '
-          'kızlarda kramp şiddetini azaltabiliyor.',
+          'Bu sadece bir efsane — duş almak seni temiz tutar ve '
+          'rahatlatır, hiç zararı yok.',
+    ),
+
+    // ─── Semptomlar ve Rahatlama Yöntemleri ────────────────────────────
+    QuizQuestion(
+      question:
+          'Regl olmadan birkaç gün önce kendimizi biraz halsiz, sinirli '
+          'veya duygusal hissetmemiz normal midir?',
+      options: [
+        'Hayır, bu bir hastalıktır',
+        'Evet, hormonlarımızın değişmesinden kaynaklanan çok normal bir '
+            'durumdur (Buna PMS denir)',
+      ],
+      correctIndex: 1,
+      explanation:
+          'Buna PMS denir ve çok yaygındır — hormonlarının değişmesinden '
+          'kaynaklanır, hastalık değildir.',
     ),
     QuizQuestion(
       question:
-          '"Döngü fazına göre spor yap" trendi hakkında bilim ne diyor?',
+          'Hafif regl sancısı (karın ağrısı) yaşadığımızda aşağıdakilerden '
+          'hangisi bizi rahatlatabilir?',
       options: [
-        'Kesinlikle doğru, her fazda tamamen farklı antrenman yapmalısın',
-        'Kontrollü araştırmalar, döngü fazının spor gücünü ölçülebilir şekilde etkilediğine dair bir kanıt bulamadı',
-        'Sadece regl gününde spor yapılabilir',
-        'Spor regl döngüsünü tamamen durdurur',
+        'Çok hızlı koşmak',
+        'Karnımıza ılık (aşırı sıcak olmayan) bir su torbası koymak ve dinlenmek',
+        'Saatlerce ağlamak',
       ],
       correctIndex: 1,
       explanation:
-          'Bu trend sosyal medyada popüler ama bilim henüz doğrulamıyor. '
-          '2023\'te yapılan bir üniversite çalışması, döngü fazının spor '
-          'gücünü ya da bedeninin antrenmana verdiği tepkiyi '
-          'değiştirdiğine dair bir kanıt bulamadı.',
+          'Ilık bir su torbası ve dinlenmek, kramp ağrısını hafifletmeye '
+          'yardımcı olabilir.',
     ),
-    QuizQuestion(
-      question: 'Senin yaşındaki gençler için önerilen günlük uyku süresi nedir?',
-      options: [
-        '4-5 saat',
-        '8-10 saat',
-        'Sadece hafta sonu uyumak yeterli',
-        'Döngü fazına göre değişir',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Döngünün hangi gününde olursan ol, senin yaşındaki gençler için '
-          'önerilen uyku süresi günde 8-10 saat.',
-    ),
+
+    // ─── Mitler ve Gerçekler ────────────────────────────────────────────
     QuizQuestion(
       question:
-          '14-18 yaş kızlar neden yetişkin erkeklere/çocuklara göre daha fazla demire ihtiyaç duyar?',
+          '"Regl olan bir çocuk spor yapamaz veya beden eğitimi dersine '
+          'katılamaz." Bu bilgi doğru mu, yanlış mı?',
       options: [
-        'İhtiyaç duymazlar, herkeste aynıdır',
-        'Regl ile demir kaybı + büyüme çağı olduğu için',
-        'Sadece spor yapanlar demire ihtiyaç duyar',
-        'Demir sadece et yiyenler için önemlidir',
+        'Doğru, ağır hareketler yapılmamalıdır',
+        'Yanlış, kendimizi iyi hissettiğimiz sürece yürüyüş, esneme ve '
+            'spor yapmak ağrıları azaltmaya bile yardımcı olur',
       ],
       correctIndex: 1,
       explanation:
-          'Regl sırasında kan kaybıyla birlikte demir de kaybedilir. '
-          'Büyüme çağında olduğun için de bedeninin demire ihtiyacı artıyor '
-          '— 14-18 yaş için önerilen günlük miktar (~15mg), henüz regl '
-          'görmeyen çocuklara göre neredeyse iki kat fazla.',
+          'Bu bir mit! Kendini iyi hissediyorsan spor yapmak seni '
+          'durdurmamalı — hatta hareket etmek ağrıları azaltabilir.',
     ),
     QuizQuestion(
-      question: 'Tampon kullanıyorsan hangisi doğrudur?',
+      question: 'Regl dönemiyle ilgili kafamıza bir şey takıldığında en doğrusu ne yapmaktır?',
       options: [
-        'Bir tamponu 8 saatten uzun süre takılı bırakmak sorun değildir',
-        'Tamponu 4-8 saatte bir değiştirmek daha sağlıklıdır',
-        'Tampon sadece yüzerken kullanılabilir',
-        'Tampon kullanmak için önce doktor onayı şart',
+        'İnternetteki korkunç hikayeleri okumak',
+        'Annemizle, öğretmenimizle, okul hemşiresiyle veya güvendiğimiz '
+            'bir yetişkinle konuşmak',
+        'Kimseye söylemeyip gizlemek',
       ],
       correctIndex: 1,
       explanation:
-          'Tamponu 4-8 saatte bir değiştirmek ve hiçbir zaman 8 saatten uzun '
-          'takılı bırakmamak en sağlıklısı — bu küçük alışkanlık nadir görülen '
-          'bir enfeksiyon riskini de azaltır. Kendini hiç iyi hissetmezsen '
-          '(ateş, döküntü, ani halsizlik gibi) tamponu çıkarıp bir yetişkine '
-          'söylemen yeterli.',
-    ),
-    QuizQuestion(
-      question: 'İlk regl (menarş) genelde hangi yaşlar arasında başlar?',
-      options: [
-        'Sadece herkeste tam 13 yaşında',
-        '8 yaşında başlamak da tamamen normaldir',
-        'Genellikle 10-15 yaş arasında, ortalama yaklaşık 12,5',
-        'Herkeste birebir aynı yaşta başlar',
-      ],
-      correctIndex: 2,
-      explanation:
-          'İlk regl çoğunlukla 10-15 yaş arasında başlar, ortalama yaş '
-          '12,5 civarında. Herkesin vücut saati farklı — biraz erken ya da '
-          'geç başlaman çoğu zaman sorun değil.',
-    ),
-    QuizQuestion(
-      question: 'Regl günleri dışında iç çamaşırında berrak/beyazımsı bir akıntı görmek...',
-      options: [
-        'Her zaman bir enfeksiyon belirtisidir',
-        'Genellikle tamamen normaldir, vücudun kendini temizleme şeklidir',
-        'Sadece regl olduktan hemen sonra görülür',
-        'Hemen ilaç kullanmayı gerektirir',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Berrak ya da hafif beyazımsı, hafif kokulu bir akıntı görmek '
-          'normal — vücudun kendini temizleme yollarından biri. Renk '
-          'değişikliği, kötü koku, kaşıntı ya da yanma varsa bir yetişkine '
-          'söylemek iyi bir adımdır.',
-    ),
-    QuizQuestion(
-      question: 'Ped kullanırken ne sıklıkla değiştirmek önerilir?',
-      options: [
-        'Günde sadece bir kez yeterlidir',
-        'Akış hafif olsa bile birkaç saatte bir, yoğun akışta daha sık',
-        'Sadece kirlendiğini fark edince',
-        'Değiştirmeye gerek yok, tek ped bütün gün yeter',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Akışın hafif olsa bile pedi birkaç saatte bir değiştirmek '
-          'öneriliyor; akış yoğunsa daha sık değiştirmek gerekir. Bu hem '
-          'hijyen hem de cilt tahrişini önlemek için önemli.',
-    ),
-    QuizQuestion(
-      question: 'Kafein (kola, çikolata, bazı çaylar) PMS belirtileriyle nasıl ilişkilidir?',
-      options: [
-        'PMS\'i tamamen ortadan kaldırır',
-        'Reglden önceki günlerde azaltmak bazı kızlarda belirtileri hafifletebilir',
-        'Hiçbir etkisi olmadığı kesin olarak kanıtlanmıştır',
-        'Sadece kahve bu etkiyi yapar, çikolata yapmaz',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Reglden önceki günlerde kafeini (ayrıca tuz ve şekeri) azaltmak, '
-          'bazı kızlarda PMS belirtilerini hafifletebiliyor. Bu herkes için '
-          'aynı etkiyi yapmayabilir — kendi bedenini gözlemlemek en iyi yol.',
-    ),
-    QuizQuestion(
-      question: 'Kramp varken hafif egzersiz (yürüyüş, esneme gibi) yapmak konusunda araştırmalar ne diyor?',
-      options: [
-        'Egzersizin krampları azalttığına dair hiçbir kanıt yok',
-        'Yapılan araştırmalarda egzersiz krampları hafifletmede oldukça etkili bulundu',
-        'Sadece yüzme işe yarar, başka hiçbir hareket etmez',
-        'Regl döneminde spor yapmak tamamen yasaktır',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Yapılan araştırmalarda hafif hareket (yürüyüş, esneme, yoga gibi) '
-          'kramplara sıcak su torbası kadar, hatta bazen daha da fazla iyi '
-          'geliyor. Kendini kötü hissediyorsan zorlamana gerek yok — '
-          'bedenine göre karar ver.',
-    ),
-    QuizQuestion(
-      question: 'Aşağıdakilerden hangisi bir yetişkine söylemen gereken bir durumdur?',
-      options: [
-        'Reglin 5 gün sürmesi',
-        'Bir pedi/tamponu art arda birkaç saat boyunca saatte bir değiştirmen gerekmesi',
-        'Hafif kramp hissetmen',
-        'Reglin arada bir birkaç gün erken/geç gelmesi',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Bir pedi/tamponu art arda birkaç saat boyunca saatte bir ya '
-          'da daha sık değiştirmen gerekiyorsa, bunu güvendiğin bir '
-          'yetişkine söylemek iyi olur — birlikte bir doktora bakılıp '
-          'bakılmayacağına karar verirsiniz. Diğer seçenekler genellikle '
-          'normal sınırlar içinde.',
-    ),
-    QuizQuestion(
-      question: 'Döngü boyunca ruh halinin dalgalanması hakkında hangisi doğrudur?',
-      options: [
-        'Bu sadece "kafanda kurduğun" bir şeydir, gerçek bir sebebi yoktur',
-        'Hormonlarındaki gerçek değişimler ruh halini etkileyebilir',
-        'Sadece zayıf iradeli kızlar ruh hali değişimi yaşar',
-        'Ruh hali sadece regl bittikten sonra değişir',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Döngü boyunca hormonların seviyeleri değişir ve bu, bedeninde '
-          'birçok şeyi (duygular dahil) gerçekten etkileyebilir — yani '
-          'hissettiklerinin gerçek bir sebebi var, "kafanda kurduğun" bir '
-          'şey değil.',
-    ),
-    QuizQuestion(
-      question: 'Ped, tampon ve menstrual kap arasında hangisi "en doğru" seçimdir?',
-      options: [
-        'Sadece ped kullanmak doğrudur, diğerleri güvenli değildir',
-        'Hiçbiri "en doğru" değildir — doğru kullanıldıklarında hepsi güvenlidir, seçim sana kalmış',
-        'Tampon kullanmak için evli olman gerekir',
-        'Menstrual kap sadece yetişkinler için üretilir',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Ped, tampon ve menstrual kap — doğru kullanıldığında hepsi '
-          'güvenli seçenekler. Hangisinin sana daha rahat geldiği kişisel bir '
-          'tercih ve istediğinde değiştirebilirsin. Yeni bir şey denemeden '
-          'önce bir yetişkine sorman, doğru kullanımı öğrenmene yardımcı olur.',
+          'Güvendiğin bir yetişkinle konuşmak, doğru ve güvenilir '
+          'bilgiye ulaşmanın en iyi yolu.',
     ),
   ];
 }

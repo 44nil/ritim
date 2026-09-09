@@ -20,7 +20,7 @@ doktora sorulur.
 
 | İddia | Nerede | Kaynak |
 |---|---|---|
-| Adölesanda (10-17 yaş) normal döngü uzunluğu 21-45 gündür; yetişkinlerde bu 21-35 güne daralır; ilk adetten sonraki ~3 yıl içinde döngü kademeli olarak yetişkin aralığına yaklaşır. | `lib/features/quiz/data/quiz_data.dart` (soru 1) | [ACOG & AAP Committee Opinion No. 651 — "Menstruation in Girls and Adolescents: Using the Menstrual Cycle as a Vital Sign" (2015)](https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2015/12/menstruation-in-girls-and-adolescents-using-the-menstrual-cycle-as-a-vital-sign) |
+| Adölesanda (10-17 yaş) normal döngü uzunluğu 21-45 gündür; yetişkinlerde bu 21-35 güne daralır; ilk adetten sonraki ~3 yıl içinde döngü kademeli olarak yetişkin aralığına yaklaşır. | `lib/core/providers/cycle_provider.dart` — `averageCycleLength` 21-45 aralığına sıkıştırılıyor (artık quiz'de değil, bkz. aşağıdaki "ARTIK GEÇERSİZ" notu) | [ACOG & AAP Committee Opinion No. 651 — "Menstruation in Girls and Adolescents: Using the Menstrual Cycle as a Vital Sign" (2015)](https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2015/12/menstruation-in-girls-and-adolescents-using-the-menstrual-cycle-as-a-vital-sign) |
 | Adölesanların ~%80'i ilk adetten sonraki 2-4 yıl boyunca düzensiz döngü yaşar; bu hipotalamus-hipofiz-over aksının olgunlaşmamış olmasından kaynaklanır ve normaldir. | Genel yaklaşım/ton (kaygı azaltma) için referans, henüz belirli bir ekranda alıntılanmıyor | Türkiye Klinikleri, "Adölesanlarda Menstrüasyon Bozuklukları" — [turkiyeklinikleri.com](https://www.turkiyeklinikleri.com/article/tr-adolesanlarda-menstruasyon-bozukluklari-97963.html); ACOG Committee Opinion No. 651 (yukarıdaki) |
 | 13-18 yaş için önerilen uyku süresi, döngü fazından bağımsız olarak 8-10 saattir. | `mock_wellness_data.dart` — tüm fazlarda `sleepHours` artık tek tip "8-10 saat" (önceden adet/luteal fazında 9-10, foliküler/ovülasyonda 8-9 olarak faza göre farklılaştırılmıştı — bu ayrımın hiçbir resmi kaynağı yoktu, düzeltildi). | [American Academy of Sleep Medicine, Teen Sleep Duration Health Advisory](https://aasm.org/advocacy/position-statements/teen-sleep-duration-health-advisory/) (AAP tarafından da destekleniyor) |
 | Adet döneminde demir kaybı olur; büyüme çağındaki genç kızlar zaten demir eksikliği riski taşır — demir açısından zengin gıdalar (ıspanak, mercimek, kırmızı et) ve C vitamini (emilimi artırır) önerilir. 14-18 yaş için günlük 15mg demir hedefleniyor. | `mock_wellness_data.dart` — adet fazı `nutrition` listesi | [Academy of Nutrition and Dietetics — "Give Your Teen's Iron a Boost"](https://www.eatright.org/health/essential-nutrients/minerals/give-your-teens-iron-a-boost); ayrıca bkz. ağır adet kanamasıyla demir eksikliği ilişkisini gösteren gözden geçirilmiş çalışmalar (PMC) |
@@ -65,7 +65,16 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
 | Östrojen arttıkça serotonin üretimi de artma eğilimindedir (iyi hissetme ile ilişkilendirilir); progesteron ise monoamin oksidaz (MAO) aktivitesini artırarak serotonini azaltabilir. Ruh hali değişkenliği, hormonların mutlak seviyesinden çok ne kadar hızlı değiştiğiyle daha ilişkili görünüyor. | `article_data.dart` — "Hormonlar ve Ruh Halin" | Mekanizma birincil literatürle doğrulandı: [Rapkin & Akopians — Pathophysiology of premenstrual syndrome and premenstrual dysphoric disorder, Menopause International (2012)](https://journals.sagepub.com/doi/10.1258/mi.2012.012014); hormon seviyesinden çok değişim hızının belirleyici olduğu bulgusu: [Schmidt et al. — PMDD Symptoms Following Ovarian Suppression: Triggered by Change in Ovarian Steroid Levels But Not Continuous Stable Levels, Am J Psychiatry (2017)](https://ajp.psychiatryonline.org/doi/10.1176/appi.ajp.2017.16101113). |
 | Ovülasyondan sonra yükselen progesteron vücut sıcaklığını hafifçe artırır; gece uykuya dalmak için gereken doğal soğuma ile bu artış çakışabilir, bazı kadınlarda uykuya dalma gecikmesine yol açabilir. | `article_data.dart` — "Uyku ve Döngü İlişkisi" | Birincil literatürle doğrulandı: [Neurobiological and Hormonal Mechanisms Regulating Women's Sleep — Frontiers in Neuroscience (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7840832/) — not: kaynağa göre etki tek başına progesterondan çok östrojenle birlikte (sinerjik) olabilir; makale zaten "olası bir sebep"/"hafifçe" gibi temkinli dil kullanıyor, bu kalibrasyon korundu. |
 
-## Doğrulanmış iddialar (devam) — 2026-09-09, quiz soru havuzu genişletmesi
+## Doğrulanmış iddialar (devam) — 2026-09-09, quiz soru havuzu genişletmesi [ARTIK GEÇERSİZ]
+
+> **Bu bölüm tarihsel kayıt amaçlı tutuluyor.** Aynı gün içinde
+> `quiz_data.dart` tamamen değiştirildi — kullanıcının kendi hazırladığı,
+> daha basit/sıcak, formel kaynak gerektirmeyen 10 soruluk bir set (temel
+> bilgiler, hijyen, semptom rahatlama, mit-gerçek kategorileri) mevcut
+> tüm soruların (hem bu 10'un hem orijinal 6'nın) yerini aldı. Aşağıdaki
+> tablo artık `quiz_data.dart`'taki hiçbir soruyu karşılamıyor — sadece
+> "neden böyle bir yaklaşım denendi, neden vazgeçildi" kaydı olarak
+> duruyor (bkz. not, alttaki paragraf).
 
 | İddia | Nerede | Kaynak |
 |---|---|---|
@@ -83,15 +92,16 @@ Not: Bu iddialar bir alt ajan tarafından araştırıldı, ardından 3 tanesi
 (TSS, ağır kanama, egzersiz/kramp) doğrudan WebFetch/WebSearch ile ayrıca
 çapraz doğrulandı. Amenore (regl kesilmesi) sorusu, bu yaş grubunda ilk
 yıllarda düzensiz döngünün zaten normal olduğu mesajıyla çelişip gereksiz
-kaygı yaratabileceği için tamamen kaldırıldı (2026-09-09) — kullanıcı geri
-bildirimi üzerine.
+kaygı yaratabileceği için önce tek başına kaldırıldı, sonra kullanıcı
+"eski sorular gibi duruyor, quiz kısmını beceremedik" diyerek kendi
+hazırladığı basit soru setini birebir kullanmamı istedi — tüm bu 10 soru
+(ve orijinal 6) o setle değiştirildi (2026-09-09).
 
-**Önemli — kaynak gösterme yeri (2026-09-09):** Quiz sorularının
-açıklama metinlerinde artık "Kaynak: ..." satırı YOK. Önceki 6 orijinal
-soru da dahil, tüm kaynaklar buradan (bu belgeden) takip ediliyor —
-çocuğun gördüğü metin sade/sıcak kalıyor, akademik dipnot/kurum adı/link
-uygulama içinde hiç görünmüyor. Bu, makale içeriklerinin (`article_data.dart`)
-zaten kullandığı düzenle tutarlı hale getirildi.
+**Kaynak gösterme yeri:** Quiz sorularının açıklama metinlerinde
+"Kaynak: ..." satırı YOK ve olmayacak — akademik dipnot/kurum adı/link
+uygulama içinde hiç görünmüyor. Yeni soru setindeki iddialar (regl =
+hastalık değil, duş zararsız, PMS normal, hafif hareket rahatlatır vb.)
+zaten tartışmasız/temel bilgiler; ayrı bir kaynak tablosu gerektirmiyor.
 
 ## Düzeltilen hatalar — 2026-09-05, 4 alt ajanla çapraz doğrulama sonrası
 
