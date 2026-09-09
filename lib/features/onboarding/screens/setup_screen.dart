@@ -613,7 +613,7 @@ class _CycleLengthPage extends StatelessWidget {
                 squeeze: 0.8,
                 useMagnifier: true,
                 onSelectedItemChanged: (i) => onChanged(i + 21),
-                children: List.generate(15, (i) {
+                children: List.generate(25, (i) {
                   final val = i + 21;
                   return Center(
                     child: Row(
