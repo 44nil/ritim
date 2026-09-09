@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:ritim/app.dart';
+import 'package:ritim/core/services/notification_service.dart';
 
 /// Onboarding'e eklenen KVKK aydınlatma + açık rıza adımlarının kurulum
 /// akışını bozmadığını ve rızanın gerçekten zorunlu olduğunu doğrular.
@@ -13,6 +14,10 @@ void main() {
 
   testWidgets('kurulum: 13+ yaşta ebeveyn kapısı atlanır, aydınlatma+rıza zorunlu', (tester) async {
     await initializeDateFormatting('tr_TR');
+    // main.dart bunu runApp'ten önce çağırıyor (tz.local'i ayarlıyor) — bu
+    // test RitimApp'i doğrudan pump ettiği için main() atlanıyor, o yüzden
+    // burada elle çağırmak gerekiyor (gerçek bir kırılganlığı test ederken bulduk).
+    await NotificationService.init();
     await tester.pumpWidget(const ProviderScope(child: RitimApp()));
     await tester.pumpAndSettle();
 
@@ -59,6 +64,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Döngün\ngenelde kaç\ngün sürüyor?'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
+    await tester.pumpAndSettle();
+
+    // Günün Sözü bildirimi sorusu — varsayılan "Evet, isterim" seçili,
+    // dokunmadan ilerleyebilmeli.
+    expect(find.text('Sana ara sıra\nküçük bir söz\ngönderelim mi?'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
 

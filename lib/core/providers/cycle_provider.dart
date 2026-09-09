@@ -78,6 +78,7 @@ class CycleState {
     this.lastExportDate,
     this.avatarEmoji,
     this.avatarColorIndex = 0,
+    this.affirmationNotificationsEnabled = true,
   });
 
   final List<PeriodRecord> periods;
@@ -86,6 +87,9 @@ class CycleState {
   // null iken profildeki avatar isim baş harfini gösterir.
   final String? avatarEmoji;
   final int avatarColorIndex;
+  // Onboarding'de sorulan "ara sıra destek mesajı" tercihi — varsayılan
+  // açık, ama kullanıcı o soruda ya da Bildirimler'den kapatabilir.
+  final bool affirmationNotificationsEnabled;
   // Kullanıcının takip etmeye başladığı ilaç isimleri (kalıcı liste, günlük değil).
   final List<String> medicationNames;
   // Onboarding'de kullanıcının kendi bildirdiği "genelde kaç gün sürüyor"
@@ -238,6 +242,7 @@ class CycleState {
     DateTime? lastExportDate,
     String? avatarEmoji,
     int? avatarColorIndex,
+    bool? affirmationNotificationsEnabled,
   }) {
     return CycleState(
       periods: periods ?? this.periods,
@@ -255,6 +260,7 @@ class CycleState {
       lastExportDate: lastExportDate ?? this.lastExportDate,
       avatarEmoji: avatarEmoji ?? this.avatarEmoji,
       avatarColorIndex: avatarColorIndex ?? this.avatarColorIndex,
+      affirmationNotificationsEnabled: affirmationNotificationsEnabled ?? this.affirmationNotificationsEnabled,
     );
   }
 
@@ -284,6 +290,7 @@ class CycleState {
     'lastExportDate': lastExportDate?.toIso8601String(),
     'avatarEmoji': avatarEmoji,
     'avatarColorIndex': avatarColorIndex,
+    'affirmationNotificationsEnabled': affirmationNotificationsEnabled,
   };
 
   factory CycleState.fromJson(Map<String, dynamic> json) => CycleState(
@@ -302,6 +309,7 @@ class CycleState {
     lastExportDate: json['lastExportDate'] != null ? DateTime.parse(json['lastExportDate'] as String) : null,
     avatarEmoji: json['avatarEmoji'] as String?,
     avatarColorIndex: json['avatarColorIndex'] as int? ?? 0,
+    affirmationNotificationsEnabled: json['affirmationNotificationsEnabled'] as bool? ?? true,
   );
 }
 
@@ -438,6 +446,10 @@ class CycleNotifier extends StateNotifier<CycleState> {
 
   void setNotificationTone({required bool warm}) {
     state = state.copyWith(warmNotificationTone: warm);
+  }
+
+  void setAffirmationNotifications(bool enabled) {
+    state = state.copyWith(affirmationNotificationsEnabled: enabled);
   }
 
   void setAvatar({required String emoji, required int colorIndex}) {

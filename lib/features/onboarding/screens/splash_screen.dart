@@ -33,6 +33,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (cycle.periodReminderEnabled) {
       NotificationService.reschedulePeriodReminder(cycle, enabled: true, daysBefore: cycle.periodReminderDaysBefore, warmTone: cycle.warmNotificationTone);
     }
+    NotificationService.setAffirmationReminder(enabled: cycle.affirmationNotificationsEnabled);
     context.go(cycle.hasCompletedOnboarding ? '/cycle-tracking' : '/onboarding');
   }
 

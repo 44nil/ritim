@@ -12,6 +12,7 @@ class NotificationService {
 
   static const _dailyReminderId = 1;
   static const _periodReminderId = 2;
+  static const _affirmationReminderId = 3;
 
   static final _plugin = FlutterLocalNotificationsPlugin();
   static bool _initialized = false;
@@ -89,6 +90,29 @@ class NotificationService {
       scheduledDate: scheduled,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails('period_reminder', 'Takvim Hatırlatması'),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    );
+  }
+
+  /// Günün olumlama sözünü sabit bir saatte (11:00) tek seferlik planlar.
+  /// AffirmationData.forDay o günün metnini tarihe göre seçtiği için, bu
+  /// her açılışta (splash_screen) yeniden çağrılmalı — reschedulePeriodReminder
+  /// ile aynı desen. Bildirim GÖVDESİ bilerek metnin kendisini içermiyor —
+  /// bazı sözler "regl"/"ped" gibi kelimeler geçiriyor, kilit ekranında
+  /// görünmemesi için period hatırlatmasındaki gizlilik kuralı burada da geçerli.
+  static Future<void> setAffirmationReminder({required bool enabled}) async {
+    await _plugin.cancel(id: _affirmationReminderId);
+    if (!enabled) return;
+    final scheduled = _nextInstanceOf(11, 0);
+    await _plugin.zonedSchedule(
+      id: _affirmationReminderId,
+      title: 'Günün Sözü 💌',
+      body: 'Bugün senin için küçük bir mesajımız var, açıp bakabilirsin 🙂',
+      scheduledDate: scheduled,
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails('affirmation_reminder', 'Günün Sözü'),
         iOS: DarwinNotificationDetails(),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

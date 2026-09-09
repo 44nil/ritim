@@ -56,6 +56,15 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     }
   }
 
+  Future<void> _toggleAffirmation(bool enabled) async {
+    if (enabled && !await NotificationService.requestPermission()) {
+      _showPermissionDenied();
+      return;
+    }
+    ref.read(cycleProvider.notifier).setAffirmationNotifications(enabled);
+    await NotificationService.setAffirmationReminder(enabled: enabled);
+  }
+
   // Ton değişince, o an zaten zamanlanmış bildirimler varsa yeni metinle
   // hemen yeniden planlanır — yoksa değişiklik ancak bir sonraki
   // planlamada (ör. saat değiştirince) fark edilirdi.
@@ -138,6 +147,15 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 ),
                 _StepBtn(icon: Icons.add_rounded, semanticLabel: 'Artır', onTap: () => _adjustPeriodDays(1)),
               ]) : null,
+            ),
+            const SizedBox(height: 14),
+
+            _NotificationCard(
+              icon: Icons.favorite_border_rounded,
+              title: 'Günün Sözü Bildirimi',
+              subtitle: 'Ara sıra küçük bir destek/motivasyon mesajı gönderir',
+              value: cycle.affirmationNotificationsEnabled,
+              onChanged: _toggleAffirmation,
             ),
             const SizedBox(height: 14),
 

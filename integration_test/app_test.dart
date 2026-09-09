@@ -4,6 +4,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:ritim/app.dart';
+import 'package:ritim/core/services/notification_service.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,10 @@ void main() {
   // (ör. onboarding'i atlamış halde) başlatıyor. Tek akışta kalmak bunu önler.
   testWidgets('onboarding -> Döngüm -> Profil -> Ebeveyn Paneli', (tester) async {
     await initializeDateFormatting('tr_TR');
+    // main.dart bunu runApp'ten önce çağırıyor (tz.local'i ayarlıyor) — bu
+    // test RitimApp'i doğrudan pump ettiği için main() atlanıyor, o yüzden
+    // burada elle çağırmak gerekiyor.
+    await NotificationService.init();
     await tester.pumpWidget(const ProviderScope(child: RitimApp()));
     await tester.pumpAndSettle();
 

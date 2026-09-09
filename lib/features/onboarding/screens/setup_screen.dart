@@ -8,10 +8,11 @@ import '../../../core/theme/app_colors.dart';
 import '../../legal/screens/consent_gate_screen.dart';
 import '../../legal/screens/guardian_assist_gate_screen.dart';
 import '../../legal/state/onboarding_consent_provider.dart';
+import '../../../core/services/notification_service.dart';
 
 /// Kurulum sırasının adımları. Yaş ve rıza durumuna göre `guardian` adımı
 /// listeye dahil edilir ya da edilmez — bkz. `_SetupScreenState._stepKinds`.
-enum _StepKind { age, guardian, consent, periodStarted, lastPeriodDate, cycleLength, name }
+enum _StepKind { age, guardian, consent, periodStarted, lastPeriodDate, cycleLength, affirmationNotice, name }
 
 class SetupScreen extends ConsumerStatefulWidget {
   const SetupScreen({super.key});
@@ -29,6 +30,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   bool? _hasStarted;
   DateTime _lastPeriod = DateTime.now().subtract(const Duration(days: 14));
   int _cycleLength = 28;
+  // Varsayılan açık — bilgilendirilmiş bir seçim olsun diye burada soruyoruz,
+  // sessizce açık gelip Bildirimler'de keşfedilmesini beklemek yerine.
+  bool _affirmationChoice = true;
   final _nameController = TextEditingController();
 
   // Yasal/rıza durumu
@@ -47,6 +51,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         _StepKind.periodStarted,
         if (_hasStarted == true) _StepKind.lastPeriodDate,
         _StepKind.cycleLength,
+        _StepKind.affirmationNotice,
         _StepKind.name,
       ];
 
@@ -65,6 +70,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       ref.read(onboardingConsentProvider.notifier).recordAge(_age);
       setState(() => _includeGuardianStep = _age < 13);
     }
+    if (kind == _StepKind.affirmationNotice && _affirmationChoice) {
+      NotificationService.requestPermission();
+    }
 
     if (_currentStep < _totalSteps - 1) {
       _pageController.nextPage(
@@ -82,6 +90,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         );
       }
       ref.read(cycleProvider.notifier).setUserName(_nameController.text.trim());
+      ref.read(cycleProvider.notifier).setAffirmationNotifications(_affirmationChoice);
       ref.read(cycleProvider.notifier).markOnboardingComplete();
       context.go('/cycle-tracking');
     }
@@ -104,6 +113,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       case _StepKind.periodStarted: return _hasStarted != null;
       case _StepKind.lastPeriodDate: return _hasStarted == true;
       case _StepKind.cycleLength: return true;
+      case _StepKind.affirmationNotice: return true;
       case _StepKind.name: return _nameController.text.trim().isNotEmpty;
     }
   }
@@ -152,6 +162,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           return _LastPeriodPage(date: _lastPeriod, onChanged: (v) => setState(() => _lastPeriod = v));
         case _StepKind.cycleLength:
           return _CycleLengthPage(length: _cycleLength, onChanged: (v) => setState(() => _cycleLength = v));
+        case _StepKind.affirmationNotice:
+          return _AffirmationNoticePage(value: _affirmationChoice, onChanged: (v) => setState(() => _affirmationChoice = v));
         case _StepKind.name:
           return _NamePage(controller: _nameController, onChanged: () => setState(() {}));
       }
@@ -640,6 +652,55 @@ class _CycleLengthPage extends StatelessWidget {
                 }),
               ),
             ),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Günün Sözü bildirimi ───────────────────────────────────────────────────
+
+class _AffirmationNoticePage extends StatelessWidget {
+  const _AffirmationNoticePage({required this.value, required this.onChanged});
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 40),
+          Text('KURULUM', style: TextStyle(
+            fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 2,
+            color: AppColors.primary.withValues(alpha: 0.6),
+          )),
+          const SizedBox(height: 12),
+          Text('Sana ara sıra\nküçük bir söz\ngönderelim mi?', style: TextStyle(
+            fontSize: 30, fontWeight: FontWeight.w800, height: 1.1,
+            color: AppColors.inkOn(context),
+          )),
+          const SizedBox(height: 12),
+          Text(
+            'Destek/motivasyon amaçlı, ara sıra gelen küçük bir bildirim. '
+            'İstersen kapatabilirsin — Bildirimler\'den de değiştirebilirsin.',
+            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
+          ),
+          const SizedBox(height: 40),
+          _OptionCard(
+            label: 'Evet, isterim',
+            isSelected: value == true,
+            onTap: () => onChanged(true),
+          ),
+          const SizedBox(height: 12),
+          _OptionCard(
+            label: 'Hayır, istemiyorum',
+            isSelected: value == false,
+            onTap: () => onChanged(false),
           ),
           const Spacer(),
         ],
