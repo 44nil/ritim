@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,39 @@ class CycleTrackingScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<CycleTrackingScreen> createState() => _CycleTrackingScreenState();
+}
+
+// Gerçek "buzlu cam" efekti — arkadaki gradient kartın içinden bulanık
+// görünsün diye. Gölge (varsa) BİLEREK dıştaki, klipsiz Container'da —
+// ClipRRect'in İÇİNE alınırsa gölgenin dışa taşan bulanıklığı sert bir
+// kenarda kesilir, yumuşak parıltı kaybolur.
+Widget _glassCard({
+  required Widget child,
+  required Color tint,
+  required BorderRadius radius,
+  EdgeInsets padding = const EdgeInsets.all(20),
+  List<BoxShadow>? shadow,
+  double width = double.infinity,
+}) {
+  return Container(
+    width: width,
+    decoration: BoxDecoration(borderRadius: radius, boxShadow: shadow),
+    child: ClipRRect(
+      borderRadius: radius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Container(
+          padding: padding,
+          decoration: BoxDecoration(
+            color: tint,
+            borderRadius: radius,
+            border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
+          ),
+          child: child,
+        ),
+      ),
+    ),
+  );
 }
 
 class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
@@ -138,22 +172,20 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       animation: _breathController,
                       builder: (context, child) => Transform.scale(
                         scale: 1.0 + 0.018 * _breathController.value,
-                        child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(22),
-                        decoration: BoxDecoration(
-                          color: AppColors.softPink.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(24),
-                          boxShadow: [
+                        child: _glassCard(
+                          tint: AppColors.softPink.withValues(alpha: 0.32),
+                          radius: BorderRadius.circular(24),
+                          padding: const EdgeInsets.all(22),
+                          shadow: [
                             BoxShadow(
                               color: AppColors.softPink.withValues(alpha: 0.18 + 0.22 * _breathController.value),
                               blurRadius: 18 + 26 * _breathController.value,
                               spreadRadius: 2 * _breathController.value,
                             ),
                           ],
+                          child: child!,
                         ),
-                        child: child,
-                      )),
+                      ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         // Hiç regl kaydı yokken "1. gün / Regl" göstermek yanıltıcı —
                         // regl daha başlamadan sanki başlamış gibi bir izlenim veriyordu.
@@ -246,21 +278,18 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: _staggered(index: 1, child: AnimatedBuilder(
                       animation: _breathController,
-                      builder: (context, child) => Container(
-                        width: double.infinity,
+                      builder: (context, child) => _glassCard(
+                        tint: AppColors.warmOrange.withValues(alpha: 0.25),
+                        radius: BorderRadius.circular(20),
                         padding: const EdgeInsets.all(18),
-                        decoration: BoxDecoration(
-                          color: AppColors.warmOrange.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.softPink.withValues(alpha: 0.1 + 0.08 * _breathController.value),
-                              blurRadius: 20 + 12 * _breathController.value,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: child,
+                        shadow: [
+                          BoxShadow(
+                            color: AppColors.softPink.withValues(alpha: 0.1 + 0.08 * _breathController.value),
+                            blurRadius: 20 + 12 * _breathController.value,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                        child: child!,
                       ),
                       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         AnimatedBuilder(
@@ -1188,16 +1217,12 @@ class _MonthCalendar extends StatelessWidget {
     // Pazartesi başlangıçlı hafta: weekday 1=Pzt..7=Paz, öncesine boş hücre.
     final leadingEmpty = firstDay.weekday - 1;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.translucentOn(context),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
-        ],
-      ),
+    return _glassCard(
+      radius: BorderRadius.circular(24),
+      tint: AppColors.translucentOn(context),
+      shadow: [
+        BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
+      ],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
