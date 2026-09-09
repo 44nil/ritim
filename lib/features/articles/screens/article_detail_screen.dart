@@ -122,7 +122,7 @@ List<Widget> _buildSections(BuildContext context, List<ArticleSection> sections,
     if (isChecklist) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 18),
-        child: _ChecklistRow(tint: tint, heading: section.heading!, text: section.text),
+        child: _ChecklistRow(tint: tint, heading: section.heading!, text: section.text, icon: section.icon),
       );
     }
     return Padding(
@@ -142,10 +142,11 @@ List<Widget> _buildSections(BuildContext context, List<ArticleSection> sections,
 // bu ekranda geçici bir durum (kaydedilmiyor), her ziyarette sıfırlanır.
 // Amaç kalıcı bir takip değil, okula çıkmadan önceki anlık bir kontrol hissi.
 class _ChecklistRow extends StatefulWidget {
-  const _ChecklistRow({required this.tint, required this.heading, required this.text});
+  const _ChecklistRow({required this.tint, required this.heading, required this.text, this.icon});
   final Color tint;
   final String heading;
   final String text;
+  final IconData? icon;
 
   @override
   State<_ChecklistRow> createState() => _ChecklistRowState();
@@ -182,19 +183,25 @@ class _ChecklistRowState extends State<_ChecklistRow> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.heading,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.inkOn(context),
-                      decoration: _checked ? TextDecoration.lineThrough : TextDecoration.none,
-                    ),
-                  ),
+                  Row(children: [
+                    Expanded(child: Text(
+                      widget.heading,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.inkOn(context),
+                        decoration: _checked ? TextDecoration.lineThrough : TextDecoration.none,
+                      ),
+                    )),
+                    if (widget.icon != null) ...[
+                      const SizedBox(width: 8),
+                      Icon(widget.icon, size: 18, color: widget.tint),
+                    ],
+                  ]),
                   const SizedBox(height: 4),
-                  Text(
+                  _boldedText(
                     widget.text,
-                    style: TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.inkOn(context).withValues(alpha: 0.65)),
+                    TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.inkOn(context).withValues(alpha: 0.65)),
                   ),
                 ],
               ),
