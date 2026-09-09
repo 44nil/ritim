@@ -81,8 +81,13 @@ abstract class AppColors {
       Theme.of(context).brightness == Brightness.dark ? surfaceVariantDark : cardPink;
 
   // ─── Hero header gradient (soft pastel, tab üstlerinde) ─────────────────
-  static const heroPink = Color(0xFFF9C4D2);
-  static const heroPeach = Color(0xFFFDD6A8);
+  // Her ekranın arka planı bu ikisinin gradient'i (bkz.
+  // ScreenGradientBackground) — kimlik (pembe-şeftali) korunuyor ama
+  // orijinal tonlar (F9C4D2/FDD6A8) sürekli görüldüğünde yorucu geliyordu;
+  // cardCream'e doğru %40 soldurulmuş, daha sakin bir versiyon (2026-09-09,
+  // kullanıcı geri bildirimi — köklü bir yeniden tasarım yerine tek renk ayarı).
+  static const heroPink = Color(0xFFF9D8DE);
+  static const heroPeach = Color(0xFFFCE2C4);
 
   // ─── Koyu kart / nav bar ───────────────────────────────────────────────
   static const darkCard = Color(0xFF2D2438);
