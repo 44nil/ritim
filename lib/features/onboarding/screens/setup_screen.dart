@@ -11,7 +11,7 @@ import '../../legal/state/onboarding_consent_provider.dart';
 
 /// Kurulum sırasının adımları. Yaş ve rıza durumuna göre `guardian` adımı
 /// listeye dahil edilir ya da edilmez — bkz. `_SetupScreenState._stepKinds`.
-enum _StepKind { age, guardian, privacyNotice, consent, periodStarted, lastPeriodDate, cycleLength, name }
+enum _StepKind { age, guardian, consent, periodStarted, lastPeriodDate, cycleLength, name }
 
 class SetupScreen extends ConsumerStatefulWidget {
   const SetupScreen({super.key});
@@ -43,7 +43,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   List<_StepKind> get _stepKinds => [
         _StepKind.age,
         if (_includeGuardianStep) _StepKind.guardian,
-        _StepKind.privacyNotice,
         _StepKind.consent,
         _StepKind.periodStarted,
         if (_hasStarted == true) _StepKind.lastPeriodDate,
@@ -101,7 +100,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     switch (_stepKinds[_currentStep]) {
       case _StepKind.age: return true;
       case _StepKind.guardian: return _guardianChoice != null;
-      case _StepKind.privacyNotice: return true;
       case _StepKind.consent: return _consentChecked;
       case _StepKind.periodStarted: return _hasStarted != null;
       case _StepKind.lastPeriodDate: return _hasStarted == true;
@@ -116,7 +114,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   bool get _canSkip {
     switch (_stepKinds[_currentStep]) {
       case _StepKind.guardian:
-      case _StepKind.privacyNotice:
       case _StepKind.consent:
         return false;
       default:
@@ -137,8 +134,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               ref.read(onboardingConsentProvider.notifier).recordGuardianChoice(v);
             },
           );
-        case _StepKind.privacyNotice:
-          return const _PrivacyNoticePage();
         case _StepKind.consent:
           return ConsentGateStep(
             checked: _consentChecked,
@@ -149,6 +144,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             },
             onOpenPrivacyPolicy: () => context.pushNamed(RouteNames.privacyPolicy),
             onOpenTerms: () => context.pushNamed(RouteNames.terms),
+            onOpenPrivacyNotice: () => context.pushNamed(RouteNames.privacyNotice),
           );
         case _StepKind.periodStarted:
           return _PeriodStartedPage(value: _hasStarted, onChanged: (v) => setState(() => _hasStarted = v));
@@ -232,7 +228,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (i) {
                   setState(() => _currentStep = i);
-                  if (_stepKinds[i] == _StepKind.privacyNotice) {
+                  if (_stepKinds[i] == _StepKind.consent) {
                     ref.read(onboardingConsentProvider.notifier).markPrivacyNoticeSeen();
                   }
                 },
@@ -717,57 +713,6 @@ class _NamePage extends StatelessWidget {
 }
 
 // ─── Sayfa: Aydınlatma Metni ────────────────────────────────────────────────
-
-/// Onboarding'e gömülü KVKK aydınlatma adımı. Rıza adımından önce gösterilir
-/// — hangi verinin, neden toplandığının açıklandığı, saf bilgilendirme
-/// adımıdır (KVKK Madde 10 aydınlatma yükümlülüğü, rızadan bağımsızdır).
-class _PrivacyNoticePage extends StatelessWidget {
-  const _PrivacyNoticePage();
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 40),
-          Text('KURULUM', style: TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 2,
-            color: AppColors.primary.withValues(alpha: 0.6),
-          )),
-          const SizedBox(height: 12),
-          Text('Önce seni\nbilgilendirelim', style: TextStyle(
-            fontSize: 30, fontWeight: FontWeight.w800, height: 1.1,
-            color: AppColors.inkOn(context),
-          )),
-          const SizedBox(height: 20),
-          // Kurulum ekranında tüm KVKK metnini (şirket adresi dahil) doğrudan
-          // basmak yerine kısa bir özet + tam metne link gösteriyoruz — bu,
-          // Gizlilik Politikası/Kullanım Şartları'nın consent adımında zaten
-          // kullandığı link deseniyle tutarlı, ayrıca adres bilgisini her
-          // kurulumda zorunlu görünür kılmıyor.
-          Text(
-            'Yaşını, döngü bilgilerini ve istersen ruh hali/belirti notlarını, '
-            'döngünü takip edebilmen ve yaşına uygun genel bilgi sunabilmemiz '
-            'için kullanıyoruz. Bu bilgiler sadece senin kendi cihazlarında '
-            'kalır, bize ya da başka kimseyle satılmaz, paylaşılmaz.',
-            style: TextStyle(fontSize: 13.5, height: 1.6, color: AppColors.inkOn(context).withValues(alpha: 0.8)),
-          ),
-          const SizedBox(height: 14),
-          GestureDetector(
-            onTap: () => context.pushNamed(RouteNames.privacyNotice),
-            child: Text(
-              'Tam KVKK Aydınlatma Metnini Oku',
-              style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppColors.primary, decoration: TextDecoration.underline),
-            ),
-          ),
-          const SizedBox(height: 40),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Aura Arka Plan ─────────────────────────────────────────────────────────
 

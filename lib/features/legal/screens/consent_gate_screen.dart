@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 
-/// Onboarding'e gömülü açık rıza adımı. Aydınlatma metninden sonra gösterilir;
-/// checkbox varsayılan olarak işaretsizdir (KVKK açık rıza — olumlu irade
-/// beyanı gerekir, önceden işaretlenmiş kutu kabul edilmez).
+/// Onboarding'e gömülü aydınlatma + açık rıza adımı. Tek ekranda hem KVKK
+/// Madde 10 aydınlatma yükümlülüğünü (özet metin + tam metne link) hem de
+/// Madde 9 açık rızasını (checkbox, varsayılan işaretsiz — olumlu irade
+/// beyanı gerekir) karşılar. İki adımın tek ekranda birleştirilmesi yasal
+/// olarak sorunsuz — KVKK sadece aydınlatmanın rızadan ÖNCE gelmesini şart
+/// koşuyor, ayrı ekranlarda olmasını değil (bkz. docs/legal-compliance-notes.md).
 class ConsentGateStep extends StatelessWidget {
   const ConsentGateStep({
     super.key,
@@ -11,16 +14,18 @@ class ConsentGateStep extends StatelessWidget {
     required this.onChanged,
     required this.onOpenPrivacyPolicy,
     required this.onOpenTerms,
+    required this.onOpenPrivacyNotice,
   });
 
   final bool checked;
   final ValueChanged<bool> onChanged;
   final VoidCallback onOpenPrivacyPolicy;
   final VoidCallback onOpenTerms;
+  final VoidCallback onOpenPrivacyNotice;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,16 +36,27 @@ class ConsentGateStep extends StatelessWidget {
             color: AppColors.primary.withValues(alpha: 0.6),
           )),
           const SizedBox(height: 12),
-          Text('Son bir şey:\nrızan', style: TextStyle(
-            fontSize: 34, fontWeight: FontWeight.w800, height: 1.1,
+          Text('Verilerin\nnasıl kullanılıyor?', style: TextStyle(
+            fontSize: 30, fontWeight: FontWeight.w800, height: 1.1,
             color: AppColors.inkOn(context),
           )),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           Text(
-            'Devam etmeden önce, verilerinin nasıl kullanıldığını onaylaman gerekiyor.',
-            style: TextStyle(fontSize: 14, color: AppColors.inkOn(context).withValues(alpha: 0.5), height: 1.4),
+            'Yaşını, döngü bilgilerini ve istersen ruh hali/belirti notlarını, '
+            'döngünü takip edebilmen ve yaşına uygun genel bilgi sunabilmemiz '
+            'için kullanıyoruz. Bu bilgiler sadece senin kendi cihazlarında '
+            'kalır, bize ya da başka kimseyle satılmaz, paylaşılmaz.',
+            style: TextStyle(fontSize: 13.5, height: 1.6, color: AppColors.inkOn(context).withValues(alpha: 0.8)),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: onOpenPrivacyNotice,
+            child: Text(
+              'Tam KVKK Aydınlatma Metnini Oku',
+              style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: AppColors.primary, decoration: TextDecoration.underline),
+            ),
+          ),
+          const SizedBox(height: 28),
           Semantics(
             checked: checked,
             child: GestureDetector(
@@ -77,9 +93,8 @@ class ConsentGateStep extends StatelessWidget {
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(
-                      'Regl döngüm, ruh halim ve belirtilerimle ilgili bilgilerin '
-                      'KVKK Aydınlatma Metni\'nde açıklanan şekilde Ritim tarafından '
-                      'işlenmesini kabul ediyorum.',
+                      'Verilerimin yukarıda açıklandığı ve KVKK Aydınlatma '
+                      'Metni\'nde detaylandığı şekilde kullanılmasına izin veriyorum.',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.inkOn(context), height: 1.4),
                     ),
                   ),
@@ -96,7 +111,7 @@ class ConsentGateStep extends StatelessWidget {
               _LinkText(label: 'Kullanım Şartları', onTap: onOpenTerms),
             ],
           ),
-          const Spacer(),
+          const SizedBox(height: 40),
         ],
       ),
     );

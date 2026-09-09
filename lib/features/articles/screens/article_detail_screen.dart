@@ -82,6 +82,13 @@ class ArticleDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   ..._buildSections(context, article.body, isChecklist: article.isChecklist),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Bu bilgiler seni tanımana yardımcı olsun diye — bir doktorun '
+                    'yerini tutmaz. Bir şey seni endişelendiriyorsa güvendiğin bir '
+                    'yetişkine sor 🙂',
+                    style: TextStyle(fontSize: 11.5, height: 1.5, color: AppColors.inkOn(context).withValues(alpha: 0.4)),
+                  ),
                 ],
               ),
             ),

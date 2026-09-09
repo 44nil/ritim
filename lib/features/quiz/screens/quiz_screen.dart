@@ -139,6 +139,11 @@ class _QuizScreenState extends State<QuizScreen> {
                           Text('Açıklama', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.warmOrange)),
                           const SizedBox(height: 8),
                           Text(q.explanation, style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5)),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Bunlar genel bilgi, senin durumun için en doğrusunu bir yetişkin/doktor bilir.',
+                            style: TextStyle(fontSize: 11, height: 1.4, color: AppColors.inkOn(context).withValues(alpha: 0.4)),
+                          ),
                           const SizedBox(height: 14),
                           GestureDetector(
                             onTap: _nextQuestion,

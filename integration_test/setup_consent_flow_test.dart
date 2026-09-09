@@ -29,24 +29,20 @@ void main() {
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
 
-    // Ebeveyn kapısı atlanmış olmalı — doğrudan aydınlatma metnine geçildi.
+    // Ebeveyn kapısı atlanmış olmalı — doğrudan aydınlatma+rıza adımına geçildi
+    // (bu iki adım artık tek ekranda birleşik, bkz. consent_gate_screen.dart).
     expect(find.text('Bir yetişkinle\nmi devam\nedelim?'), findsNothing);
-    expect(find.text('Önce seni\nbilgilendirelim'), findsOneWidget);
-    // Aydınlatma adımında "Atla" gizlenmeli.
+    expect(find.text('Verilerin\nnasıl kullanılıyor?'), findsOneWidget);
+    // Aydınlatma+rıza adımında "Atla" gizlenmeli.
     expect(find.text('Atla'), findsNothing);
 
+    // Checkbox işaretlenmeden "İleri" ilerletmemeli.
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
-
-    // Rıza adımı — checkbox işaretlenmeden "İleri" ilerletmemeli.
-    expect(find.text('Son bir şey:\nrızan'), findsOneWidget);
-    expect(find.text('Atla'), findsNothing);
-    await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
-    await tester.pumpAndSettle();
-    expect(find.text('Son bir şey:\nrızan'), findsOneWidget, reason: 'Rıza verilmeden ilerlememeli');
+    expect(find.text('Verilerin\nnasıl kullanılıyor?'), findsOneWidget, reason: 'Rıza verilmeden ilerlememeli');
 
     // Checkbox'ı işaretle, şimdi ilerleyebilmeli.
-    await tester.tap(find.textContaining('Regl döngüm'));
+    await tester.tap(find.textContaining('Verilerimin yukarıda'));
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.arrow_forward_rounded));
     await tester.pumpAndSettle();
