@@ -4,7 +4,7 @@
 > hangi kaynağa dayandığını (veya henüz dayanmadığını) izlemek için tutulur.
 > Yayından önce bu listenin gerçek bir doktor/uzman tarafından son kez
 > onaylanması gerekir — bkz. docs/legal-compliance-notes.md bölüm 7.
-> Son güncelleme: 2026-09-04.
+> Son güncelleme: 2026-09-09.
 
 ## Nasıl kaynak seçtik
 
@@ -64,6 +64,26 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
 | PMS, adetten önceki günlerde yaşanan fiziksel/duygusal değişikliklerin genel adıdır (mod değişimi, sinirlilik, kaygı, konsantrasyon güçlüğü, iştah/uyku değişiklikleri, şişkinlik). Adölesanlarda bu belirtileri normal duygusal gelişimden ayırt etmek güç olabilir. | `article_data.dart` — "PMS Nedir?" | [ACOG — Premenstrual Syndrome (PMS) FAQ](https://www.acog.org/womens-health/faqs/premenstrual-syndrome); [ACOG Clinical Practice Guideline — Management of Premenstrual Disorders (2023)](https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/12/management-of-premenstrual-disorders) |
 | Östrojen arttıkça serotonin üretimi de artma eğilimindedir (iyi hissetme ile ilişkilendirilir); progesteron ise monoamin oksidaz (MAO) aktivitesini artırarak serotonini azaltabilir. Ruh hali değişkenliği, hormonların mutlak seviyesinden çok ne kadar hızlı değiştiğiyle daha ilişkili görünüyor. | `article_data.dart` — "Hormonlar ve Ruh Halin" | Mekanizma birincil literatürle doğrulandı: [Rapkin & Akopians — Pathophysiology of premenstrual syndrome and premenstrual dysphoric disorder, Menopause International (2012)](https://journals.sagepub.com/doi/10.1258/mi.2012.012014); hormon seviyesinden çok değişim hızının belirleyici olduğu bulgusu: [Schmidt et al. — PMDD Symptoms Following Ovarian Suppression: Triggered by Change in Ovarian Steroid Levels But Not Continuous Stable Levels, Am J Psychiatry (2017)](https://ajp.psychiatryonline.org/doi/10.1176/appi.ajp.2017.16101113). |
 | Ovülasyondan sonra yükselen progesteron vücut sıcaklığını hafifçe artırır; gece uykuya dalmak için gereken doğal soğuma ile bu artış çakışabilir, bazı kadınlarda uykuya dalma gecikmesine yol açabilir. | `article_data.dart` — "Uyku ve Döngü İlişkisi" | Birincil literatürle doğrulandı: [Neurobiological and Hormonal Mechanisms Regulating Women's Sleep — Frontiers in Neuroscience (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7840832/) — not: kaynağa göre etki tek başına progesterondan çok östrojenle birlikte (sinerjik) olabilir; makale zaten "olası bir sebep"/"hafifçe" gibi temkinli dil kullanıyor, bu kalibrasyon korundu. |
+
+## Doğrulanmış iddialar (devam) — 2026-09-09, quiz soru havuzu genişletmesi
+
+| İddia | Nerede | Kaynak |
+|---|---|---|
+| Tamponu 4-8 saatte bir değiştirmek ve hiçbir zaman 8 saatten uzun takılı bırakmamak, nadir ama ciddi bir enfeksiyon (Toksik Şok Sendromu) riskini azaltır. | `lib/features/quiz/data/quiz_data.dart` (soru 7) | [FDA — "The Facts on Tampons—and How to Use Them Safely"](https://www.fda.gov/consumers/consumer-updates/facts-tampons-and-how-use-them-safely) |
+| İlk regl (menarş) genellikle 10-15 yaş arasında başlar, ortanca yaş ~12,4. | `quiz_data.dart` (soru 8) | [AAP — "Menstruation in Girls and Adolescents: Using the Menstrual Cycle as a Vital Sign"](https://publications.aap.org/pediatrics/article/118/5/2245/69874/) |
+| Regl günleri dışında berrak/hafif beyazımsı, kokusuz bir vajinal akıntı normaldir — vücudun kendini temizleme yollarından biri. | `quiz_data.dart` (soru 9) | [Nemours KidsHealth — "Is My Vaginal Discharge Normal? (for Teens)"](https://kidshealth.org/en/teens/vdischarge2.html) |
+| Ped, akış hafif olsa bile birkaç saatte bir değiştirilmeli; yoğun akışta daha sık. | `quiz_data.dart` (soru 10) | [FDA — "Menstrual Pads and Liners"](https://www.fda.gov/medical-devices/menstrual-product-options-facts-and-safe-use/menstrual-pads-and-liners) |
+| Reglden önceki günlerde kafeini azaltmak bazı kızlarda PMS belirtilerini hafifletebilir. | `quiz_data.dart` (soru 11) | [Office on Women's Health — "Premenstrual syndrome (PMS)"](https://womenshealth.gov/menstrual-cycle/premenstrual-syndrome) |
+| Hafif egzersiz, adet krampı üzerinde sıcak su torbası ve akupresürden daha büyük etki büyüklüğüne sahip (g=2.16 vs 0.73/0.56). | `quiz_data.dart` (soru 12) | [Armour ve ark. — sistematik derleme/meta-analiz, PMC (2019)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6337810/) — WebFetch ile doğrulandı |
+| Bir pedi/tamponu art arda birkaç saat boyunca saatte bir değiştirmek gerekmesi, ya da 7 günden uzun süren kanama, doktora danışılması gereken bir durumdur. | `quiz_data.dart` (soru 13) | [ACOG — "Heavy Menstrual Bleeding" FAQ](https://www.acog.org/womens-health/faqs/heavy-menstrual-bleeding) — WebSearch ile doğrulandı (doğrudan fetch bot-engeli nedeniyle engellendi) |
+| Çok düşük vücut ağırlığı, aşırı yoğun antrenman ya da uzun süreli stres, hormon üretimini geçici olarak durdurup regli kesebilir (amenore). | `quiz_data.dart` (soru 14) | [ACOG — "Amenorrhea: Absence of Periods" FAQ](https://www.acog.org/womens-health/faqs/amenorrhea-absence-of-periods) |
+| Östrojen ve progesteron seviyelerindeki değişimler ruh halini gerçekten etkileyebilir. | `quiz_data.dart` (soru 15) | [Office on Women's Health — "Your menstrual cycle"](https://womenshealth.gov/menstrual-cycle/your-menstrual-cycle) |
+| Ped, tampon ve menstrual kap — hepsi FDA tarafından düzenlenen, doğru kullanıldığında güvenli seçenekler; "en doğru" tek bir seçenek yok. | `quiz_data.dart` (soru 16) | [FDA — "Menstrual Product Options, Facts, and Safe Use"](https://www.fda.gov/medical-devices/products-and-medical-procedures/menstrual-product-options-facts-and-safe-use) |
+
+Not: Bu 10 iddia bir alt ajan tarafından araştırıldı, ardından 3 tanesi
+(TSS, ağır kanama, egzersiz/kramp) doğrudan WebFetch/WebSearch ile ayrıca
+çapraz doğrulandı. Hâlâ gerçek bir doktor/uzman son onayı bekliyor —
+yukarıdaki genel kural geçerli.
 
 ## Düzeltilen hatalar — 2026-09-05, 4 alt ajanla çapraz doğrulama sonrası
 
