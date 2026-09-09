@@ -25,6 +25,10 @@ class CycleTrackingScreen extends ConsumerStatefulWidget {
 class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
     with TickerProviderStateMixin {
   late final AnimationController _animController;
+  // Sayfa boyunca sürekli dönen, çok hafif bir "nefes" pulsu — hero kart ve
+  // Günün Sözü kartına canlılık katmak için (bkz. _BreathingGlow). Sabit bir
+  // görsel değil, ama dikkat dağıtmayacak kadar yavaş (3 saniye).
+  late final AnimationController _breathController;
   final _scrollController = ScrollController();
   late DateTime _displayedMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
@@ -39,11 +43,16 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     )..forward();
+    _breathController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
     _animController.dispose();
+    _breathController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -124,12 +133,23 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   // takvim referans/detay amaçlı ikinci sırada)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 0, child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(22),
-                      decoration: BoxDecoration(
-                        color: AppColors.softPink.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(24),
+                    child: _staggered(index: 0, child: AnimatedBuilder(
+                      animation: _breathController,
+                      builder: (context, child) => Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: AppColors.softPink.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.softPink.withValues(alpha: 0.12 + 0.1 * _breathController.value),
+                              blurRadius: 22 + 12 * _breathController.value,
+                              spreadRadius: 1 * _breathController.value,
+                            ),
+                          ],
+                        ),
+                        child: child,
                       ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         // Hiç regl kaydı yokken "1. gün / Regl" göstermek yanıltıcı —
@@ -181,7 +201,7 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         Builder(builder: (ctx) {
                           final isOn = cycle.isOnPeriod;
                           final notifier = ProviderScope.containerOf(ctx).read(cycleProvider.notifier);
-                          return GestureDetector(
+                          return _BouncyTap(
                             onTap: () {
                               final previousState = cycle;
                               if (isOn) { notifier.endPeriod(); } else { notifier.startPeriod(); }
@@ -221,21 +241,33 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   // hissiyle çelişirdi.
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: _staggered(index: 1, child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: AppColors.warmOrange.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 24, offset: const Offset(0, 8)),
-                        ],
+                    child: _staggered(index: 1, child: AnimatedBuilder(
+                      animation: _breathController,
+                      builder: (context, child) => Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          color: AppColors.warmOrange.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.softPink.withValues(alpha: 0.1 + 0.08 * _breathController.value),
+                              blurRadius: 20 + 12 * _breathController.value,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: child,
                       ),
                       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Container(
-                          width: 32, height: 32,
-                          decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.2), shape: BoxShape.circle),
-                          child: Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.softPink),
+                        AnimatedBuilder(
+                          animation: _breathController,
+                          builder: (context, child) => Transform.scale(scale: 0.92 + 0.16 * _breathController.value, child: child),
+                          child: Container(
+                            width: 32, height: 32,
+                            decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.2), shape: BoxShape.circle),
+                            child: Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.softPink),
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -386,6 +418,39 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Basılınca hafifçe küçülüp geri sıçrayan bir dokunuş sarmalayıcısı — düz bir
+// GestureDetector'ın anlık, "cansız" state değişimi yerine dokunuşu
+// hissettiren küçük bir tepki verir.
+class _BouncyTap extends StatefulWidget {
+  const _BouncyTap({required this.onTap, required this.child});
+  final VoidCallback? onTap;
+  final Widget child;
+
+  @override
+  State<_BouncyTap> createState() => _BouncyTapState();
+}
+
+class _BouncyTapState extends State<_BouncyTap> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = widget.onTap != null;
+    return GestureDetector(
+      onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
+      onTapUp: enabled ? (_) => setState(() => _pressed = false) : null,
+      onTapCancel: enabled ? () => setState(() => _pressed = false) : null,
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        scale: _pressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
+        child: widget.child,
       ),
     );
   }
@@ -893,18 +958,23 @@ class _MoodPickerState extends State<_MoodPicker> {
         final color = MoodData.colorFor(m.$1)!;
         return GestureDetector(
           onTap: () => _select(m.$1),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: 44, height: 44,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isSelected ? color : Colors.white.withValues(alpha: 0.7),
-              border: Border.all(color: isSelected ? color : color.withValues(alpha: 0.5), width: isSelected ? 0 : 1.5),
-              boxShadow: isSelected ? null : [
-                BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 2)),
-              ],
+          child: AnimatedScale(
+            scale: isSelected ? 1.15 : 1.0,
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.elasticOut,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: 44, height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? color : Colors.white.withValues(alpha: 0.7),
+                border: Border.all(color: isSelected ? color : color.withValues(alpha: 0.5), width: isSelected ? 0 : 1.5),
+                boxShadow: isSelected ? null : [
+                  BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 2)),
+                ],
+              ),
+              child: Icon(m.$2, size: 20, color: isSelected ? AppColors.inkOn(context) : color),
             ),
-            child: Icon(m.$2, size: 20, color: isSelected ? AppColors.inkOn(context) : color),
           ),
         );
       }).toList()),
@@ -1146,7 +1216,7 @@ class _MonthCalendar extends StatelessWidget {
               final hasLog = log?.hasAnyData ?? false;
               final moodColor = MoodData.colorFor(log?.mood);
               final moodIcon = MoodData.iconFor(log?.mood);
-              return GestureDetector(
+              return _BouncyTap(
                 onTap: isTappable ? () => onDayTap(date) : null,
                 child: _DayCell(day: day, isToday: isToday, isPeriod: isPeriod, isPredicted: isPredicted, hasLog: hasLog, moodColor: moodColor, moodIcon: moodIcon),
               );
