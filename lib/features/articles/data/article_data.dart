@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 /// listelerinde) bu bölüm ayrı bir başlık altında gösterilir; boşsa düz bir
 /// paragraf olarak akar.
 class ArticleSection {
-  const ArticleSection({this.heading, required this.text});
+  const ArticleSection({this.heading, required this.text, this.icon});
   final String? heading;
+  // `text` içinde **böyle** işaretlenmiş kelimeler kalın gösterilir (bkz.
+  // article_detail_screen.dart _boldedText) — çocuğun gözünün anahtar
+  // kelimelerde takılıp kalması için, ayrı bir zengin metin modeli
+  // kurmadan basit bir işaretleme.
   final String text;
+  final IconData? icon;
 }
 
 /// Bir makalenin başlığı, listedeki kısa tanıtımı VE gerçek gövde metni.
@@ -100,19 +105,22 @@ class ArticleData {
         ArticleSection(
           text:
               'Regl krampı, genç kızlarda en sık yaşanan regl belirtisi '
-              '(doktorlar buna "dismenore" der). Kramplar rahim kaslarının '
-              'kanamayı kolaylaştırmak için kasılmasından kaynaklanır — yani '
-              '"bir şey ters gidiyor" anlamına gelmez, çok yaygındır.',
+              '(doktorlar buna **"dismenore"** der). Kramplar rahim '
+              'kaslarının kanamayı kolaylaştırmak için kasılmasından '
+              'kaynaklanır — yani "bir şey ters gidiyor" anlamına gelmez, '
+              'çok yaygındır.',
         ),
         ArticleSection(
           heading: 'Sıcak uygulama',
+          icon: Icons.spa_rounded,
           text:
               'Karnına veya beline sıcak su torbası koymak, araştırmalarda '
-              'ağrı kesici hap kadar etkili bulunmuş — ikisini birlikte '
+              '**ağrı kesici hap kadar etkili** bulunmuş — ikisini birlikte '
               'kullanmak rahatlamayı daha da hızlandırabiliyor.',
         ),
         ArticleSection(
           heading: 'Hafif hareket',
+          icon: Icons.self_improvement_rounded,
           text:
               'Yürüyüş, esneme ya da hafif germe hareketleri bazı kızlarda '
               'kramp şiddetini azaltabiliyor. Kendini zorlamana gerek yok, '
@@ -120,6 +128,7 @@ class ArticleData {
         ),
         ArticleSection(
           heading: 'Ağrı kesiciler',
+          icon: Icons.medication_outlined,
           text:
               'İbuprofen gibi ilaçlar yaygın olarak kullanılıyor. Ama bu bir '
               'yetişkin kararı — hangi ilacı, ne zaman, ne kadar alman '
@@ -127,12 +136,14 @@ class ArticleData {
         ),
         ArticleSection(
           heading: 'Dinlenme ve sıcak içecekler',
+          icon: Icons.local_cafe_rounded,
           text:
               'Bedenine izin ver. Sıcak bir çay, rahat bir pozisyon ve biraz '
               'dinlenme çoğu zaman yardımcı oluyor.',
         ),
         ArticleSection(
           heading: 'Ne zaman bir yetişkinle konuşmalısın',
+          icon: Icons.chat_bubble_outline_rounded,
           text:
               'Kramplar okulunu ya da günlük hayatını gerçekten '
               'engelliyorsa, ya da ağrı kesicilere rağmen geçmiyorsa — bu '

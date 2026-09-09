@@ -111,13 +111,9 @@ List<Widget> _buildSections(BuildContext context, List<ArticleSection> sections,
     if (section.heading == null) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 18),
-        child: Text(
+        child: _boldedText(
           section.text,
-          style: TextStyle(
-            fontSize: 15,
-            height: 1.6,
-            color: AppColors.inkOn(context).withValues(alpha: 0.75),
-          ),
+          TextStyle(fontSize: 15, height: 1.6, color: AppColors.inkOn(context).withValues(alpha: 0.75)),
         ),
       );
     }
@@ -136,6 +132,7 @@ List<Widget> _buildSections(BuildContext context, List<ArticleSection> sections,
         tint: tint,
         heading: section.heading!,
         text: section.text,
+        icon: section.icon,
       ),
     );
   }).toList();
@@ -215,11 +212,13 @@ class _StepCard extends StatelessWidget {
     required this.tint,
     required this.heading,
     required this.text,
+    this.icon,
   });
   final int number;
   final Color tint;
   final String heading;
   final String text;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -260,19 +259,35 @@ class _StepCard extends StatelessWidget {
                   ),
                 ),
               ),
+              if (icon != null) ...[
+                const SizedBox(width: 8),
+                Icon(icon, size: 20, color: tint),
+              ],
             ],
           ),
           const SizedBox(height: 10),
-          Text(
+          _boldedText(
             text,
-            style: TextStyle(
-              fontSize: 14,
-              height: 1.55,
-              color: AppColors.inkOn(context).withValues(alpha: 0.7),
-            ),
+            TextStyle(fontSize: 14, height: 1.55, color: AppColors.inkOn(context).withValues(alpha: 0.7)),
           ),
         ],
       ),
     );
   }
+}
+
+/// `**böyle**` işaretlenmiş kısımları kalınlaştırarak gösterir — ayrı bir
+/// zengin metin veri modeli kurmadan, anahtar kelimeleri göz taramasına
+/// uygun hale getirmenin en basit yolu (bkz. ArticleSection.text).
+Widget _boldedText(String text, TextStyle baseStyle) {
+  final parts = text.split('**');
+  final spans = <TextSpan>[];
+  for (var i = 0; i < parts.length; i++) {
+    if (parts[i].isEmpty) continue;
+    spans.add(TextSpan(
+      text: parts[i],
+      style: i.isOdd ? baseStyle.copyWith(fontWeight: FontWeight.w800) : baseStyle,
+    ));
+  }
+  return Text.rich(TextSpan(children: spans), style: baseStyle);
 }
