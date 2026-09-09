@@ -349,6 +349,12 @@ void _showAvatarPicker(BuildContext context, WidgetRef ref, CycleState cycle) {
 
   showModalBottomSheet(
     context: context,
+    // go_router'ın shell/tab navigator'ı yerel bir Navigator kullanıyor —
+    // bunu belirtmezsek sheet sadece sekmenin içerik alanını kaplıyor, alt
+    // navigasyon çubuğunun ARKASINDA açılıyor ve Kaydet butonu onun altında
+    // kalıyor (gerçek cihazda görülen hata). Kök navigator'ı kullanmak
+    // sheet'i tüm ekranın üstüne taşır.
+    useRootNavigator: true,
     backgroundColor: Theme.of(context).colorScheme.surface,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
