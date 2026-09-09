@@ -356,7 +356,7 @@ void _showAvatarPicker(BuildContext context, WidgetRef ref, CycleState cycle) {
       padding: EdgeInsets.fromLTRB(24, 12, 24, 24 + MediaQuery.of(ctx).viewInsets.bottom),
       child: StatefulBuilder(builder: (ctx, setSt) {
         final theme = Theme.of(ctx);
-        return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        return SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
           Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(
             color: theme.colorScheme.outline.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 20),
@@ -417,7 +417,7 @@ void _showAvatarPicker(BuildContext context, WidgetRef ref, CycleState cycle) {
               child: const Text('Kaydet', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
             ),
           ),
-        ]);
+        ]));
       }),
     ),
   );
