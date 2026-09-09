@@ -12,6 +12,7 @@ import '../data/mood_data.dart';
 import '../data/symptom_insights.dart';
 import '../../../shared/widgets/screen_gradient_background.dart';
 import '../../articles/data/article_data.dart';
+import '../../profile/data/avatar_data.dart';
 
 class CycleTrackingScreen extends ConsumerStatefulWidget {
   const CycleTrackingScreen({super.key});
@@ -96,11 +97,11 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                         width: 44, height: 44,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.cardOn(context),
-                          border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 2),
+                          color: AvatarData.colorAt(cycle.avatarColorIndex).withValues(alpha: 0.25),
+                          border: Border.all(color: AvatarData.colorAt(cycle.avatarColorIndex).withValues(alpha: 0.6), width: 2),
                         ),
                         child: Center(child: Text(
-                          cycle.userName.isNotEmpty ? cycle.userName[0].toUpperCase() : '?',
+                          cycle.avatarEmoji ?? (cycle.userName.isNotEmpty ? cycle.userName[0].toUpperCase() : '?'),
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.inkOn(context)),
                         )),
                       ),

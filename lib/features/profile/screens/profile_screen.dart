@@ -13,6 +13,7 @@ import '../../../shared/widgets/clean_card.dart';
 import '../../../shared/widgets/staggered_list.dart';
 import '../../../shared/widgets/screen_gradient_background.dart';
 import '../../../core/providers/cycle_provider.dart';
+import '../data/avatar_data.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -51,14 +52,34 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 Center(child: Column(children: [
-                  Container(
-                    width: 80, height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.cardOn(context),
-                      border: Border.all(color: AppColors.softPink.withValues(alpha: 0.3), width: 3),
-                    ),
-                    child: Center(child: Text(userName.isNotEmpty ? userName[0].toUpperCase() : '?', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.inkOn(context)))),
+                  GestureDetector(
+                    onTap: () => _showAvatarPicker(context, ref, cycle),
+                    child: Stack(clipBehavior: Clip.none, children: [
+                      Container(
+                        width: 80, height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AvatarData.colorAt(cycle.avatarColorIndex).withValues(alpha: 0.25),
+                          border: Border.all(color: AvatarData.colorAt(cycle.avatarColorIndex).withValues(alpha: 0.6), width: 3),
+                        ),
+                        child: Center(child: Text(
+                          cycle.avatarEmoji ?? (userName.isNotEmpty ? userName[0].toUpperCase() : '?'),
+                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.inkOn(context)),
+                        )),
+                      ),
+                      Positioned(
+                        right: -2, bottom: -2,
+                        child: Container(
+                          width: 26, height: 26,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.softPink,
+                            border: Border.all(color: AppColors.cardOn(context), width: 2),
+                          ),
+                          child: const Icon(Icons.edit_rounded, size: 13, color: Colors.white),
+                        ),
+                      ),
+                    ]),
                   ),
                   const SizedBox(height: 12),
                   Text(userName, style: AppTextStyles.heading(fontSize: 24, color: AppColors.inkOn(context))),
@@ -320,4 +341,84 @@ class _SettingsRow extends StatelessWidget {
     );
     return onTap != null ? InkWell(onTap: onTap, child: row) : row;
   }
+}
+
+void _showAvatarPicker(BuildContext context, WidgetRef ref, CycleState cycle) {
+  var selectedEmoji = cycle.avatarEmoji ?? AvatarData.emojis.first;
+  var selectedColor = cycle.avatarColorIndex;
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Theme.of(context).colorScheme.surface,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+    builder: (ctx) => Padding(
+      padding: EdgeInsets.fromLTRB(24, 12, 24, 24 + MediaQuery.of(ctx).viewInsets.bottom),
+      child: StatefulBuilder(builder: (ctx, setSt) {
+        final theme = Theme.of(ctx);
+        return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2)))),
+          const SizedBox(height: 20),
+          Center(child: Container(
+            width: 72, height: 72,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AvatarData.colorAt(selectedColor).withValues(alpha: 0.25),
+              border: Border.all(color: AvatarData.colorAt(selectedColor).withValues(alpha: 0.6), width: 3),
+            ),
+            child: Center(child: Text(selectedEmoji, style: const TextStyle(fontSize: 28))),
+          )),
+          const SizedBox(height: 24),
+          Text('Bir sembol seç', style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+          const SizedBox(height: 12),
+          Wrap(spacing: 10, runSpacing: 10, children: AvatarData.emojis.map((e) {
+            final isSelected = e == selectedEmoji;
+            return GestureDetector(
+              onTap: () => setSt(() => selectedEmoji = e),
+              child: Container(
+                width: 48, height: 48,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isSelected ? AvatarData.colorAt(selectedColor).withValues(alpha: 0.3) : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                  border: isSelected ? Border.all(color: AvatarData.colorAt(selectedColor), width: 2) : null,
+                ),
+                child: Center(child: Text(e, style: const TextStyle(fontSize: 22))),
+              ),
+            );
+          }).toList()),
+          const SizedBox(height: 20),
+          Text('Bir renk seç', style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+          const SizedBox(height: 12),
+          Wrap(spacing: 10, runSpacing: 10, children: List.generate(AvatarData.colors.length, (i) {
+            final isSelected = i == selectedColor;
+            return GestureDetector(
+              onTap: () => setSt(() => selectedColor = i),
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AvatarData.colorAt(i),
+                  border: isSelected ? Border.all(color: theme.colorScheme.onSurface, width: 2.5) : null,
+                ),
+              ),
+            );
+          })),
+          const SizedBox(height: 28),
+          GestureDetector(
+            onTap: () {
+              ref.read(cycleProvider.notifier).setAvatar(emoji: selectedEmoji, colorIndex: selectedColor);
+              Navigator.of(ctx).pop();
+            },
+            child: Container(
+              width: double.infinity, height: 48,
+              decoration: BoxDecoration(color: AppColors.inkOn(ctx), borderRadius: BorderRadius.circular(24)),
+              alignment: Alignment.center,
+              child: const Text('Kaydet', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+            ),
+          ),
+        ]);
+      }),
+    ),
+  );
 }

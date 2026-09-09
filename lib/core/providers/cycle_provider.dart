@@ -76,11 +76,16 @@ class CycleState {
     this.periodReminderDaysBefore = 2,
     this.warmNotificationTone = true,
     this.lastExportDate,
+    this.avatarEmoji,
+    this.avatarColorIndex = 0,
   });
 
   final List<PeriodRecord> periods;
   final Map<String, DailyLog> logs;
   final String userName;
+  // null iken profildeki avatar isim baş harfini gösterir.
+  final String? avatarEmoji;
+  final int avatarColorIndex;
   // Kullanıcının takip etmeye başladığı ilaç isimleri (kalıcı liste, günlük değil).
   final List<String> medicationNames;
   // Onboarding'de kullanıcının kendi bildirdiği "genelde kaç gün sürüyor"
@@ -231,6 +236,8 @@ class CycleState {
     int? periodReminderDaysBefore,
     bool? warmNotificationTone,
     DateTime? lastExportDate,
+    String? avatarEmoji,
+    int? avatarColorIndex,
   }) {
     return CycleState(
       periods: periods ?? this.periods,
@@ -246,6 +253,8 @@ class CycleState {
       periodReminderDaysBefore: periodReminderDaysBefore ?? this.periodReminderDaysBefore,
       warmNotificationTone: warmNotificationTone ?? this.warmNotificationTone,
       lastExportDate: lastExportDate ?? this.lastExportDate,
+      avatarEmoji: avatarEmoji ?? this.avatarEmoji,
+      avatarColorIndex: avatarColorIndex ?? this.avatarColorIndex,
     );
   }
 
@@ -273,6 +282,8 @@ class CycleState {
     'periodReminderDaysBefore': periodReminderDaysBefore,
     'warmNotificationTone': warmNotificationTone,
     'lastExportDate': lastExportDate?.toIso8601String(),
+    'avatarEmoji': avatarEmoji,
+    'avatarColorIndex': avatarColorIndex,
   };
 
   factory CycleState.fromJson(Map<String, dynamic> json) => CycleState(
@@ -289,6 +300,8 @@ class CycleState {
     periodReminderDaysBefore: json['periodReminderDaysBefore'] as int? ?? 2,
     warmNotificationTone: json['warmNotificationTone'] as bool? ?? true,
     lastExportDate: json['lastExportDate'] != null ? DateTime.parse(json['lastExportDate'] as String) : null,
+    avatarEmoji: json['avatarEmoji'] as String?,
+    avatarColorIndex: json['avatarColorIndex'] as int? ?? 0,
   );
 }
 
@@ -425,6 +438,10 @@ class CycleNotifier extends StateNotifier<CycleState> {
 
   void setNotificationTone({required bool warm}) {
     state = state.copyWith(warmNotificationTone: warm);
+  }
+
+  void setAvatar({required String emoji, required int colorIndex}) {
+    state = state.copyWith(avatarEmoji: emoji, avatarColorIndex: colorIndex);
   }
 
   void logFlow(String flow) {
