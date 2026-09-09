@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,10 +23,11 @@ class CycleTrackingScreen extends ConsumerStatefulWidget {
   ConsumerState<CycleTrackingScreen> createState() => _CycleTrackingScreenState();
 }
 
-// Gerçek "buzlu cam" efekti — arkadaki gradient kartın içinden bulanık
-// görünsün diye. Gölge (varsa) BİLEREK dıştaki, klipsiz Container'da —
-// ClipRRect'in İÇİNE alınırsa gölgenin dışa taşan bulanıklığı sert bir
-// kenarda kesilir, yumuşak parıltı kaybolur.
+// İnce beyaz kenarlıklı, tintli bir "cam" kart görünümü. Gerçek
+// BackdropFilter bulanıklığı denendi ama düz iki renkli gradient
+// arka planda hiçbir görsel fark yaratmadı (blur'un bulanıklaştıracağı
+// bir detay/doku yoktu) — performans maliyeti karşılıksız kaldığı için
+// kaldırıldı, sadece tint+kenarlık kaldı (kullanıcı geri bildirimi).
 Widget _glassCard({
   required Widget child,
   required Color tint,
@@ -38,22 +38,14 @@ Widget _glassCard({
 }) {
   return Container(
     width: width,
-    decoration: BoxDecoration(borderRadius: radius, boxShadow: shadow),
-    child: ClipRRect(
+    padding: padding,
+    decoration: BoxDecoration(
+      color: tint,
       borderRadius: radius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            color: tint,
-            borderRadius: radius,
-            border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
-          ),
-          child: child,
-        ),
-      ),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
+      boxShadow: shadow,
     ),
+    child: child,
   );
 }
 
