@@ -227,13 +227,20 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       decoration: BoxDecoration(
                         color: AppColors.warmOrange.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(color: AppColors.softPink.withValues(alpha: 0.12), blurRadius: 24, offset: const Offset(0, 8)),
+                        ],
                       ),
                       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        const Text('💌', style: TextStyle(fontSize: 20)),
+                        Container(
+                          width: 32, height: 32,
+                          decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.2), shape: BoxShape.circle),
+                          child: Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.softPink),
+                        ),
                         const SizedBox(width: 12),
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('Günün Sözü', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
-                          const SizedBox(height: 4),
+                          Text('GÜNÜN SÖZÜ', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.5, color: AppColors.inkOn(context).withValues(alpha: 0.35))),
+                          const SizedBox(height: 5),
                           Text(
                             AffirmationData.forDay(DateTime.now()),
                             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.inkOn(context), height: 1.4),
