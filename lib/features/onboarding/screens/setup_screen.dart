@@ -322,7 +322,7 @@ class _AgePage extends StatelessWidget {
                 squeeze: 0.8,
                 useMagnifier: true,
                 onSelectedItemChanged: (i) => onChanged(i + 10),
-                children: List.generate(90, (i) {
+                children: List.generate(51, (i) {
                   final val = i + 10;
                   return Center(
                     child: Text(
