@@ -1011,9 +1011,13 @@ class _WaterGaugeState extends State<_WaterGauge> {
     final drunk = MockWellnessData.waterDrunk;
     final ratio = goal == 0 ? 0.0 : (drunk / goal).clamp(0.0, 1.0);
 
+    // Pastel mavi — "Su" göstergesi diğer her şeyden (regl/mood pembesi vb.)
+    // görsel olarak ayrışsın diye bilerek uygulamanın ana pembe/şeftali
+    // paletinin dışında, kendine ait bir renk kullanıyor.
+    const waterColor = Color(0xFFA8D8EA);
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        Icon(Icons.water_drop_outlined, size: 16, color: AppColors.softPink),
+        Icon(Icons.water_drop_outlined, size: 16, color: waterColor),
         const SizedBox(width: 6),
         Text('Su', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.inkOn(context).withValues(alpha: 0.6))),
       ]),
@@ -1023,7 +1027,7 @@ class _WaterGaugeState extends State<_WaterGauge> {
           borderRadius: BorderRadius.circular(16),
           child: Container(
             width: 30, height: 60,
-            color: AppColors.softPink.withValues(alpha: 0.12),
+            color: waterColor.withValues(alpha: 0.15),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: TweenAnimationBuilder<double>(
@@ -1033,7 +1037,7 @@ class _WaterGaugeState extends State<_WaterGauge> {
                 builder: (_, val, _) => FractionallySizedBox(
                   widthFactor: 1,
                   heightFactor: val,
-                  child: Container(color: AppColors.softPink),
+                  child: Container(color: waterColor),
                 ),
               ),
             ),
@@ -1047,9 +1051,9 @@ class _WaterGaugeState extends State<_WaterGauge> {
           ])),
           const SizedBox(height: 8),
           Row(children: [
-            _StepperBtn(icon: Icons.remove_rounded, onTap: () => _adjust(-1)),
+            _StepperBtn(icon: Icons.remove_rounded, onTap: () => _adjust(-1), color: waterColor),
             const SizedBox(width: 8),
-            _StepperBtn(icon: Icons.add_rounded, onTap: () => _adjust(1)),
+            _StepperBtn(icon: Icons.add_rounded, onTap: () => _adjust(1), color: waterColor),
           ]),
         ])),
       ]),
@@ -1058,21 +1062,23 @@ class _WaterGaugeState extends State<_WaterGauge> {
 }
 
 class _StepperBtn extends StatelessWidget {
-  const _StepperBtn({required this.icon, required this.onTap});
+  const _StepperBtn({required this.icon, required this.onTap, this.color});
   final IconData icon;
   final VoidCallback onTap;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final c = color ?? AppColors.softPink;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 28, height: 28,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppColors.softPink.withValues(alpha: 0.15),
+          color: c.withValues(alpha: 0.15),
         ),
-        child: Icon(icon, size: 16, color: AppColors.softPink),
+        child: Icon(icon, size: 16, color: c),
       ),
     );
   }

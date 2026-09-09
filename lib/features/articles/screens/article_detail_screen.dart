@@ -160,54 +160,63 @@ class _ChecklistRowState extends State<_ChecklistRow> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => setState(() => _checked = !_checked),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeOutBack,
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: _checked ? widget.tint : widget.tint.withValues(alpha: 0.18),
-              shape: BoxShape.circle,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: widget.tint.withValues(alpha: _checked ? 0.2 : 0.1),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: widget.tint.withValues(alpha: _checked ? 0.5 : 0), width: 1.5),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutBack,
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: _checked ? widget.tint : widget.tint.withValues(alpha: 0.18),
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Icon(Icons.check_rounded, size: 17, color: _checked ? Colors.white : widget.tint),
             ),
-            alignment: Alignment.center,
-            child: Icon(Icons.check_rounded, size: 17, color: _checked ? Colors.white : widget.tint),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
-              opacity: _checked ? 0.5 : 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(children: [
-                    Expanded(child: Text(
-                      widget.heading,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.inkOn(context),
-                        decoration: _checked ? TextDecoration.lineThrough : TextDecoration.none,
-                      ),
-                    )),
-                    if (widget.icon != null) ...[
-                      const SizedBox(width: 8),
-                      Icon(widget.icon, size: 18, color: widget.tint),
-                    ],
-                  ]),
-                  const SizedBox(height: 4),
-                  _boldedText(
-                    widget.text,
-                    TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.inkOn(context).withValues(alpha: 0.65)),
-                  ),
-                ],
+            const SizedBox(width: 14),
+            Expanded(
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _checked ? 0.5 : 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      Expanded(child: Text(
+                        widget.heading,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.inkOn(context),
+                          decoration: _checked ? TextDecoration.lineThrough : TextDecoration.none,
+                        ),
+                      )),
+                      if (widget.icon != null) ...[
+                        const SizedBox(width: 8),
+                        Icon(widget.icon, size: 18, color: widget.tint),
+                      ],
+                    ]),
+                    const SizedBox(height: 4),
+                    _boldedText(
+                      widget.text,
+                      TextStyle(fontSize: 13.5, height: 1.5, color: AppColors.inkOn(context).withValues(alpha: 0.65)),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
