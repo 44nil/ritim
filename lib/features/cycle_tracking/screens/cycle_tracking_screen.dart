@@ -6,6 +6,7 @@ import '../../../core/providers/cycle_provider.dart';
 import '../../../core/router/route_names.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../data/affirmation_data.dart';
 import '../data/mock_cycle_data.dart';
 import '../data/mock_wellness_data.dart';
 import '../data/mood_data.dart';
@@ -211,7 +212,37 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                       ]),
                     )),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
+
+                  // Günün Sözü — tarihe göre değişen bir olumlama cümlesi.
+                  // Açılışta ayrı bir pop-up olarak DEĞİL, burada sabit bir
+                  // kart olarak gösteriliyor — her açılışta tam ekranı
+                  // kaplayan bir pencere "acele etmene gerek yok" sakin
+                  // hissiyle çelişirdi.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _staggered(index: 1, child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: AppColors.warmOrange.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        const Text('💌', style: TextStyle(fontSize: 20)),
+                        const SizedBox(width: 12),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text('Günün Sözü', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.inkOn(context).withValues(alpha: 0.5))),
+                          const SizedBox(height: 4),
+                          Text(
+                            AffirmationData.forDay(DateTime.now()),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.inkOn(context), height: 1.4),
+                          ),
+                        ])),
+                      ]),
+                    )),
+                  ),
+                  const SizedBox(height: 20),
 
                   // Aylık takvim — geçmiş regl günleri ve tahmini günler.
                   // Ay adı + gezinme okları artık takvimin kendi küçük
@@ -462,7 +493,10 @@ void _showSymptoms(BuildContext context, {DateTime? date}) {
           }
           Navigator.pop(ctx);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(selected.isEmpty ? 'Kayıt atlandı' : '${selected.length} belirti kaydedildi'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink),
+            SnackBar(
+              content: Text(selected.isEmpty ? 'Kayıt atlandı' : '${selected.length} belirti kaydedildi — ${AffirmationData.forDay(DateTime.now())}'),
+              behavior: SnackBarBehavior.floating, backgroundColor: AppColors.softPink,
+            ),
           );
         },
         child: Text(selected.isEmpty ? 'Atla' : 'Kaydet (${selected.length})'))),
