@@ -9,7 +9,6 @@ abstract class RouteNames {
 
   // Bottom nav sekmeleri
   static const cycleTracking = 'cycle-tracking';
-  static const qa = 'qa';
   static const articles = 'articles';
   static const articleDetail = 'article-detail';
   static const quiz = 'quiz';
@@ -17,6 +16,7 @@ abstract class RouteNames {
   static const editProfile = 'edit-profile';
   static const notifications = 'notifications';
   static const cycleSettings = 'cycle-settings';
+  static const breathingExercise = 'breathing-exercise';
 
   // Ebeveyn paneli (bağımsız akış) — çocuk tarafı QR oluşturur,
   // veli tarafı QR tarar, ikisi de aynı özet ekranında buluşur.
@@ -35,7 +35,6 @@ abstract class RoutePaths {
   static const onboarding = '/onboarding';
   static const home = '/';
   static const cycleTracking = '/cycle-tracking';
-  static const qa = '/qa';
   static const articles = '/articles';
   static const articleDetail = '/articles/detail';
   static const quiz = '/quiz';
@@ -43,6 +42,7 @@ abstract class RoutePaths {
   static const editProfile = '/profile/edit';
   static const notifications = '/profile/notifications';
   static const cycleSettings = '/cycle-tracking/settings';
+  static const breathingExercise = '/cycle-tracking/breathing';
   static const parentQr = '/parent/qr';
   static const parentScan = '/parent/scan';
   static const parentPanel = '/parent/panel';

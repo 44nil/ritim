@@ -362,11 +362,16 @@ class _CycleTrackingScreenState extends ConsumerState<CycleTrackingScreen>
                   // — okuma köşesindeki kontrol listesi makalesine götürür.
                   // Kalıcı bir bildirim değil, sadece o an anlamlıysa görünen
                   // küçük bir dokunuş.
-                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3)
+                  if (cycle.isOnPeriod || (cycle.daysUntilNextPeriod ?? 99) <= 3) ...[
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 14),
                       child: _staggered(index: 3, child: _SchoolBagReminderCard()),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                      child: _staggered(index: 3, child: _BreathingExerciseCard()),
+                    ),
+                  ],
 
                   const SizedBox(height: 110),
                 ],
@@ -431,6 +436,42 @@ class _SchoolBagReminderCard extends StatelessWidget {
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Okul çantan hazır mı?', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.inkOn(context))),
             Text('Kontrol listesine bak', style: TextStyle(fontSize: 11.5, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
+          ])),
+          Icon(Icons.chevron_right_rounded, color: AppColors.inkOn(context).withValues(alpha: 0.3)),
+        ]),
+      ),
+    );
+  }
+}
+
+// Nefes egzersizi kısayolu — okul çantası kartıyla aynı koşulda gösterilir
+// (regl günü ya da yakınsa), sakinleşmek isteyen birinin işine yarayabilir.
+class _BreathingExerciseCard extends StatelessWidget {
+  const _BreathingExerciseCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.pushNamed(RouteNames.breathingExercise),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.translucentOn(context),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 6)),
+          ],
+        ),
+        child: Row(children: [
+          Container(
+            width: 40, height: 40,
+            decoration: BoxDecoration(color: AppColors.softPink.withValues(alpha: 0.15), shape: BoxShape.circle),
+            child: Icon(Icons.air_rounded, size: 20, color: AppColors.inkOn(context).withValues(alpha: 0.7)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Sancın mı var? Birlikte nefes alalım', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.inkOn(context))),
+            Text('1 dakikalık sakinleşme egzersizi', style: TextStyle(fontSize: 11.5, color: AppColors.inkOn(context).withValues(alpha: 0.55))),
           ])),
           Icon(Icons.chevron_right_rounded, color: AppColors.inkOn(context).withValues(alpha: 0.3)),
         ]),

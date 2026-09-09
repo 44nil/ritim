@@ -13,6 +13,7 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/profile/screens/notifications_screen.dart';
 import '../../features/cycle_tracking/screens/cycle_settings_screen.dart';
+import '../../features/cycle_tracking/screens/breathing_exercise_screen.dart';
 import '../../features/parent_panel/screens/parent_qr_screen.dart';
 import '../../features/parent_panel/screens/parent_scan_screen.dart';
 import '../../features/parent_panel/screens/parent_panel_screen.dart';
@@ -124,6 +125,11 @@ class AppRouter {
         path: RoutePaths.cycleSettings,
         name: RouteNames.cycleSettings,
         builder: (context, state) => const CycleSettingsScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.breathingExercise,
+        name: RouteNames.breathingExercise,
+        builder: (context, state) => const BreathingExerciseScreen(),
       ),
 
       // ─── Makale detayı — bağımsız erişim, Article nesnesi extra ile geçer ──
