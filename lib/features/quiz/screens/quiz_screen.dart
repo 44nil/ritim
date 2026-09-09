@@ -136,7 +136,13 @@ class _QuizScreenState extends State<QuizScreen> {
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(color: AppColors.cardOn(context), borderRadius: BorderRadius.circular(20)),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('Açıklama', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.warmOrange)),
+                          Builder(builder: (context) {
+                            final isCorrect = _selected == q.correctIndex;
+                            return Text(
+                              isCorrect ? 'Doğru bildin! 🎉' : 'Üzülme, birlikte öğrenelim 💛',
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: isCorrect ? const Color(0xFF28A745) : AppColors.warmOrange),
+                            );
+                          }),
                           const SizedBox(height: 8),
                           Text(q.explanation, style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.6), height: 1.5)),
                           const SizedBox(height: 10),

@@ -75,15 +75,23 @@ iddiası yok. Adet ve luteal fazı metinleri zaten yeterince yumuşaktı
 | Ped, akış hafif olsa bile birkaç saatte bir değiştirilmeli; yoğun akışta daha sık. | `quiz_data.dart` (soru 10) | [FDA — "Menstrual Pads and Liners"](https://www.fda.gov/medical-devices/menstrual-product-options-facts-and-safe-use/menstrual-pads-and-liners) |
 | Reglden önceki günlerde kafeini azaltmak bazı kızlarda PMS belirtilerini hafifletebilir. | `quiz_data.dart` (soru 11) | [Office on Women's Health — "Premenstrual syndrome (PMS)"](https://womenshealth.gov/menstrual-cycle/premenstrual-syndrome) |
 | Hafif egzersiz, adet krampı üzerinde sıcak su torbası ve akupresürden daha büyük etki büyüklüğüne sahip (g=2.16 vs 0.73/0.56). | `quiz_data.dart` (soru 12) | [Armour ve ark. — sistematik derleme/meta-analiz, PMC (2019)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6337810/) — WebFetch ile doğrulandı |
-| Bir pedi/tamponu art arda birkaç saat boyunca saatte bir değiştirmek gerekmesi, ya da 7 günden uzun süren kanama, doktora danışılması gereken bir durumdur. | `quiz_data.dart` (soru 13) | [ACOG — "Heavy Menstrual Bleeding" FAQ](https://www.acog.org/womens-health/faqs/heavy-menstrual-bleeding) — WebSearch ile doğrulandı (doğrudan fetch bot-engeli nedeniyle engellendi) |
-| Çok düşük vücut ağırlığı, aşırı yoğun antrenman ya da uzun süreli stres, hormon üretimini geçici olarak durdurup regli kesebilir (amenore). | `quiz_data.dart` (soru 14) | [ACOG — "Amenorrhea: Absence of Periods" FAQ](https://www.acog.org/womens-health/faqs/amenorrhea-absence-of-periods) |
-| Östrojen ve progesteron seviyelerindeki değişimler ruh halini gerçekten etkileyebilir. | `quiz_data.dart` (soru 15) | [Office on Women's Health — "Your menstrual cycle"](https://womenshealth.gov/menstrual-cycle/your-menstrual-cycle) |
-| Ped, tampon ve menstrual kap — hepsi FDA tarafından düzenlenen, doğru kullanıldığında güvenli seçenekler; "en doğru" tek bir seçenek yok. | `quiz_data.dart` (soru 16) | [FDA — "Menstrual Product Options, Facts, and Safe Use"](https://www.fda.gov/medical-devices/products-and-medical-procedures/menstrual-product-options-facts-and-safe-use) |
+| Bir pedi/tamponu art arda birkaç saat boyunca saatte bir değiştirmek gerekmesi, ya da 7 günden uzun süren kanama, bir yetişkine söylenmesi gereken bir durumdur. | `quiz_data.dart` (soru 13) | [ACOG — "Heavy Menstrual Bleeding" FAQ](https://www.acog.org/womens-health/faqs/heavy-menstrual-bleeding) — WebSearch ile doğrulandı (doğrudan fetch bot-engeli nedeniyle engellendi) |
+| Östrojen ve progesteron seviyelerindeki değişimler ruh halini gerçekten etkileyebilir. | `quiz_data.dart` (soru 14) | [Office on Women's Health — "Your menstrual cycle"](https://womenshealth.gov/menstrual-cycle/your-menstrual-cycle) |
+| Ped, tampon ve menstrual kap — hepsi FDA tarafından düzenlenen, doğru kullanıldığında güvenli seçenekler; "en doğru" tek bir seçenek yok. | `quiz_data.dart` (soru 15) | [FDA — "Menstrual Product Options, Facts, and Safe Use"](https://www.fda.gov/medical-devices/products-and-medical-procedures/menstrual-product-options-facts-and-safe-use) |
 
-Not: Bu 10 iddia bir alt ajan tarafından araştırıldı, ardından 3 tanesi
+Not: Bu iddialar bir alt ajan tarafından araştırıldı, ardından 3 tanesi
 (TSS, ağır kanama, egzersiz/kramp) doğrudan WebFetch/WebSearch ile ayrıca
-çapraz doğrulandı. Hâlâ gerçek bir doktor/uzman son onayı bekliyor —
-yukarıdaki genel kural geçerli.
+çapraz doğrulandı. Amenore (regl kesilmesi) sorusu, bu yaş grubunda ilk
+yıllarda düzensiz döngünün zaten normal olduğu mesajıyla çelişip gereksiz
+kaygı yaratabileceği için tamamen kaldırıldı (2026-09-09) — kullanıcı geri
+bildirimi üzerine.
+
+**Önemli — kaynak gösterme yeri (2026-09-09):** Quiz sorularının
+açıklama metinlerinde artık "Kaynak: ..." satırı YOK. Önceki 6 orijinal
+soru da dahil, tüm kaynaklar buradan (bu belgeden) takip ediliyor —
+çocuğun gördüğü metin sade/sıcak kalıyor, akademik dipnot/kurum adı/link
+uygulama içinde hiç görünmüyor. Bu, makale içeriklerinin (`article_data.dart`)
+zaten kullandığı düzenle tutarlı hale getirildi.
 
 ## Düzeltilen hatalar — 2026-09-05, 4 alt ajanla çapraz doğrulama sonrası
 
