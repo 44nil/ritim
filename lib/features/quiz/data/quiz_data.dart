@@ -17,25 +17,35 @@ class QuizData {
   QuizData._();
 
   static const questions = [
-    // ─── Temel Bilgiler ────────────────────────────────────────────────
+    // ─── Vücudumuzu Tanıyalım ──────────────────────────────────────────
     QuizQuestion(
-      question: 'Regl (menstrüasyon) olmak ne anlama gelir?',
+      question:
+          'Regl olmak (adet görmek), büyüyen kızların vücudunun harika bir '
+          'parçasıdır. Sence regl dönemi vücudumuz için ne anlama gelir?',
       options: [
-        'Vücudun hasta olduğunu gösterir',
-        'Büyüdüğümüzün ve vücudumuzun sağlıklı çalıştığının doğal bir işaretidir',
-        'Sadece çok yaşlı insanların yaşadığı bir durumdur',
+        'Vücudun hasta olduğunu gösteren geçici bir durumdur',
+        'Vücudun sağlıklı bir şekilde büyüdüğünü ve geliştiğini gösteren doğal bir süreçtir',
+        'Sadece bazı sporları yapmamızı engelleyen bir zamandır',
       ],
       correctIndex: 1,
       explanation:
-          'Regl olmak, vücudunun büyüdüğünü ve sağlıklı çalıştığını '
-          'gösteren doğal bir işaret — hastalık değil!',
+          'Kesinlikle harika bir süreç! Regl olmak bir hastalık veya '
+          'saklanması gereken bir sır değildir. Kadın üreme sisteminin '
+          'sağlıklı ve tıkır tıkır çalıştığının en tatlı işaretidir.',
     ),
     QuizQuestion(
-      question: 'İlk regl genellikle hangi yaşlar arasında başlar?',
-      options: ['4-6 yaş', '9-16 yaş', '30-40 yaş'],
+      question: 'İlk regl kanaması her arkadaşımızda tam olarak aynı yaşta mı başlar?',
+      options: [
+        'Evet, her kız tam olarak 12 yaşını doldurduğu gün regl olur',
+        'Hayır, her kızın vücut saati farklıdır; genellikle 10 ila 15 '
+            'yaşları arasında herhangi bir zamanda başlayabilir',
+        'Hayır, ilk regl sadece lise bittikten sonra başlar',
+      ],
       correctIndex: 1,
       explanation:
-          'Herkesin vücut saati farklıdır, bu yaş aralığı tamamen normaldir!',
+          'Tıpkı hepimizin boyunun, saç renginin veya ayak numarasının '
+          'farklı olması gibi, vücudumuzun iç saati de kendine özeldir. '
+          'Arkadaşından daha erken veya geç regl olman tamamen normaldir.',
     ),
     QuizQuestion(
       question:
@@ -48,30 +58,36 @@ class QuizData {
           'tamamen normal kabul edilir.',
     ),
 
-    // ─── Hijyen ve Özbakım ─────────────────────────────────────────────
+    // ─── Özbakım ve Hijyen Kahramanları ────────────────────────────────
     QuizQuestion(
-      question: 'Kullanılmış bir pedi değiştirdikten sonra ne yapmalıyız?',
+      question:
+          'Gün içinde hijyenik pedleri veya diğer regl ürünlerini ne '
+          'sıklıkla değiştirmek en sağlıklı ve rahat olanıdır?',
       options: [
-        'Tuvalete atıp sifonu çekmeliyiz',
-        'Temiz bir kağıda veya ped poşetine sarıp çöp kutusuna atmalıyız',
-        'Odamızda masanın üstünde bırakmalıyız',
+        'Yoğunluğa bağlı olarak her 3-4 saatte bir düzenli olarak',
+        'Sabah takıp bütün gün boyunca hiç değiştirmemek yeterlidir',
+        'Sadece uyumadan önce günde bir kez değiştirmek gerekir',
       ],
-      correctIndex: 1,
+      correctIndex: 0,
       explanation:
-          'Tuvalete atmak tıkanıklığa yol açar, çöpe atmak en doğrusudur!',
+          'Aferin! Pedleri düzenli değiştirmek cildimizi korur, kendimizi '
+          'tertemiz, ferah ve güvende hissetmemizi sağlar. Yanında her '
+          'zaman yedek bir ped bulundurmayı unutma!',
     ),
     QuizQuestion(
       question:
-          'Sağlığımız ve temizliğimiz için gün içinde hijyenik pedi '
-          'ortalama ne sıklıkla değiştirmeliyiz?',
+          'Kullanılmış bir pedi değiştirdikten sonra onu en doğru '
+          'şekilde nasıl vedalaştırmalıyız?',
       options: [
-        '3-4 günde bir',
-        'Kanama yoğunluğuna göre 4-6 saatte bir',
-        'Sadece geceleri uyumadan önce',
+        'Tuvalete atıp sifonu çekerek',
+        'Temiz bir tuvalet kağıdına veya yeni pedin ambalajına sarıp çöp kutusuna atarak',
+        'Odamızdaki çalışma masasının üzerinde bırakarak',
       ],
       correctIndex: 1,
       explanation:
-          'Pedi düzenli değiştirmek hem hijyen hem rahatlık için önemli.',
+          'Doğru cevap! Pedler tuvalete atıldığında boruları tıkayabilir. '
+          'Bu yüzden onu güzelce sarıp çöpe göndermek en temiz ve en '
+          'çevreci yoldur.',
     ),
     QuizQuestion(
       question: 'Regl döneminde banyo yapmak veya duş almak zararlı mıdır?',
@@ -83,22 +99,6 @@ class QuizData {
       explanation:
           'Bu sadece bir efsane — duş almak seni temiz tutar ve '
           'rahatlatır, hiç zararı yok.',
-    ),
-
-    // ─── Semptomlar ve Rahatlama Yöntemleri ────────────────────────────
-    QuizQuestion(
-      question:
-          'Regl olmadan birkaç gün önce kendimizi biraz halsiz, sinirli '
-          'veya duygusal hissetmemiz normal midir?',
-      options: [
-        'Hayır, bu bir hastalıktır',
-        'Evet, hormonlarımızın değişmesinden kaynaklanan çok normal bir '
-            'durumdur (Buna PMS denir)',
-      ],
-      correctIndex: 1,
-      explanation:
-          'Buna PMS denir ve çok yaygındır — hormonlarının değişmesinden '
-          'kaynaklanır, hastalık değildir.',
     ),
     QuizQuestion(
       question:
@@ -115,20 +115,39 @@ class QuizData {
           'yardımcı olabilir.',
     ),
 
-    // ─── Mitler ve Gerçekler ────────────────────────────────────────────
+    // ─── Mitler ve Duygular ─────────────────────────────────────────────
     QuizQuestion(
       question:
-          '"Regl olan bir çocuk spor yapamaz veya beden eğitimi dersine '
-          'katılamaz." Bu bilgi doğru mu, yanlış mı?',
+          '"Regl dönemindeyken spor yapmak, yüzmek, koşmak veya dans '
+          'etmek yasaktır" sözünü duyarsan ne düşünmelisin?',
       options: [
-        'Doğru, ağır hareketler yapılmamalıdır',
-        'Yanlış, kendimizi iyi hissettiğimiz sürece yürüyüş, esneme ve '
-            'spor yapmak ağrıları azaltmaya bile yardımcı olur',
+        'Bu çok doğrudur, reglken yataktan hiç çıkmamalıyız',
+        'Bu tamamen bir mittir (uydurmadır)! Kendimizi iyi hissettiğimiz '
+            'sürece sevdiğimiz tüm hareketleri yapabiliriz',
+        'Sadece yürüyüş yapabiliriz ama asla koşamayız',
       ],
       correctIndex: 1,
       explanation:
-          'Bu bir mit! Kendini iyi hissediyorsan spor yapmak seni '
-          'durdurmamalı — hatta hareket etmek ağrıları azaltabilir.',
+          'Hareket etmek harikadır! Hatta hafif yürüyüşler, dans etmek '
+          'veya esnemek karın ağrılarını azaltmaya ve bizi çok daha mutlu '
+          'hissettirmeye yardımcı olur.',
+    ),
+    QuizQuestion(
+      question:
+          'Regl olmadan birkaç gün önce veya regl döneminde kendimizi '
+          'bazen biraz daha hassas, duygusal ya da çabuk yorulur '
+          'hissetmemiz neden tamamen normaldir?',
+      options: [
+        'Vücudumuzdaki "hormon" adı verilen doğal kimyasal mesajcıların '
+            'seviyelerinde küçük değişimler olduğu için',
+        'Çünkü artık büyümeyi bıraktığımız için',
+        'Çok fazla kitap okuduğumuz için',
+      ],
+      correctIndex: 0,
+      explanation:
+          'Hormonlar vücudumuzun gizli şefleri gibidir. Bu dönemde biraz '
+          'fazla duygulanman veya çabuk sinirlenmen tamamen onların '
+          'dansından kaynaklanır. Kendine şefkatli davran, bu geçici bir durum!',
     ),
     QuizQuestion(
       question: 'Regl dönemiyle ilgili kafamıza bir şey takıldığında en doğrusu ne yapmaktır?',

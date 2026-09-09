@@ -131,6 +131,19 @@ class ParentPanelScreen extends StatelessWidget {
               )),
             ]),
           ),
+          const SizedBox(height: 16),
+
+          CleanCard(
+            color: AppColors.cardOn(context),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Icon(Icons.verified_outlined, color: AppColors.inkOn(context).withValues(alpha: 0.5), size: 20),
+              const SizedBox(width: 12),
+              Expanded(child: Text(
+                'İçeriklerimiz UNICEF, Dünya Sağlık Örgütü (WHO) ve Amerikan Kadın Doğum ve Jinekologlar Koleji (ACOG) gibi kurumların çocuk/ergen sağlığı rehberleri temel alınarak hazırlanmıştır. Bu uygulama tıbbi tanı, tedavi veya doktor tavsiyesi yerine geçmez — sağlıkla ilgili bir endişeniz varsa lütfen bir doktora danışın.',
+                style: TextStyle(fontSize: 13, color: AppColors.inkOn(context).withValues(alpha: 0.7), height: 1.5),
+              )),
+            ]),
+          ),
         ]),
         )),
       ]),
