@@ -26,7 +26,11 @@ void main() {
     expect(find.text('Ritim\'e\nHoş Geldin'), findsOneWidget);
 
     await tester.tap(find.text('Atla'));
-    await tester.pumpAndSettle();
+    // Döngüm ekranında sürekli dönen bir "nefes" animasyonu var (bkz.
+    // cycle_tracking_screen.dart _breathController) — pumpAndSettle bunu
+    // hiç "durmuş" saymayacağı için sonsuza kadar bekler. Sınırlı bir pump
+    // yeterli (giriş animasyonu 900ms).
+    await tester.pump(const Duration(milliseconds: 1000));
 
     expect(find.text('Döngüm'), findsOneWidget);
     // "Atla" ile hiç regl kaydı oluşturulmadan geçildiği için hero kart
@@ -35,15 +39,19 @@ void main() {
     expect(find.text('Takip Zamanı'), findsOneWidget);
 
     await tester.tap(find.text('Profil'));
-    await tester.pumpAndSettle();
+    // Döngüm sekmesi StatefulShellRoute'ta arka planda canlı kalıyor (tab
+    // değişince dispose olmuyor), yani oradaki sonsuz animasyon Profil
+    // sekmesindeyken de çalışmaya devam ediyor — burada da pumpAndSettle
+    // kullanılamaz.
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Ebeveyn Paneli artık QR ile çalışıyor (eski e-posta/giriş akışı
     // tamamen kaldırıldı, kamera gerektiren tarama kısmı burada test
     // edilmiyor — bkz. ParentSummary encode/decode unit testi).
     await tester.ensureVisible(find.text('Ebeveyn Paneli'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(find.text('Ebeveyn Paneli'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Veliye Göster'), findsOneWidget);
     expect(find.byType(QrImageView), findsOneWidget);

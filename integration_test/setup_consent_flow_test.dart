@@ -77,7 +77,10 @@ void main() {
     await tester.enterText(find.byType(TextField), 'Test Kullanıcı');
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.check_rounded));
-    await tester.pumpAndSettle();
+    // Döngüm ekranında sürekli dönen bir "nefes" animasyonu var (bkz.
+    // cycle_tracking_screen.dart _breathController) — pumpAndSettle bunu
+    // hiç "durmuş" saymayacağı için sonsuza kadar bekler.
+    await tester.pump(const Duration(milliseconds: 1000));
 
     // Kurulum tamamlandı, ana uygulamaya düştü.
     expect(find.text('Döngüm'), findsOneWidget);
